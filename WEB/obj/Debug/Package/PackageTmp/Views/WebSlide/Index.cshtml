@@ -1,0 +1,19 @@
+﻿@model IEnumerable<WebSlide>
+@{
+    int i = 1;
+}
+<div id="featured_content" class="jcarousel-container jcarousel-container-horizontal" style="display: block;">
+    <div class="jcarousel-clip jcarousel-clip-horizontal">
+        <ul class="jcarousel-list jcarousel-list-horizontal">
+            @foreach (var item in Model)
+            {
+                <li class="jcarousel-item jcarousel-item-horizontal jcarousel-item-1 jcarousel-item-1-horizontal" jcarouselindex="@i">
+                    <a href="#" >
+                        <img id="Sildeimg" height="100%" title="@item.Title" src="@item.Image" alt="@item.Title">
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </div>
+</div>

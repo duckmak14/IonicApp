@@ -1,0 +1,69 @@
+﻿@model WebModels.Partner
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "ManagePartner", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.PartnerName, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.PartnerName, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.PartnerName)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Address, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Address, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Address)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Email, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Mobile, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Mobile, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Mobile) 
+           
+        </div>
+    </div>
+ 
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    top.winsetup("Thêm đối tác",600,290,true);
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+</script>

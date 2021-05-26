@@ -1,0 +1,203 @@
+﻿@{
+}
+<div id="main">
+    <div id="left" style="padding:0 2px;">
+        <div class="box   box-small">
+            <div class="box-title">
+                <h3>
+                    <i class="icon-home"></i>
+                    <a style="color:#222;" href="/admin/webmodule" onclick="webmodule_root();return false;">Chức năng Web</a>
+                </h3>
+                <div class="actions">
+                    <a class="btn btn-mini content-slideUp" href="#"><i class="icon-angle-down"></i></a>
+                </div>
+            </div>
+            <div class="box-content">
+                @(Html.Kendo().TreeView()
+                    .Name("treeview")
+                    .DataSource(dataSource => dataSource
+                        .Read(read => read
+                            .Action("Read_ForTree", "WebModule")
+                        )
+                    )
+                    .Events(events => events
+                        .Select("onSelect")
+                    )
+                )
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="pull-left">
+                <div class="breadcrumbs"></div>
+            </div>
+            <div class="pull-right">
+                <ul class="actions">
+                    <li>
+                        <a href="#" id="btnadd" class="btn btn-mini  btn-blue btn-inverse"><i class="icon-plus"></i> @Resources.Common.Add  </a>
+                    </li>
+                    <li>
+                        <a href="#" id="btnedit" class="btn btn-mini   btn-blue btn-inverse"><i class="icon-edit"></i> @Resources.Common.Edit  </a>
+                    </li>
+                    <li>
+                        <a href="#" id="btndelete" class="btn btn-mini  btn-red btn-inverse"><i class="icon-trash"></i> @Resources.Common.Delete  </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="box">
+                    <div class="box-content nopadding">
+                        <div id="grid"></div>
+                        <script type="text/javascript">
+                            var treeview; var parent;
+                            function onSelect(e) {
+                                parent = treeview.dataItem(e.node).id;
+                                loaddata(parent);
+                            }
+                            function webmodule_root() {
+                                treeview.select(null);
+                                parent = null;
+                                loaddata(parent);
+                            }
+                            var rowselected;
+                            function loaddata(p) {
+                                if ($("#grid").data("kendoGrid") != null) { $('#grid').html(''); delete $("#grid").data("kendoGrid"); }
+                                $("#grid").kendoGrid({
+                                    dataSource: {
+                                        type: "json",
+                                        transport: {
+                                            read: {
+                                                url: "/admin/webmodule/Read_ByParent/" + p,
+                                            }
+                                        },
+                                        emptyMsg: 'This grid is empty',
+                                        schema: {
+                                            model: {
+                                                ID: "ID",
+                                                fields: {
+                                                    ID: { type: "string" },
+                                                    Title: { type: "string" },
+                                                    Description: { type: "string" }
+                                                    //,Culture: { type: "string" }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    scrollable: false,
+                                    selectable: "multiple",
+                                    columns: [{
+                                        field: "ID",
+                                        width: 50,
+                                        title: "@Resources.Common.ID"
+                                    }, {
+                                        field: "Title", width: 220,
+                                        title: "@Resources.Common.Title"
+                                    },
+                                                                          {
+                                                                              field: "Description",
+                                                                              title: "@Resources.Common.Description"
+                                                                          },
+                                    @*{
+                                        field: "Culture", width: 70,
+                                        title: "@Resources.Common.Language"
+                                    },*@
+                                    {
+                                        command: [
+                                          { text: "Sửa", name: "gedit", click: gedit },
+                                          { text: "View", name: "gview", click: gview },
+                                          { text: "Xóa", name: "gdelete", click: gdelete }
+                                        ], title: " ", width: "230px"
+                                    }
+                                    ],
+                                    dataBinding: function () {
+                                        rowselected = new Array();
+                                    },
+                                    change: function () {
+                                        rowselected = [];
+                                        var len = this.select().length;
+                                        for (i = 0; i < len; i++) {
+                                            rowselected.push(this.dataItem(this.select()[i]).ID);
+                                        }
+
+                                    }
+
+                                });
+                            }
+                            $(document).ready(function () {
+                                treeview = $("#treeview").data("kendoTreeView");
+                                loaddata(null);
+                            });
+
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/webmodule/delete/" + dataItem.ID);
+    }
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/webmodule/edit/" + dataItem.ID);
+    }
+    var rowselected = [];
+    function change_handler(e) {
+        rowselected = [];
+        var len = this.select().length;
+        for (i = 0; i < len; i++) {
+            rowselected.push(this.dataItem(this.select()[i]).RoleId);
+        }
+    }
+    function binding_handler(e) {
+        rowselected = [];
+    }
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            opendlg("/admin/webmodule/add");
+        });
+
+        $("#btnedit").click(function () {
+            if (rowselected.length > 0) {
+                opendlg("/admin/webmodule/edit/" + rowselected[0]);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+
+        $("#btndelete").click(function () {
+            if (rowselected.length > 0) {
+                opendlg("/admin/webmodule/deletes/" + rowselected);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+    });
+
+    function gedit(e) {
+        var dataItem = $("#grid").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/webmodule/edit/" + dataItem.ID);
+    }
+    function gdelete(e) {
+        var dataItem = $("#grid").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/webmodule/delete/" + dataItem.ID);
+    }
+    function gview(e) {
+        var dataItem = $("#grid").data("kendoGrid").dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/webmodule/layoutview/" + dataItem.ID);
+    }
+</script>

@@ -1,0 +1,286 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Quản lý lộ trình";
+    WebContext db = new WebContext();
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModule.URL == "/admin/ManageRoute");
+
+}
+<script type="text/javascript">
+    var rowselected = [];
+    var isCheckedAll = false;
+
+    //function change_handler(e) {
+    //    rowselected = [];
+    //    var len = this.select().length;
+    //    for (i = 0; i < len; i++) {
+    //        rowselected.push(this.dataItem(this.select()[i]).ID);
+    //    }
+    //}
+
+    function binding_handler(e) {
+        //rowselected = [];
+    }
+
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            opendlg("/admin/manageroute/add/");
+        });
+        $("#export").click(function (e) {
+            if (rowselected.length > 0) {
+                //alert("Selected values: " + selected.join(","));
+                opendlg("/admin/manageroute/ExportExcel/" + rowselected);
+            }
+            else {
+                alert("Vui lòng chọn để xuất file!");
+            }
+        });
+
+        $("#upload").click(function (e) {
+            opendlg("/admin/ManageRoute/UploadExcel");
+        });
+    });
+
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/manageroute/delete/" + dataItem.ID);
+    }
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/manageroute/edit/" + dataItem.ID);
+    }
+
+    $(document).ready(function () {
+
+        $("#FieldFilter").keyup(function () {
+
+            var value = $("#FieldFilter").val();
+            $("#grid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "RouteCode",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "StartLocation.LocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "EndLocation.LocationName",
+                        operator: "contains",
+                        value: value
+                    }
+                    , {
+                        field: "Distance",
+                        operator: "contains",
+                        value: value
+                    }
+                ]
+            });
+        });
+    });
+
+    function onDataBound(e) {
+        $('#grid .k-grid-content').height(screen.height * 0.5);
+        $('input[name="checkedNodes"]').each(function () {
+            if (rowselected.indexOf(this.value) != -1) {
+                $(this).attr('checked', 'checked');
+            } else {
+                $(this).removeAttr('checked');
+            }
+        });
+    };
+
+</script>
+
+<div class="flex row-quanlyxe">
+    <div class="flex">
+        <div class="manage-car-search row-plan-drive">
+            <form action="">
+                <img src="~/Content/themes/admin/img/Vector-search1.png" alt="search" class="img-box-search img-form-plan-drive">
+                <input id='FieldFilter' type="text" name="" placeholder="Tìm kiếm" class="box-search box-search-quanlyxe">
+            </form>
+        </div>
+    </div>
+    <div class="flex">
+        @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+        {
+            <div class="btn-download btn-plan-drive" id="export">
+                <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Tải về</p>
+            </div>
+            <div class="btn-download btn-plan-drive" id="upload">
+                <img src="~/Content/themes/admin/img/Vector-upload.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Upload</p>
+            </div>
+            <div class="btn-download btn-plan-drive" id="btnadd">
+                <img src="~/Content/themes/admin/img/Vector-add-white.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Thêm</p>
+            </div>
+        }
+    </div>
+
+</div>
+@if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="box">
+                <div class="box-content nopadding">
+                    @(Html.Kendo().Grid<WebModels.Route>()
+                .Name("grid")
+                .Columns(columns =>
+                {
+                    columns.Command(command =>
+                    {
+                        if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" }); ;
+                        }
+                    }).HtmlAttributes(new { style = "text-align:center;" }).Width(70).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
+                    columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
+                        .HtmlAttributes(new { style = "text-align:center;" })
+                        .Filterable(false)
+                        .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
+                    //columns.Bound(p => p.ID).Title(Resources.Common.ID);
+                    columns.Bound(p => p.RouteCode).Title(WebModels.AccountResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.StartLocation.LocationName).Title(WebModels.AccountResources.StartLocation).Width(200);
+                    columns.Bound(p => p.EndLocation.LocationName).Title(WebModels.AccountResources.EndLocation).Width(200);
+                    columns.Bound(p => p.Distance).Title(WebModels.AccountResources.Distance).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
+
+                })
+                .ToolBar(toolbar =>
+                {
+                toolbar.Template(@<text>
+
+
+                                        </text>);
+                })
+                .Scrollable(s => s.Height(550))
+                .Pageable()
+                .Selectable(select => select.Mode(GridSelectionMode.Single))
+                .Sortable()
+                .Filterable()
+
+                .Reorderable(reorder => reorder.Columns(true))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model => model.Id(p => p.ID))
+                    .PageSize(20)
+                    .Read(read => read.Action("Routes_Read", "ManageRoute"))
+                     .ServerOperation(false)
+                 )
+                     .Events(events => events.DataBinding("binding_handler").DataBound("onDataBound")
+           )
+
+                        )
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    function getDataFilter() {
+        var dataSource = $("#grid").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var result = query.filter(filters).data;
+        return result;
+    }
+
+    function getCheckAll() {
+        var dataFilterID = [];
+        var dataFilter = getDataFilter();
+        var check;
+        for (var i = 0; i < dataFilter.length; i++) {
+            dataFilterID.push(String(dataFilter[i].ID));
+        }
+        for (var i = 0; i < dataFilterID.length; i++) {
+            var index = rowselected.indexOf(dataFilterID[i]);
+            if (index != -1) {
+                check = true;
+            }
+            else {
+                check = false;
+                break;
+            }
+        }
+        return check;
+    }
+
+    function childNodeClick(element) {
+        var dataID = getCheckAll();
+        var id = element.value;
+        if (rowselected.indexOf(id) !== -1) {
+            rowselected.splice(rowselected.indexOf(id), 1);
+        } else {
+            rowselected.push(id);
+        }
+        isCheckedAll = getCheckAll();
+        $('#chkAll').prop('checked', isCheckedAll);
+    }
+
+    $(function () {
+        $(".k-filter").click(function () {
+            setTimeout(function () {
+                $(".k-filter-menu .k-button").click(function () {
+                    setTimeout(function () {
+                        rowselected = [];
+                        isCheckedAll = getCheckAll();
+                        $('#chkAll').prop('checked', isCheckedAll);
+                        $('input[name="checkedNodes"]').each(function () {
+                            if (rowselected.indexOf(this.value) != -1) {
+                                $(this).attr('checked', 'checked');
+                            } else {
+                                $(this).removeAttr('checked');
+                            }
+                        });
+                    }, 10)
+                })
+            }, 100);
+        });
+    });
+
+    function checkAll(e) {
+
+        var rowItems = getDataFilter();
+        isCheckedAll = $(e.target).prop('checked');
+        if (isCheckedAll) {
+            for (var i = 0; i < rowItems.length; i++) {
+                var index = rowselected.indexOf(String(rowItems[i].ID));
+                if (index == -1) {
+                    rowselected.push(String(rowItems[i].ID));
+                }
+            }
+        }
+        else if (!isCheckedAll) {
+            var dataFilterID = [];
+            var dataFilter = getDataFilter();
+            for (var i = 0; i < dataFilter.length; i++) {
+                dataFilterID.push(String(dataFilter[i].ID));
+            }
+            for (var i = 0; i < dataFilterID.length; i++) {
+                var index = rowselected.indexOf(dataFilterID[i]);
+                if (index != -1) {
+                    rowselected.splice(index, 1);
+                }
+            }
+        }
+
+        $('input[name="checkedNodes"]').each(function () {
+            $(this).prop('checked', isCheckedAll);
+        });
+    }
+
+</script>

@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E72E2189-6155-4B57-B8B7-945D1082D47C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Web.Helpers</RootNamespace>
+    <AssemblyName>Web.Helpers</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.11.25.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.25\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ADOHelper.cs" />
+    <Compile Include="AutoRefreshAttribute.cs" />
+    <Compile Include="CaptchaImage.cs" />
+    <Compile Include="CKFinder.Net\AccessControlRules.cs" />
+    <Compile Include="CKFinder.Net\Connector\CKFinderEvent.cs" />
+    <Compile Include="CKFinder.Net\Connector\CKFinderEventArgs.cs" />
+    <Compile Include="CKFinder.Net\Connector\CKFinderPlugin.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\CommandHandlerBase.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\CopyFilesCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\CreateFolderCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\DeleteFileCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\DeleteFolderCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\DownloadFileCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\ErrorCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\FileUploadCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\GetFilesCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\GetFoldersCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\InitCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\MoveFilesCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\QuickUploadCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\RenameFileCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\RenameFolderCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\ThumbnailCommandHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\CommandHandlers\XmlCommandHandlerBase.cs" />
+    <Compile Include="CKFinder.Net\Connector\Config.cs" />
+    <Compile Include="CKFinder.Net\Connector\Connector.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CKFinder.Net\Connector\ConnectorException.cs" />
+    <Compile Include="CKFinder.Net\Connector\Errors.cs" />
+    <Compile Include="CKFinder.Net\Connector\FolderHandler.cs" />
+    <Compile Include="CKFinder.Net\Connector\ImageTools.cs" />
+    <Compile Include="CKFinder.Net\Connector\Lang.cs" />
+    <Compile Include="CKFinder.Net\Connector\OctreeQuantizer.cs" />
+    <Compile Include="CKFinder.Net\Connector\Quantizer.cs" />
+    <Compile Include="CKFinder.Net\Connector\RegexLib.cs" />
+    <Compile Include="CKFinder.Net\Connector\RestartModule.cs" />
+    <Compile Include="CKFinder.Net\Connector\Util.cs" />
+    <Compile Include="CKFinder.Net\Connector\XmlUtil.cs" />
+    <Compile Include="CKFinder.Net\FileBrowser.cs" />
+    <Compile Include="CKFinder.Net\FileBrowserDesigner.cs" />
+    <Compile Include="CKFinder.Net\Settings\AccessControl.cs" />
+    <Compile Include="CKFinder.Net\Settings\AccessControlManager.cs" />
+    <Compile Include="CKFinder.Net\Settings\ConfigFile.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CKFinder.Net\Settings\Images.cs" />
+    <Compile Include="CKFinder.Net\Settings\ResourceType.cs" />
+    <Compile Include="CKFinder.Net\Settings\ResourceTypeManager.cs" />
+    <Compile Include="CKFinder.Net\Settings\Thumbnails.cs" />
+    <Compile Include="CKFinder.Net\TriStateBool.cs" />
+    <Compile Include="CKFinder.Net\_Plugins\FileEditor\SaveFile.cs" />
+    <Compile Include="CKFinder.Net\_Plugins\ImageResize\ImageResize.cs" />
+    <Compile Include="CKFinder.Net\_Plugins\Watermark\Watermark.cs" />
+    <Compile Include="DownloadResult.cs" />
+    <Compile Include="DynamicLibrary.cs" />
+    <Compile Include="Error.cs" />
+    <Compile Include="Guard.cs" />
+    <Compile Include="HelpersNet\AlphaID.cs" />
+    <Compile Include="HelpersNet\ArgumentValidation.cs" />
+    <Compile Include="HelpersNet\CacheExtensions.cs" />
+    <Compile Include="HelpersNet\CloneExtensions.cs" />
+    <Compile Include="HelpersNet\DateTimeExtensions.cs" />
+    <Compile Include="HelpersNet\EncryptionExtensions.cs" />
+    <Compile Include="HelpersNet\FileFolderHelper.cs" />
+    <Compile Include="HelpersNet\HttpContextExtensions.cs" />
+    <Compile Include="HelpersNet\LambdaComparer.cs" />
+    <Compile Include="HelpersNet\LinqExtensions.cs" />
+    <Compile Include="HelpersNet\MathExtensions.cs" />
+    <Compile Include="HelpersNet\ParallelProcessor.cs" />
+    <Compile Include="HelpersNet\QueryStringBuilder.cs" />
+    <Compile Include="HelpersNet\StringEnum.cs" />
+    <Compile Include="HelpersNet\StringExtensions.cs" />
+    <Compile Include="HelpersNet\StringHtmlExtensions.cs" />
+    <Compile Include="HelpersNet\TryConvert.cs" />
+    <Compile Include="HelpersNet\UrlExtensions.cs" />
+    <Compile Include="HelpersNet\WebClientEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HelpersNet\WebHelper.cs" />
+    <Compile Include="ImageManipulation\OctreeQuantizer.cs" />
+    <Compile Include="ImageManipulation\Quantizer.cs" />
+    <Compile Include="ImageTools.cs" />
+    <Compile Include="ListExtensions.cs" />
+    <Compile Include="ProfileManagementHelper.cs" />
+    <Compile Include="RegularExpressions.cs" />
+    <Compile Include="RemotePost.cs" />
+    <Compile Include="ServerTools.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="WebWhitespaceFilterAttribute.cs" />
+    <Compile Include="RSSHelper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TripleDescSecurity.cs" />
+    <Compile Include="UniqueKeyGenerator.cs" />
+    <Compile Include="Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

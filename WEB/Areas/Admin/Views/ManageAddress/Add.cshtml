@@ -1,0 +1,179 @@
+﻿@model WebModels.Location
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "ManageAddress", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.LocationName, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.LocationName, new { type = "text", name = "BKS", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.LocationName)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.ParentID, new { @class = "control-label" })
+        </div>
+        <div>
+
+            @(Html.Kendo().ComboBox()
+          .Name("ParentID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn địa điểm cha")
+          .DataTextField("startName")
+          .DataValueField("startID")
+          .Filter(FilterType.Contains)
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_Start_Locations", "ManageRoute");
+
+              })
+               .ServerFiltering(false);
+
+          })
+    )
+            @Html.ValidationMessageFor(m => m.ParentID)
+
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.AddressName, new { @class = "control-label" })
+
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.AddressName, new { type = "text", name = "BKS", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.AddressName)
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Province.ProvinceName, new { @class = "control-label" })
+        </div>
+        <div>
+
+            @(Html.Kendo().ComboBox()
+                              .Name("ProvinceID")
+                              .HtmlAttributes(new { style = "width:100%" })
+                              .Placeholder("Chọn quận/huyện...")
+                              .DataTextField("ProvinceName")
+                              .DataValueField("ID")
+                              .Filter(FilterType.Contains)
+                              .DataSource(source =>
+                              {
+                                  source.Read(read =>
+                                  {
+                                      read.Action("GetProvinces", "ManageAddress");
+
+                                  })
+                                   .ServerFiltering(false);
+
+                              })
+                        )
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.District.DistrictName, new { @class = "control-label" })
+        </div>
+        <div>
+            @(Html.Kendo().ComboBox()
+                                  .Name("DistrictID")
+                                  .HtmlAttributes(new { style = "width:100%" })
+                                  .Placeholder("Chọn quận/huyện...")
+                                  .DataTextField("DistrictName")
+                                  //.Events(events => events.Error("grid_errorHandler"))
+                                  .DataValueField("districtID")
+                                 .Filter(FilterType.Contains)
+                                  .DataSource(source =>
+                                  {
+                                      source.Read(read =>
+                                      {
+
+                                          read.Action("GetDistricts", "ManageAddress").Data("filterProvinces");
+
+                                      }).ServerFiltering(true);
+                                  })
+                        .Events(events => events.DataBound("setRequiredAttrDistrict"))
+                                  .AutoBind(false)
+                                  .Enable(false)
+                                  .CascadeFrom("ProvinceID")
+                        )
+        </div>
+    </div>
+
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+
+    @Html.AntiForgeryToken()
+}
+
+<script type="text/javascript">
+    //if (screen.width > 1500) {
+    //    top.winsetup("Thêm địa điểm", 1440 * 0.4, screen.height * 0.22, true);
+    //}
+    //else if (screen.width < 450) {
+    //    top.winsetup("Thêm địa điểm", screen.width * 0.8, screen.height * 0.3, true);
+    //}
+    //else if (screen.width < 1025) {
+    //    top.winsetup("Thêm địa điểm", screen.width * 0.6, screen.height * 0.225, true);
+    //}
+    //else {
+    //    top.winsetup("Thêm địa điểm", screen.width * 0.4, screen.height * 0.37, true);
+    //}
+    top.winsetup("Thêm địa điểm", 600, 350, true);
+    if (screen.width < 576) {
+        top.winsetup("Thêm", screen.width * 0.8, screen.height * 0.3, true);
+    }
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Thêm địa điểm', 'Thêm thành công.');
+
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+    function filterProvinces() {
+        return {
+            provinceId: $("#ProvinceID").val()
+        };
+    }
+    function setRequiredAttrProvices(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+    function setRequiredAttrDistrict(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+</script>
+
+

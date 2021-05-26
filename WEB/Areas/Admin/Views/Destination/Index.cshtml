@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = " ";
+}
+<div id="main">
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="pull-left">
+                <div class="breadcrumbs"></div>
+            </div>
+            <div class="pull-right"> 
+                <ul class="actions">
+                    <li>
+						<a href="#" id="btnadd" class="btn btn-mini  btn-blue btn-inverse"><i class="icon-plus"></i> @Resources.Common.Add  </a>
+					</li>
+                    <li>
+						<a href="#" id="btnedit" class="btn btn-mini   btn-blue btn-inverse"><i class="icon-edit"></i> @Resources.Common.Edit  </a>
+					</li>
+					<li >
+						<a href="#" id="btndelete" class="btn btn-mini  btn-red btn-inverse"><i class="icon-trash"></i> @Resources.Common.Delete  </a>
+					</li> 
+				</ul> 
+            </div>
+        </div>
+
+         
+         <div class="row-fluid">
+			<div class="span12">
+				<div class="box"> 
+					<div class="box-content nopadding">  
+
+                        @(Html.Kendo().Grid<Object>()
+                            .Name("grid")
+                                    .Columns(columns =>
+                                    {
+                                        columns.Bound("ID").Title(Resources.Common.ID).Width(50);
+                                        columns.Bound("Title").Title("Title");
+                                        columns.Bound("ParenID").Title("ParentID");
+                                        columns.Command(command =>
+                                        {
+                                            command.Custom(Resources.Common.Edit).Click("edit_handler");
+                                            command.Custom(Resources.Common.Delete).Click("delete_handler");
+                                        }).Width(240).HtmlAttributes(new { style = "text-align:center;" });
+                                    })
+                                   .Selectable(select => select.Mode(Kendo.Mvc.UI.GridSelectionMode.Multiple))
+                                    .Sortable()
+                                    .Pageable()
+                                    .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .PageSize(20)
+                                .Model(model => model.Id("ID"))
+                                                       .Read(read => read.Action("Country_Read", "Destination"))
+                             )
+                             .Events(events => events.Change("change_handler").DataBinding("binding_handler"))
+                        )
+					</div>
+				</div>
+			</div>
+		</div>
+
+    </div>
+</div>
+
+  
+<div id="window" style="overflow: hidden;"></div> 
+<script type="text/javascript">
+    var w = $("#window").kendoWindow({
+        width: 900 + "px", height: 550 + "px", modal: true, draggable: true,
+        resizable: true,
+        actions: ["Minimize", "Maximize", "Close"],
+        visible: false,iframe: true,
+        pinned: false
+    });
+    w.parent().css("position", "fixed");  
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        w.data("kendoWindow").setOptions({ height: 550 });
+        w.data("kendoWindow").refresh({
+            url: "/admin/destination/delete/" + dataItem.ID,
+        }).title(unescape('@Html.Raw(Resources.Common.DeleteItem)')).center().open(); 
+    }
+    function edit_handler(e) {
+        e.preventDefault(); 
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        w.data("kendoWindow").setOptions({ height: 550 });
+        w.data("kendoWindow").refresh({
+            url: "/admin/destination/edit/"+dataItem.ID,
+        }).title('@Html.Raw(Resources.Common.EditItem)').center().open();
+    } 
+    var rowselected = [];
+    function change_handler(e) {
+        rowselected = [];
+        var len = this.select().length;
+        for (i = 0; i < len; i++) {
+            rowselected.push(this.dataItem(this.select()[i]).ID);
+        }
+    }
+    function binding_handler(e) {
+        rowselected = []; 
+    }
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            w.data("kendoWindow").setOptions({ height: 550 });
+            w.data("kendoWindow").refresh({
+                url: "/admin/destination/add/"
+            }).title("@Html.Raw(Resources.Common.AddItem)").center().open(); 
+        });
+
+         $("#btnedit").click(function () {
+             if (rowselected.length > 0) {
+                 w.data("kendoWindow").setOptions({ height: 550 });
+                 w.data("kendoWindow").refresh({
+                     url: "/admin/destination/edit/" + rowselected[0],
+                 }).title('@Html.Raw(Resources.Common.EditItem)').center().open();
+             } else {
+                 alert("Không có khoản mục nào được chọn.");
+             } 
+         });
+
+         $("#btndelete").click(function () {
+             if (rowselected.length > 0) {
+                 w.data("kendoWindow").setOptions({ height: 550 });
+                 w.data("kendoWindow").refresh({
+                     url: "/admin/destination/deletes/" + rowselected,
+                 }).title('@Html.Raw(Resources.Common.DeleteItem)').center().open();
+             } else {
+                 alert("Không có khoản mục nào được chọn.");
+             }
+         });
+        $("#btnrefresh").click(function () {
+            $("#grid").data("kendoGrid").dataSource.read();
+        });
+     });
+</script>

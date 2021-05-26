@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Advertisement>
+
+@foreach (var item in Model)
+{
+    <div class="single-sidebar-2">
+        @if (string.IsNullOrWhiteSpace(item.Video))
+        {
+            <a href="@item.Link">
+                <img src="@item.Media" alt="@item.Title" title="@item.Title">
+            </a>
+        }
+        else
+        {
+            <video width="100%" controls height="214">
+                <source src="@item.Video" type="video/mp4">
+            </video>
+        }
+    </div>
+}

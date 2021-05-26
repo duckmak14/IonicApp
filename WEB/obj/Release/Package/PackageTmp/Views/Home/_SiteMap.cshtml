@@ -1,0 +1,39 @@
+﻿@model Stack<WebModule>
+
+<script>
+
+</script>
+
+<ul class="breadcrumb-inn">
+
+    <li><a href="/">Trang chủ</a></li>
+    @if (Model != null && Model.Count > 0)
+    {
+        do
+        {
+            WebModule module = Model.Pop();
+
+            if (module.ID == 3)
+            {
+             <li class="navigation_page"> <a href="#" target="@module.Target">@module.Title</a></li>
+            }
+            else 
+            if (string.IsNullOrEmpty(module.URL) || string.IsNullOrWhiteSpace(module.URL))
+            {
+                <li class="navigation_page"> @Html.ActionLink(@module.Title, "Index", "Home", new { metatitle = module.MetaTitle != null ? module.MetaTitle : "tapchimoitruong", id = module.ID }, new { title = module.Title })</li>
+
+            }
+            else
+            {
+                <li class="navigation_page"> <a href="@module.URL" target="@module.Target">@module.Title</a></li>
+            }
+
+            module = module.Parent;
+        }
+        while (Model.Count != 0);
+    }
+    else
+    {
+        <li class="navigation_page"> <a href="#"> Tìm kiếm </a></li>
+    }
+</ul>

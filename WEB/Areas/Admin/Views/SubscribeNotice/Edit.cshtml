@@ -1,0 +1,48 @@
+﻿@model WebModels.SubscribeNotice
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "SubscribeNotice", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    <div class="control-group">
+        @Html.LabelFor(m => m.Email, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Email, new { @class = "input-block-level" })
+        </div>
+    </div>
+    @*<div class="control-group">
+        @Html.LabelFor(m => m.Status, new { @class = "control-label" })
+        <div class="controls">
+            @Html.DropDownListFor(
+                m => m.Status,
+                new SelectList(new List<SelectListItem>
+                    {
+                    new SelectListItem{ Text="Phát hành", Value = "1" },
+                    new SelectListItem{ Text="Nội bộ", Value = "0" },
+                        new SelectListItem{ Text="Khóa", Value = "-1" }
+
+                    }, "Value", "Text")
+           )
+        </div>
+    </div>*@
+
+    <div class="validation-group">
+        <div class="controls">
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">@Resources.Common.SaveChanges</button>
+    </div>
+    @Html.AntiForgeryToken()
+}
+
+<script type="text/javascript">
+    function edit_success() {
+        top.$("#window").data("kendoWindow").close();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+
+</script>

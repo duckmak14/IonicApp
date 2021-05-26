@@ -1,0 +1,103 @@
+﻿@model IEnumerable<WebModels.WebContent>
+
+@{
+    var webmodule = (WebModule)ViewBag.WebModule;
+    var moduletran = webmodule;
+    var urlcat = webmodule.URL;
+    if (string.IsNullOrEmpty(webmodule.URL) || string.IsNullOrWhiteSpace(webmodule.URL))
+    {
+        urlcat = Url.Action("Index", "Home", new { metatitle = webmodule.MetaTitle != null ? webmodule.MetaTitle : "web", id = webmodule.ID, area = "" });
+    }
+    TempData["Title"] = Utility.UseStringHasValue(webmodule.SeoTitle, webmodule.Title);
+    TempData["Description"] = Utility.UseStringHasValue(webmodule.MetaDescription, webmodule.Description);
+    TempData["Keywords"] = Utility.UseStringHasValue(webmodule.MetaKeywords, webmodule.SeoTitle);
+    TempData["URL"] = ApplicationService.Domain + urlcat;
+    TempData["Cat"] = webmodule.Title;
+
+    var subModules = ViewBag.SubModules as List<WebModule>;
+}
+
+
+<div class="row margin-top-20">
+    <div class="col-md-8">
+        <ul class="list-edition">
+            @foreach (var node in subModules)
+            {
+                var url = node.URL;
+                if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+                {
+                    url = Url.Action("Index", "Home", new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID, area = "" });
+                }
+                <li>
+                    <a title="@node.Title" href="@url">
+                        <h2>
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                            @node.Title
+                        </h2>
+                    </a>
+                </li>
+            }
+        </ul>
+
+        @foreach (var item in Model)
+        {
+            var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+            var url = Url.Action("Detail", "Home", new
+            {
+                metatitle = item.MetaTitle != null ? item.MetaTitle : "web",
+                id = item.ID,
+                m_metatitle = moduletran.MetaTitle != null ? moduletran.MetaTitle : "web",
+                m_id = moduletran.ID,
+                area = ""
+            });
+            <div class="row article-box">
+                <div class="col-md-5">
+                    <a href="@url" title="@item.Title"><img src="@img" title="@item.Title" /></a>
+                </div>
+                <div class="col-md-7">
+                    <a href="@url" title="@item.Title ">
+                        <h5 class="title-news"> @Html.RawSubString(item.Title, 100) </h5>
+                    </a>
+                    <p class="time-news"> @String.Format("{0:dd/MM/yyyy}", item.PublishDate) </p>
+
+                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                    {
+                        @Html.RawSubString(item.Description, 400)
+                    }
+
+                </div>
+            </div>
+        }
+
+        <div id="control-bot" class="control control-bot control-classer">
+            @if (ViewBag.TotalItemCount > ApplicationService.PageSize)
+            {
+                <div class="pager">
+                    @Html.Raw(Html.Pager(
+                            new Options
+                            {
+                                PageSize = ApplicationService.PageSize,
+                                TotalItemCount = ViewBag.TotalItemCount,
+                                CurrentPage = ViewBag.CurrentPage,
+                                ItemTexts = new ItemTexts() { Next = "", Previous = "" },
+                                ItemIcon = new ItemIcon() { First = "fa fa-angle-double-left", Previous = "fa fa-angle-left", Next = "fa fa-angle-right", Last = "fa fa-angle-double-right" },
+                                TooltipTitles = new TooltipTitles() { Next = Resources.Common.NextPage, Previous = Resources.Common.PreviousPage },
+                                Size = Size.normal,
+                                IsShowControls = true,
+                                Alignment = Alignment.centered,
+                                IsShowFirstLast = false,
+                                IsShowPages = true
+                            }, new RouteValueDictionary(ViewBag.RouteValues)))
+                    <div class="clearfix"></div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-4">
+        @Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_home_news" })
+
+        @Html.Action("_Body", "WebSimpleContent", new { area = "", key = "facebook" })
+
+        @Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_home_news_bottom" })
+    </div>
+</div>

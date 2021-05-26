@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="AddressName" xml:space="preserve">
+    <value>Địa chỉ</value>
+  </data>
+  <data name="Avatar" xml:space="preserve">
+    <value>Ảnh đại diện</value>
+  </data>
+  <data name="CarOwerName" xml:space="preserve">
+    <value>Tên lái xe</value>
+  </data>
+  <data name="CarPartnerName" xml:space="preserve">
+    <value>Đơn vị chủ quản</value>
+  </data>
+  <data name="ChangePrice" xml:space="preserve">
+    <value>Tùy biến giá</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Xác nhận mật khẩu</value>
+  </data>
+  <data name="DestinationPartner" xml:space="preserve">
+    <value>Đơn vị thuê</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Khoảng cách</value>
+  </data>
+  <data name="DistrictName" xml:space="preserve">
+    <value>Quận/Huyện</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailNotValid" xml:space="preserve">
+    <value>Địa chỉ email không hợp lệ.</value>
+  </data>
+  <data name="EndLocation" xml:space="preserve">
+    <value>Nơi trả</value>
+  </data>
+  <data name="ExportExcel" xml:space="preserve">
+    <value>Bạn có muốn xuất file Excel?</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Quên mật khẩu</value>
+  </data>
+  <data name="FulllName" xml:space="preserve">
+    <value>Tên đầy đủ</value>
+  </data>
+  <data name="LocationName" xml:space="preserve">
+    <value>Tên địa điểm</value>
+  </data>
+  <data name="LocationNameExists" xml:space="preserve">
+    <value>Tên địa điểm đã tồn tại</value>
+  </data>
+  <data name="LoginIncorrect" xml:space="preserve">
+    <value>Tài khoản hoặc mật khẩu cung cấp không hợp lệ</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>Di động</value>
+  </data>
+  <data name="MobileNotValid" xml:space="preserve">
+    <value>Di động không hợp lệ</value>
+  </data>
+  <data name="NotAdd" xml:space="preserve">
+    <value>Vui lòng chọn lại ngày lớn hơn ngày hiện tại</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="NotEdit" xml:space="preserve">
+    <value>Không được sửa kế hoạch</value>
+  </data>
+  <data name="NumberPlate" xml:space="preserve">
+    <value>BKS</value>
+  </data>
+  <data name="NumberPlateExists" xml:space="preserve">
+    <value>Biển số xe đã tồn tại</value>
+  </data>
+  <data name="PartnerName" xml:space="preserve">
+    <value>Tên đối tác</value>
+  </data>
+  <data name="PartnerNameExists" xml:space="preserve">
+    <value>Tên đối tác đã tồn tại</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="PasswordLength" xml:space="preserve">
+    <value>{0} phải có {2} ký tự'</value>
+  </data>
+  <data name="PasswordNotMatch" xml:space="preserve">
+    <value>Xác nhận mật khẩu không đúng</value>
+  </data>
+  <data name="PlanIsExist" xml:space="preserve">
+    <value>Kế hoạch đã tồn tại</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Giá</value>
+  </data>
+  <data name="PriceIsExists" xml:space="preserve">
+    <value>Bản ghi đã tồn tại</value>
+  </data>
+  <data name="PriceIsNotSaved" xml:space="preserve">
+    <value>Vui lòng thực hiện lại thao tác</value>
+  </data>
+  <data name="ProvinceName" xml:space="preserve">
+    <value>Tỉnh/Thành phố</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Ghi nhớ tài khoản?</value>
+  </data>
+  <data name="RequiredAddressName" xml:space="preserve">
+    <value>Vui lòng nhập địa chỉ</value>
+  </data>
+  <data name="RequiredCarOwerName" xml:space="preserve">
+    <value>Vui lòng nhập tên chủ xe</value>
+  </data>
+  <data name="RequiredCarPartnerName" xml:space="preserve">
+    <value>Vui lòng nhập đơn vị chủ quản</value>
+  </data>
+  <data name="RequiredConfirmPassword" xml:space="preserve">
+    <value>Vui lòng nhập xác nhận mật khẩu</value>
+  </data>
+  <data name="RequiredDestinationPartner" xml:space="preserve">
+    <value>Vui lòng chọn đơn vị thuê</value>
+  </data>
+  <data name="RequiredEndLocation" xml:space="preserve">
+    <value>Vui lòng nhập nơi trả</value>
+  </data>
+  <data name="RequiredEndTime" xml:space="preserve">
+    <value>Vui lòng chọn giờ đi</value>
+  </data>
+  <data name="RequiredFulllName" xml:space="preserve">
+    <value>Vui lòng nhập tên đầy đủ</value>
+  </data>
+  <data name="RequiredLocationName" xml:space="preserve">
+    <value>Vui lòng nhập tên địa điểm</value>
+  </data>
+  <data name="RequiredMobile" xml:space="preserve">
+    <value>Vui lòng nhập di động</value>
+  </data>
+  <data name="RequiredNumberPlate" xml:space="preserve">
+    <value>Vui lòng nhập biển số xe</value>
+  </data>
+  <data name="RequiredPartnerName" xml:space="preserve">
+    <value>Vui lòng nhập tên đối tác</value>
+  </data>
+  <data name="RequiredPassword" xml:space="preserve">
+    <value>Vui lòng nhập mật khẩu</value>
+  </data>
+  <data name="RequiredPlanDate" xml:space="preserve">
+    <value>Vui lòng chọn ngày</value>
+  </data>
+  <data name="RequiredPriceCode" xml:space="preserve">
+    <value>Vui lòng nhập giá</value>
+  </data>
+  <data name="RequiredRoleName" xml:space="preserve">
+    <value>Vui lòng nhập tên nhóm hh</value>
+  </data>
+  <data name="RequiredRouteCode" xml:space="preserve">
+    <value>Vui lòng nhập mã lộ trình</value>
+  </data>
+  <data name="RequiredSourcePartner" xml:space="preserve">
+    <value>Vui lòng chọn nhà thầu</value>
+  </data>
+  <data name="RequiredStartLocation" xml:space="preserve">
+    <value>Vui lòng nhập nơi nhận</value>
+  </data>
+  <data name="RequiredStartTime" xml:space="preserve">
+    <value>Vui lòng chọn giờ đến</value>
+  </data>
+  <data name="RequiredTripCount" xml:space="preserve">
+    <value>Vui lòng chọn số lượng</value>
+  </data>
+  <data name="RequiredUnitPrice" xml:space="preserve">
+    <value>Vui lòng nhập giá</value>
+  </data>
+  <data name="RequiredUserName" xml:space="preserve">
+    <value>Vui lòng nhập tài khoản</value>
+  </data>
+  <data name="RequiredVehicle" xml:space="preserve">
+    <value>Vui lòng chọn xe</value>
+  </data>
+  <data name="RequiredWeight" xml:space="preserve">
+    <value>Vui lòng chọn tải trọng</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>Nhóm</value>
+  </data>
+  <data name="RoleDescription" xml:space="preserve">
+    <value>Mô tả nhóm</value>
+  </data>
+  <data name="RoleExists" xml:space="preserve">
+    <value>Nhóm đã tồn tại</value>
+  </data>
+  <data name="RoleId" xml:space="preserve">
+    <value>Mã nhóm</value>
+  </data>
+  <data name="RoleName" xml:space="preserve">
+    <value>Tên nhóm</value>
+  </data>
+  <data name="RouteCode" xml:space="preserve">
+    <value>Mã lộ trình</value>
+  </data>
+  <data name="RouteCodeExists" xml:space="preserve">
+    <value>Mã lộ trình đã tồn tại</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="SignInMe" xml:space="preserve">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="SourcePartner" xml:space="preserve">
+    <value>Nhà thầu</value>
+  </data>
+  <data name="StartLocation" xml:space="preserve">
+    <value>Nơi nhận</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="UserId" xml:space="preserve">
+    <value>Mã tài khoản</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Tài khoản</value>
+  </data>
+  <data name="UserNameExists" xml:space="preserve">
+    <value>Tài khoản đã tồn tại</value>
+  </data>
+  <data name="UserNameNotValid" xml:space="preserve">
+    <value>Tài khoản không hợp lệ</value>
+  </data>
+  <data name="Weight" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+  <data name="WeightName" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+</root>

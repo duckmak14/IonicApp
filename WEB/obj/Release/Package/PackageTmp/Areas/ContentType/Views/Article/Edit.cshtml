@@ -1,0 +1,232 @@
+﻿@model WebModels.WebContent
+@using (Html.BeginForm("Edit", "Article", new { UID = Model.UID }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+{
+
+    @(Html.Kendo().TabStrip()
+                .Name("tabstrip")
+                .Items(tabstrip =>
+                {
+                    tabstrip.Add().Text("Thông tin")
+                        .Selected(true)
+                        .Content(@<text>
+
+                            <div class="control-group">
+                                @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.Title, new { @class = "input-block-level" })
+                                    @Html.ValidationMessageFor(m => m.Title)
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                @Html.LabelFor(m => m.Description, new { @class = "control-label" })
+                                <div class="controls">
+                                    @Html.TextAreaFor(m => m.Description, new { @class = "input-block-level" })
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                @Html.LabelFor(m => m.Image, new { @class = "control-label" })
+                                <div class="controls">
+                                    <div class="ctr-thumb" data-lang="">
+                                        <div class="thumb" style="width: 120px; height: 100px;">
+                                            <img src='@String.Format("{0}",!string.IsNullOrEmpty(Model.Image)?Model.Image:ApplicationService.NoImage)' />
+                                            @Html.HiddenFor(m => m.Image, new { @class = "hf-image" })
+                                        </div>
+                                        <div class="act">
+                                            <ul>
+                                                <li>
+                                                    <a href="javascrit:void(0)" style="position:relative; ">
+                                                        <span style=" top:0px; width: 140px; left: 0; position: absolute">Ảnh từ máy tính</span>
+                                                        <input class="file-image" name="image" data-lang="" accept="image/jpeg,image/png"
+                                                               style="opacity: 0; height:20px; cursor: pointer;" type="file" />
+                                                    </a>
+                                                </li>
+                                                <li><a class="thumb-gallery" href="javascript: openwin('/admin/upload/image?uid=@Model.UID&func=setimagepath', '_blank', 900, 550)">Ảnh từ thư viện</a></li>
+                                                <li><a href="javascript:openwin('/admin/upload/imagelink?uid=@Model.UID&func=setimagepath', '_blank', 700, 180)" class="thumb-link">Ảnh từ liên kết khác</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @{
+                                                WebContext db = new WebContext();
+                                                var webModuleId = Model.WebModuleID;
+
+                                                var roles = Roles.GetRolesForUser();
+                                                var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+                                                var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModuleID == webModuleId);
+                                                var isHasPublishRight = roleWebModule != null ? roleWebModule.Approve.HasValue && roleWebModule.Approve.Value : false;
+                            }
+
+                            @if (isHasPublishRight)
+                                            {
+                                <div class="control-group">
+                                    @Html.LabelFor(m => m.Status, new { @class = "control-label" })
+                                    <div class="controls">
+                                        @Html.DropDownListFor(
+                                        m => m.Status,
+                                        new SelectList(new List<SelectListItem>
+                                            {
+                                                new SelectListItem{ Text="Phát hành", Value = "1" },
+                                                new SelectListItem{ Text="Chờ duyệt", Value = "0" },
+                                                //new SelectListItem{ Text="Khóa", Value = "-1" }
+                                            }, "Value", "Text")
+                                        )
+                                    </div>
+                                </div>
+                                            }
+                                            else
+                                            {
+                                <div class="control-group">
+                                    @Html.LabelFor(m => m.Status, new { @class = "control-label" })
+                                    <div class="controls">
+                                        @Html.DisplayFor(m => m.StatusText)
+                                    </div>
+                                </div>
+                                            }
+                            /**/
+                            <div class="control-group">
+                                @Html.LabelFor(m => m.PublishDate, new { @class = "control-label" })
+                                <div class="controls">
+                                    @Html.TextBoxFor(m => m.PublishDate, new { Value = (Model.PublishDate.HasValue ? Model.PublishDate.Value.ToString("dd/MM/yyyy") : ""), @class = "input-block-level mydatepicker" })
+                                </div>
+                            </div>
+
+                            <div class="row-fluid control-group">
+                                <div style="width:99%;">
+                                    <div class="box">
+                                        <div class="box-title">
+                                            <h3><i class="icon-th"></i>  @Html.DisplayNameFor(m => m.Body)</h3>
+                                        </div>
+                                        <div class="box-content nopadding">
+                                            @Html.TextAreaFor(m => m.Body, new { @id = "ckeditor", @style = "height:550px;" })
+                                            <script>
+                                        var editor = CKEDITOR.replace('ckeditor', {
+                                            customConfig: '/content/ckeditor/config.js',
+                                            filebrowserBrowseUrl: '/admin/upload/file?uid=@Model.UID',
+                                            filebrowserImageBrowseUrl: '/admin/upload/image?uid=@Model.UID',
+                                            filebrowserImageUploadUrl: '/admin/upload/imageck?uid=@Model.UID',
+                                            filebrowserFlashBrowseUrl: '/admin/upload/flash?uid=@Model.UID',
+                                            filebrowserFlashUploadUrl: '/admin/upload/flashck?uid=@Model.UID',
+                                            height: '400px'
+                                        });
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="validation-group">
+                                <div class="controls">
+                                    @Html.ValidationSummary(true)
+                                </div>
+                            </div>
+                        </text>);
+
+                                tabstrip.Add().Text("Cấu hình SEO")
+                                    .Content(@<text>
+                                        <div class="control-group">
+                                            @Html.LabelFor(m => m.SeoTitle, new { @class = "control-label" })
+                                            <div class="controls">
+                                                @Html.TextBoxFor(m => m.SeoTitle, new { @class = "input-block-level" })
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            @Html.LabelFor(m => m.MetaTitle, new { @class = "control-label" })
+                                            <div class="controls">
+                                                @Html.TextBoxFor(m => m.MetaTitle, new { @class = "input-block-level" })
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            @Html.LabelFor(m => m.MetaKeywords, new { @class = "control-label" })
+                                            <div class="controls">
+                                                @Html.TextAreaFor(m => m.MetaKeywords, new { @class = "input-block-level" })
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            @Html.LabelFor(m => m.MetaDescription, new { @class = "control-label" })
+                                            <div class="controls">
+                                                @Html.TextAreaFor(m => m.MetaDescription, new { @class = "input-block-level" })
+                                            </div>
+                                        </div>
+                                    </text>);
+                                        })
+    )
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><i class="icon-save"></i> @Resources.Common.SaveChanges</button>
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    top.winsetup("@Html.Raw(Resources.Common.EditItem)", 900, 550, true);
+    function edit_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+    var imageFilter = new Array('.jpg', '.png', '.gif', '.bmp');
+    function checkFileType(file, filter) {
+        var fileName = file.name;
+        var fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+        if (filter.indexOf(fileExtension.toLowerCase()) < 0) {
+            return false;
+        }
+        return true;
+    }
+    var maxImageFileSize = 5242880;
+    function checkFileSize(file, maxFileSize) {
+        if (file.size > maxFileSize) {
+            return false;
+        }
+        return true;
+    }
+    var current_thumb = "";
+    $(document).ready(function () {
+        current_thumb = $('.thumb #image').val();
+
+        $('.mydatepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        });
+    });
+    $('.file-image').change(function (e) {
+        var files = this.files;
+        if (files.length > 0) {
+            var i = 0;
+            var isValid = checkFileType(files[i], imageFilter) && checkFileSize(files[i], maxImageFileSize);
+            if (isValid) {
+                var reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                reader.onloadend = function (e) {
+                    var result = e.target.result;
+                    if (result != null) {
+                        $('.ctr-thumb .thumb img').attr('src', result);
+                    }
+                }
+            }
+            else {
+                alert('File: [' + files[i].name + '] tải lên không hợp lệ.\nFile hợp lệ là file ảnh có định dạng: ' + imageFilter.toString() + ' và dung lượng tối đa cho phép là: ' + maxImageFileSize / (1024 * 1024) + 'MB');
+            }
+        }
+    });
+    function setimagepath(path) {
+        $('.ctr-thumb .thumb img').attr('src', path);
+        $('.ctr-thumb .thumb .hf-image').val(path);
+        var fileimage = $('.file-image');
+        fileimage = fileimage.replaceWith(fileimage.clone(true));
+    }
+
+    jQuery.validator.methods.date = function (value, element) {
+        var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+        if (isChrome) {
+            var d = new Date();
+            return this.optional(element) || !/Invalid|NaN/.test(parseDate(value));
+        } else {
+            return this.optional(element) || !/Invalid|NaN/.test(parseDate(value));
+        }
+    };
+</script>
+
+<link href="~/Content/themes/web/bootstrap/css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-datepicker.min.js"></script>

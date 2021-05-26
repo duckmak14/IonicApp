@@ -1,0 +1,20 @@
+﻿@model IEnumerable<WebModels.WebContent>
+
+<style type="text/css">
+    marquee {
+        width: 990px;
+        height: 90px;
+    }
+</style>
+
+<marquee behavior="scroll" direction="left">
+    @foreach (var item in Model)
+    {
+        var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+        var url = item.Link != null ? item.Link : "/";
+
+        <a href="@url" alt="" title="">
+            <img class="img-wapper" src="@img" alt="" title="" />
+        </a>
+    }
+</marquee>

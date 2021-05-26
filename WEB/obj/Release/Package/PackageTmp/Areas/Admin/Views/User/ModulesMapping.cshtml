@@ -1,0 +1,180 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+<link href="~/Content/jtreetable/jquery.treetable.css" rel="stylesheet" />
+<link href="~/Content/jtreetable/jquery.treetable.theme.default.css" rel="stylesheet" />
+<script src="~/Content/jtreetable/jquery.treetable.js"></script>
+
+<link href="~/Content/pnotify-master/style.css" rel="stylesheet" />
+<link href="~/Content/pnotify-master/devnote-stable.css" rel="stylesheet" />
+<link href="~/Content/pnotify-master/devnote.css" rel="stylesheet" />
+<link href="~/Content/pnotify-master/jquery.pnotify.default.css" rel="stylesheet" />
+<link href="~/Content/pnotify-master/jquery.pnotify.default.icons.css" rel="stylesheet" />
+<script src="~/Content/pnotify-master/jquery.pnotify.min.js"></script>
+
+<div id="treetable-container"></div>
+
+<script>
+    $(document).ready(function () {
+        top.winsetup("Quyền truy cập Chuyên mục", 850, 550, true);
+    });
+    $(function () {
+        renderTreetable();
+    });
+
+    function renderTreetable() {
+        var rowTemplate = "<tr data-tt-id='{{ID}}' {{Parent}}>" +
+                                "<td><span class='{{Class}}'>{{Title}}</span></td>" +
+                                "<td style='text-align:right'>{{ID}}</td>" +
+                                "<td style='text-align:center'><input type='checkbox' name='chkview' data-permission='View' onclick='updateModulePermissions(event)' /></td>" +
+                                "<td style='text-align:center'><input type='checkbox' name='chkadd' data-permission='Add' onclick='updateModulePermissions(event)' /></td>" +
+                                "<td style='text-align:center'><input type='checkbox' name='chkedit' data-permission='Edit' onclick='updateModulePermissions(event)' /></td>" +
+                                "<td style='text-align:center'><input type='checkbox' name='chkdelete' data-permission='Delete' onclick='updateModulePermissions(event)' /></td>" +
+                            "</tr>";
+        $.getJSON('/api/ModulesMappingApi/TreeTable').done(function (data) {
+            var rows = "";
+            $.each(data, function (index, element) {
+                var id = element.ID;
+                var title = element.Title;
+                var metaTitle = element.MetaTitle != null ? element.MetaTitle : "";
+                var hasChild = element.HasChild;
+                var parent = element.Parent;
+                var row = rowTemplate.replace(/{{ID}}/g, id).replace(/{{Title}}/g, title);
+                if (parent != null)
+                    row = row.replace("{{Parent}}", "data-tt-parent-id='" + parent + "'");
+                else
+                    row = row.replace("{{Parent}}", "");
+                if (hasChild)
+                    row = row.replace("{{Class}}", "folder");
+                else
+                    row = row.replace("{{Class}}", "file");
+                rows += row;
+            });
+            var table = "";
+            table += "<table id=\"treetable\" style=\"margin:0 auto;font-size:1em;line-height:2;\">" +
+                            "<thead>" +
+                                "<tr>" +
+                                    "<th valign='top'>Tiêu đề</th>" +
+                                    "<th valign='top'>ID</th>" +
+                                    "<th style='text-align:center'>View<br/><input type='checkbox' name='chkview' onclick=\"checkall('chkview')\"/></th>" +
+                                    "<th style='text-align:center'>Add<br/><input type='checkbox' name='chkadd'  onclick=\"checkall('chkadd')\"/></th>" +
+                                    "<th style='text-align:center'>Edit<br/><input type='checkbox' name='chkedit' onclick=\"checkall('chkedit')\"/></th>" +
+                                    "<th style='text-align:center'>Delete<br/><input type='checkbox' name='chkdelete'  onclick=\"checkall('chkdelete')\"/></th>" +
+                                "</tr>" +
+                            "</thead>" +
+                            "<tbody>" + rows + "</tbody>" +
+                        "</table>";
+            $('#treetable-container').html(table);
+
+            //checkedAll("chkview");
+
+            var treetable = $('#treetable');
+            $.getJSON('/Admin/User/GetModulesPermissions/@ViewBag.UserId').done(function (data) {
+                $.each(data, function (index, element) {
+                    var module = treetable.find('tr[data-tt-id="' + element.WebModuleID + '"]');
+                    module.find('td input[type="checkbox"][data-permission="View"]').prop('checked', element.View);
+                    module.find('td input[type="checkbox"][data-permission="Add"]').prop('checked', element.Add);
+                    module.find('td input[type="checkbox"][data-permission="Edit"]').prop('checked', element.Edit);
+                    module.find('td input[type="checkbox"][data-permission="Delete"]').prop('checked', element.Delete);
+                });
+            });
+
+            $("#treetable").treetable({ expandable: true });
+            $("#treetable tbody").on("mousedown", "tr", function () {
+                $(".selected").not(this).removeClass("selected");
+                $(this).addClass("selected");
+            });
+            $('#treetable').treetable('expandAll');
+        });
+    }
+
+    //function checkedAll(name) {
+    //    var first = null;
+    //    var check = true;
+        
+    //    $("input[name='" + name + "']").each(function () {
+    //        var _this = $(this);
+
+    //        if (first == null) {
+    //            first = _this;
+
+    //            return;
+    //        }
+
+    //        check = check && _this.prop("checked") == "true";
+    //        console.log(_this.prop("checked"));
+    //    });
+
+    //    first.prop("checked", check);
+    //}
+
+    function checkall(name) {
+        var check = null;
+
+        $("input[name='" + name + "']").each(function () {
+            var _this = $(this);
+
+            if (check == null) {
+                check = _this.prop("checked");                
+            }
+
+            $(this).prop("checked", check);
+        });        
+    }
+
+    function updateModulePermissions(e) {
+        var module = $(e.currentTarget).parent().parent();
+        var model = {};
+        model.UserId = '@ViewBag.UserId';
+        model.WebModuleID = module.attr('data-tt-id');
+        model.View = module.find('td input[type="checkbox"][data-permission="View"]').prop('checked');
+        model.Add = module.find('td input[type="checkbox"][data-permission="Add"]').prop('checked');
+        model.Edit = module.find('td input[type="checkbox"][data-permission="Edit"]').prop('checked');
+        model.Delete = module.find('td input[type="checkbox"][data-permission="Delete"]').prop('checked');
+        var m2 = {};
+        m2.data = model;
+        var data = JSON.stringify(model);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UpdateModulePerm", "User")',
+            data: data,
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success)
+                    show_stack_bottomleft('success', 'Cập nhật quyền', 'Cập nhật thành công.');
+                else
+                    show_stack_bottomleft('error', 'Cập nhật quyền', 'Cập nhật thất bại.');
+            },
+            error: function () { show_stack_bottomleft('error', 'Cập nhật quyền', 'Có lỗi khi cập nhật quyền.'); }
+        });
+    }
+
+    /*---------- pnotify ----------*/
+    var stack_bottomleft = { "dir1": "up", "dir2": "right" };
+    function show_stack_bottomleft(type, title, message) {
+        var opts = {
+            title: title,
+            text: message,
+            addclass: "stack-bottomleft",
+            stack: stack_bottomleft,
+            opacity: 1,
+            delay: 500
+        };
+        switch (type) {
+            case 'error':
+                opts.type = "error";
+                break;
+            case 'info':
+                opts.type = "info";
+                break;
+            case 'success':
+                opts.type = "success";
+                break;
+        }
+        $.pnotify.defaults.history = false;
+        $.pnotify(opts);
+    }
+    /*---------- End pnotify ----------*/
+</script>

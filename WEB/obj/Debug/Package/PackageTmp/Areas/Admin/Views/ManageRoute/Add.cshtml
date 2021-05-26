@@ -1,0 +1,147 @@
+﻿@model RouteViewModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "ManageRoute", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+    <div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.RouteCode, new { @class = "control-label" })
+                <span class="form-obligatory">*</span>
+            </div>
+            <div>
+                @Html.TextBoxFor(m => m.RouteCode, new { type = "text", name = "BKS", @class = "input-block-level" })
+                @Html.ValidationMessageFor(m => m.RouteCode)
+                @Html.ValidationSummary(true)
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.StartLocationID, new { @class = "control-label" })
+                <span class="form-obligatory">*</span>
+            </div>
+            <div>
+
+                @(Html.Kendo().DropDownList()
+          .Name("StartLocationID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .OptionLabel("Chọn nơi nhận...")
+          .DataTextField("startName")
+          .DataValueField("startID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_Start_Locations", "ManageRoute");
+
+              })
+               .ServerFiltering(false);
+
+          })
+    )
+                @Html.ValidationMessageFor(m => m.StartLocationID)
+
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.EndLocationID, new { @class = "control-label" })
+                <span class="form-obligatory">*</span>
+            </div>
+            <div>
+                @(Html.Kendo().DropDownList()
+          .Name("EndLocationID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .OptionLabel("Chọn nơi trả...")
+          .DataTextField("endName")
+          //.Events(events => events.Error("grid_errorHandler"))
+          .DataValueField("endID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_End_Locations", "ManageRoute").Data("filterLocation");
+
+              }).ServerFiltering(true);
+          })
+          .AutoBind(false)
+          .Enable(false)
+          .CascadeFrom("StartLocationID")
+    )
+                @Html.ValidationMessageFor(m => m.EndLocationID)
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.Distance, new { @class = "control-label" })
+            </div>
+            <div>
+                @Html.TextBoxFor(m => m.Distance, new { type = "text", name = "BKS", @class = "input-block-level" })
+                @Html.ValidationMessageFor(m => m.Distance)
+            </div>
+        </div>
+       
+        <div class="row top-rows">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+                <div class="exit-car-form">Hủy</div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+                <div>
+                    <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+}
+
+<script type="text/javascript">
+    //if (screen.width > 1500) {
+    //    top.winsetup("Thêm lộ trình", 1440 * 0.4, screen.height * 0.22, true);
+    //}
+    //else if (screen.width < 450) {
+    //    top.winsetup("Thêm lộ trình", screen.width * 0.8, screen.height * 0.3, true);
+    //}
+    //else if (screen.width < 1025) {
+    //    top.winsetup("Thêm lộ trình", screen.width * 0.6, screen.height * 0.225, true);
+    //}
+    //else {
+    //    top.winsetup("Thêm lộ trình", screen.width * 0.4, screen.height * 0.37, true);
+    //}
+    top.winsetup("Thêm lộ trình", 600, 305, true);
+    if (screen.width < 576) {
+        top.winsetup("Thêm lộ trình", screen.width * 0.8, screen.height * 0.3, true);
+    }
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Thêm lộ trình', 'Thêm thành công.');
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+    function filterLocation() {
+        return {
+            startID: $("#StartLocationID").val()
+        };
+    }
+    function setRequiredAttrStart(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+    function setRequiredAttrEnd(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+</script>
+
+

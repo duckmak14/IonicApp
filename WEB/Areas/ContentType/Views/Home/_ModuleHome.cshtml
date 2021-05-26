@@ -1,0 +1,67 @@
+﻿<div class="box box-color  box-small box-bordered">
+    <div class="box-title">
+        <h3>
+            <i class="icon-th-large"></i>  Danh mục hiển thị
+        </h3>
+        <div class="actions">
+
+            <a href="#" title="@Resources.Common.Edit" id="_modulehome_edit" class="btn btn-mini "><i class="icon-edit"></i></a>
+            <a href="#" class="btn btn-mini content-refresh" id="_modulehome_refresh"><i class="icon-refresh"></i></a>
+            <a href="#" class="btn btn-mini content-slideUp"><i class="icon-angle-down"></i></a>
+        </div>
+    </div>
+    <div class="box-content">
+
+        <div class="accordion" id="body_modulehome">
+
+           
+        </div>
+
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#_modulehome_edit").click(function () {
+            w.data("kendoWindow").setOptions({ height: 550, width: 950 });
+            w.data("kendoWindow").refresh({
+                url: "@Url.Action("EditModuleHome")",
+            }).title('@Html.Raw(Resources.Common.EditItem)').center().open();
+        }); $("#_modulehome_refresh").click(function () {
+            load_modulehome();
+        });
+        load_modulehome();
+
+    });
+    function load_modulehome() {
+        var tempHtml = "";
+        tempHtml += "<div class=\"accordion-group\">";
+        tempHtml += "    <div class=\"accordion-heading\"> <a class=\"accordion-toggle collapsed\" data-toggle=\"collapse\" data-parent=\"#body_modulehome\" href=\"#collapse$id\"><b>$webmodule</b></a></div>";
+        tempHtml += "    <div id=\"collapse$id\" class=\"accordion-body collapse $in \"><div class=\"accordion-inner\">$contents</div></div>";
+        tempHtml += "</div>";
+        var tempcontent = "<tr><td><a target=\"_blank\" href=\"/$lang/$wm_metatitle-$wm_id/$metatitle-$id\" >$title</a></td></tr>";
+
+        var html = "";
+        $.getJSON('@Url.Action("_ModuleHome_Read", new { take=7})').done(function (data) {
+            var jdata = $.parseJSON(data.JsonArray);
+            $.each(jdata, function (i, jobject) {
+                var temp = tempHtml;
+                temp = temp.replace("$webmodule", jobject.Title).replace("$id", jobject.ID).replace("$id", jobject.ID);
+                if (i == 0) temp = temp.replace("$in", "in"); else temp = temp.replace("$in", "");
+                var jcontent = jobject.JContent;
+                var chtml = "";
+                $.each(jcontent, function (j, jcobject) {
+                    var ctemp = tempcontent;
+                    ctemp = ctemp.replace("$title", jcobject.Title).replace("$lang", jcobject.Lang).replace("$wm_metatitle", jcobject.WebModule_MetaTitle).replace("$wm_id", jcobject.WebModuleID).replace("$metatitle", jcobject.MetaTitle).replace("$id", jcobject.ID);;
+                    chtml += ctemp;
+                });
+                temp = temp.replace("$contents", "<table class=\"table table-hover table-nomargin\">" + chtml + "</table>");
+                html += temp;
+            });
+            $('#body_modulehome').html(html);
+        });
+    }
+</script>

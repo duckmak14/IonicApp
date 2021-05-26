@@ -1,0 +1,131 @@
+﻿@model IEnumerable<WebModels.WebContent>
+
+@{
+    var webmodule = (WebModule)ViewBag.WebModule;
+    var moduletran = webmodule;
+    var urlcat = webmodule.URL;
+    if (string.IsNullOrEmpty(webmodule.URL) || string.IsNullOrWhiteSpace(webmodule.URL))
+    {
+        urlcat = Url.Action("Index", "Home", new { metatitle = webmodule.MetaTitle != null ? webmodule.MetaTitle : "web", id = webmodule.ID, area = "" });
+    }
+    TempData["Title"] = Utility.UseStringHasValue(webmodule.SeoTitle, webmodule.Title);
+    TempData["Description"] = Utility.UseStringHasValue(webmodule.MetaDescription, webmodule.Description);
+    TempData["Keywords"] = Utility.UseStringHasValue(webmodule.MetaKeywords, webmodule.SeoTitle);
+    TempData["URL"] = ApplicationService.Domain + urlcat;
+    TempData["Cat"] = webmodule.Title;
+}
+@*<link href="https://cdn.plyr.io/3.4.6/plyr.css" rel="stylesheet" />
+<script src="https://cdn.plyr.io/3.4.6/plyr.js"></script>*@
+<script>
+    $(document).ready(function () {
+        $('.video').parent().click(function () {
+            if ($(this).children(".video").get(0).paused) {
+                $(this).children(".video").get(0).play(); $(this).children(".playpause").fadeOut();
+            } else {
+                $(this).children(".video").get(0).pause();
+                $(this).children(".playpause").fadeIn();
+            }
+        });
+    });   
+</script>
+<style>
+    .video {
+        width: 100%;
+        border: 1px solid black;
+    }
+
+    .playpause {
+        background-image: url(Images/start-video.png);
+        background-repeat: no-repeat;
+        width: 50px;
+        height: 50px;
+        position: absolute;
+        left: 0%;
+        right: 0%;
+        top: -30%;
+        bottom: 0%;
+        margin: auto;
+        background-size: contain;
+        background-position: center;
+    }
+</style>
+
+<div class="row margin-top-20">
+
+    @foreach (var item in Model)
+    {
+        var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+
+        <div class="col-md-3">
+            <div class="box-item-video">
+                <video width="100%" height="220" class="video" controls data-videoid="@item.ID">
+                    <source src="@item.Link" type="video/mp4">
+                </video>
+                <div class="playpause"></div>
+                @*<audio id="player" controls>
+                    <source src="@item.Link" type="video/mp4">
+                </audio>*@
+
+
+
+                <h5 class="title-news" style="font-size: 18px;  margin-top: 10px; ">@item.Title</h5>
+                <div class="desc">
+                    <span class="viewCount"> @item.CountView</span> lượt xem <span> &#8226; @String.Format("{0:dd/MM/yyyy}", item.PublishDate) </span>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div id="control-bot" class="control control-bot control-classer col-md-12">
+        @if (ViewBag.TotalItemCount > ApplicationService.PageSize)
+        {
+            <div class="pager">
+                @Html.Raw(Html.Pager(
+                            new Options
+                            {
+                                PageSize = ApplicationService.PageSize,
+                                TotalItemCount = ViewBag.TotalItemCount,
+                                CurrentPage = ViewBag.CurrentPage,
+                                ItemTexts = new ItemTexts() { Next = "", Previous = "" },
+                                ItemIcon = new ItemIcon() { First = "fa fa-angle-double-left", Previous = "fa fa-angle-left", Next = "fa fa-angle-right", Last = "fa fa-angle-double-right" },
+                                TooltipTitles = new TooltipTitles() { Next = Resources.Common.NextPage, Previous = Resources.Common.PreviousPage },
+                                Size = Size.normal,
+                                IsShowControls = true,
+                                Alignment = Alignment.centered,
+                                IsShowFirstLast = false,
+                                IsShowPages = true
+                            }, new RouteValueDictionary(ViewBag.RouteValues)))
+                <div class="clearfix"></div>
+            </div>
+        }
+    </div>
+
+</div>
+
+<script>
+    var playedVideoList = [];
+    $(document).ready(function () {
+        $("video").on("play", function (e) {
+            var videoId = $(this).attr('data-videoid');
+            if (playedVideoList.indexOf(videoId) != -1) {
+                return;
+            }
+            playedVideoList.push(videoId);
+            // submit to server
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("UpdateVideoViewCount", "UploadFileVideo", new { area="ContentType"})?videoId=' + videoId,
+                contentType: 'application/json',
+                dataType: 'json',
+                global: false,
+                success: function (data) {
+                    if (data != -1) {
+                        $(e.currentTarget).closest('.box-item-video').find('.viewCount').text(data);
+                    }
+                },
+                error: function () {
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,27 @@
+﻿@model WebModels.WebContent
+
+
+@using (Html.BeginForm("Approve", "Article", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+{
+    <div class="alert alert-info">
+        Bạn có chắc chắn @(Model.Status == (int)Status.Public? "Dừng phát hành" : "Duyệt") bài viết:  <strong>@Html.DisplayFor(m => m.Title)</strong>   ?
+    </div>
+
+    <div class="validation-group">
+        @Html.ValidationSummary(true)
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">@(Model.Status == (int)Status.Public? "Dừng phát hành" : "Duyệt")</button>
+    </div>
+    @Html.HiddenFor(m => m.Title)
+    @Html.HiddenFor(m => m.ID)
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    top.winsetup("@(Model.Status == (int)Status.Public? "Hạ": "Duyệt") bài viết", 900, 150, true);
+    function approve_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+</script>

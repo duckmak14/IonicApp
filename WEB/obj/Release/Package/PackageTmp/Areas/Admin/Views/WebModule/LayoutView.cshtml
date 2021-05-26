@@ -1,0 +1,136 @@
+﻿@model WebModels.WebModule
+@{
+    
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+ <style>
+     .form-horizontal .control-label{width:200px;}
+ </style>
+@using (Html.BeginForm("LayoutView", "WebModule", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+     
+        <div class="control-group">
+            @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+            <div class="controls">
+                <b>@Html.DisplayTextFor(m => m.Title)</b>
+                @Html.HiddenFor(m => m.Title)
+            </div>
+        </div> 
+
+        if (ViewBag.PubLayout != null) {
+        <div class="control-group">
+            @Html.LabelFor(m => m.PublishIndexLayout, new { @class = "control-label" })
+            <div class="controls">
+               
+                    @(Html.Kendo().ComboBoxFor(m => m.PublishIndexLayout)
+                        .Filter("contains")
+                        .Placeholder("Chọn Layout")
+                        .BindTo(ViewBag.PubLayout).Suggest(true).HtmlAttributes(new { style = "width:400px;" }))
+                    
+                
+            </div>
+        </div>
+        }
+        
+         if (ViewBag.PubIndexView != null)
+        {
+            <div class="control-group">
+                @Html.LabelFor(m => m.PublishIndexView, new { @class = "control-label" })
+                <div class="controls">
+
+                    @(Html.Kendo().ComboBoxFor(m => m.PublishIndexView)
+                                .Filter("contains")
+                                .Placeholder("Chọn View")
+                                    .BindTo(ViewBag.PubIndexView).Suggest(true).HtmlAttributes(new { style = "width:400px;" }))
+
+
+                </div>
+            </div>
+        }
+        
+         if (ViewBag.PubLayout != null)
+         {
+             <div class="control-group">
+                 @Html.LabelFor(m => m.PublishDetailLayout, new { @class = "control-label" })
+                 <div class="controls">
+                     @(Html.Kendo().ComboBoxFor(m => m.PublishDetailLayout)
+                      .Filter("contains")
+                      .Placeholder("Chọn Layout")
+                                      .BindTo(ViewBag.PubLayout).Suggest(true).HtmlAttributes(new { style = "width:400px;" })
+                     )
+
+                 </div>
+             </div>
+         }
+         if (ViewBag.PubDetailView != null)
+         {
+             <div class="control-group">
+                 @Html.LabelFor(m => m.PublishDetailView, new { @class = "control-label" })
+                 <div class="controls">
+
+                     @(Html.Kendo().ComboBoxFor(m => m.PublishDetailView)
+                                .Filter("contains")
+                                .Placeholder("Chọn View")
+                                .BindTo(ViewBag.PubDetailView).Suggest(true).HtmlAttributes(new { style = "width:400px;" }))
+
+
+                 </div>
+             </div>
+         }
+         
+         @*if (ViewBag.AdminLayout != null)
+         {
+             <div class="control-group">
+                 @Html.LabelFor(m => m.IndexLayout, new { @class = "control-label" })
+                 <div class="controls">
+
+                     @(Html.Kendo().ComboBoxFor(m => m.IndexLayout)
+                                .Filter("contains")
+                            .Placeholder("Chọn Layout")
+                            .BindTo(ViewBag.AdminLayout).Suggest(true).HtmlAttributes(new { style = "width:400px;" }))
+
+
+                 </div>
+             </div>
+         }
+         
+         if (ViewBag.AdminView != null)
+         {
+             <div class="control-group">
+                 @Html.LabelFor(m => m.IndexView, new { @class = "control-label" })
+                 <div class="controls">
+
+                     @(Html.Kendo().ComboBoxFor(m => m.IndexView)
+                                .Filter("contains")
+                                .Placeholder("Chọn View")
+                            .BindTo(ViewBag.AdminView).Suggest(true).HtmlAttributes(new { style = "width:400px;" }))
+
+
+                 </div>
+             </div>
+         }*@
+
+
+        <div class="validation-group">
+            <div class="controls">
+                @Html.ValidationSummary(true)
+            </div>
+        </div>
+
+     
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">@Resources.Common.SaveChanges</button>
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    top.winsetup("@Html.Raw(Resources.Common.EditItem)", 700, 450, true);
+    function edit_success() {
+        top.$("#window").data("kendoWindow").close();
+        //top.$("#grid").data("kendoGrid").dataSource.read();
+        //top.treeview.dataSource.read();
+    }
+ 
+</script>

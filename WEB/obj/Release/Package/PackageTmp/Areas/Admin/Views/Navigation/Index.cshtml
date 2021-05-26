@@ -1,0 +1,115 @@
+﻿@{
+
+}
+
+<script type="text/javascript">
+    var rowselected = [];
+    function change_handler(e) {
+        rowselected = [];
+        var len = this.select().length;
+        for (i = 0; i < len; i++) {
+            rowselected.push(this.dataItem(this.select()[i]).ID);
+        }
+    }
+    function binding_handler(e) {
+        rowselected = [];
+    }
+
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/navigation/delete/" + dataItem.ID);
+    }
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/navigation/edit/" + dataItem.ID);
+    }
+
+
+    function menu_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/navigation/ModulesMapping/" + dataItem.ID);
+    }
+
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            opendlg("/admin/navigation/add");
+        });
+        $("#btnedit").click(function () {
+            if (rowselected.length > 0) {
+                opendlg("/admin/navigation/edit/" + rowselected[0]);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+        $("#btndelete").click(function () {
+            if (rowselected.length > 0) {
+                opendlg("/admin/navigation/deletes/" + rowselected);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+    });
+</script>
+
+<div id="main">
+    <div id="left"></div>
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="pull-left">
+                <div class="breadcrumbs"></div>
+            </div>
+            <div class="pull-right">
+                <ul class="actions">
+                    <li>
+                        <a href="#" id="btnadd" class="btn btn-mini  btn-blue btn-inverse"><i class="icon-plus"></i> @Resources.Common.Add  </a>
+                    </li>
+                    <li>
+                        <a href="#" id="btnedit" class="btn btn-mini   btn-blue btn-inverse"><i class="icon-edit"></i> @Resources.Common.Edit  </a>
+                    </li>
+                    <li>
+                        <a href="#" id="btndelete" class="btn btn-mini  btn-red btn-inverse"><i class="icon-trash"></i> @Resources.Common.Delete  </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="box">
+                    <div class="box-content nopadding">
+                        @(Html.Kendo().Grid<WebModels.Navigation>()
+                            .Name("grid")
+                            .Columns(columns =>
+                            {
+                                columns.Bound(p => p.ID).Title(Resources.Common.ID).Width(40);
+                                columns.Bound(p => p.Key).Title(Resources.Common.Key).Width(40);
+                                columns.Bound(p => p.Title).Title(Resources.Common.Title);
+                                columns.Bound(p => p.Description).Title(Resources.Common.Description);
+                                columns.Command(command =>
+                                {
+                                    command.Custom("Menu").Click("menu_handler");
+                                    command.Custom(Resources.Common.Edit).Click("edit_handler");
+                                    command.Custom(Resources.Common.Delete).Click("delete_handler");
+                                }).Width(240).HtmlAttributes(new { style = "text-align:center;" });
+                            })
+                            .Pageable()
+                            .Selectable(select => select.Mode(GridSelectionMode.Multiple))
+                            .Sortable()
+                            .Filterable()
+                            .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Model(model => model.Id(p => p.ID))
+                                .PageSize(30)
+                                .Read(read => read.Action("Navigation_Read", "Navigation"))
+                             )
+                              .Events(events => events.Change("change_handler").DataBinding("binding_handler"))
+                        )
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

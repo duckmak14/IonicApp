@@ -1,0 +1,233 @@
+﻿@model WebModels.WebContact
+
+@{
+    var webmodule = ViewBag.WebModule;
+}
+<script>
+    function OnSuccessDatMua(data, status, xhr) {
+        if (data.Success) {
+            alert('Yêu cầu của bạn đã được gửi thành công!');
+            $('#frmDatMua')[0].reset();
+        } else {
+            alert(data.Error);
+        }
+    }
+    function OnFailure() {
+        alert("Fail");
+    }
+</script>
+
+<div class="row margin-top-30">
+    <div class="col-md-8">
+        @Html.Raw(HttpUtility.HtmlDecode(webmodule.Body))
+
+
+        <div class="form-ykien">
+            <div class="title-box margin-top-20">
+                Đặt mua
+            </div>
+
+
+            @using (Ajax.BeginForm("_PubDatMua", new { area = "ContentType" },
+                                new AjaxOptions
+                                {
+                                    OnSuccess = "OnSuccessDatMua",
+                                    OnFailure = "OnFailure"
+                                }, new { id = "frmDatMua" }))
+            {
+
+                <input type="hidden" name="Title" value="Đặt mua" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-field">
+                            @Html.TextBoxFor(m => m.FullName, new { @placeholder = "Họ và tên", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.FullName)
+                        </div>
+                        <div class="input-field">
+                            @Html.TextBoxFor(m => m.Email, new { @placeholder = "Email", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-field">
+                            @Html.DropDownListFor(
+                             m => m.LoaiDonHang,
+                                    new SelectList(new List<SelectListItem>
+                                        {
+                                        new SelectListItem{ Text="--- Loại đơn hàng ---", Value = "" },
+                                        new SelectListItem{ Text="Điện tử", Value = "1" },
+                                            new SelectListItem{ Text="Giấy", Value = "2" }
+
+                                        }, "Value", "Text"), new { @class = "form-control" }
+                               )
+                            @Html.ValidationMessageFor(m => m.LoaiDonHang)
+                        </div>
+                        <div class="input-field">
+                            @Html.TextBoxFor(m => m.Mobile, new { @placeholder = "Điện thoại", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Mobile)
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="input-field">
+                            @Html.TextBoxFor(m => m.Address, new { @placeholder = "Địa chỉ", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Address)
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="input-field">
+                            @Html.TextBoxFor(m => m.NgayBatDau, new { @placeholder = "Ngày bắt đầu", @class = "form-control datepicker" })
+                            <span class="field-validation-error" id="msgStartDate" style="display:none;">
+                                <span class="">Vui lòng nhập ngày bắt đầu</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-field">
+                            @Html.TextBoxFor(m => m.NgayKetThuc, new { @placeholder = "Ngày kết thúc", @class = "form-control datepicker" })
+                            <span class="field-validation-error" id="msgEndDate" style="display:none;">
+                                <span class="">Vui lòng nhập ngày kết thúc</span>
+                            </span>
+                            <span class="field-validation-error" id="msgEndDateAfterStart" style="display:none;">
+                                <span class="">Ngày kết thúc phải sau ngày bắt đầu</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="input-field">
+                            @Html.TextAreaFor(m => m.Body, new { @placeholder = "Ghi chú", @class = "form-control", @rows = "5" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary color-green">Đặt mua</button>
+                        <button type="button" onclick="ResetDataMuaForm()" class="btn btn-danger">Hủy</button>
+                    </div>
+                </div>
+
+                @Html.AntiForgeryToken()
+            }
+        </div>
+
+    </div>
+    <div class="col-md-4">
+
+        @Html.Action("_BoxDocNhieu", "Article", new { area = "ContentType" })
+
+        @Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_chi_tiet" })
+    </div>
+</div>
+<link href="~/Content/themes/web/bootstrap/css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+<script>
+    $('.datepicker').datepicker({
+        format: 'dd/mm/yyyy',
+        startDate: '+0d',
+        autoclose: true
+    });
+
+    function ResetDataMuaForm() {
+        $('#frmDatMua').find('select').val('');
+        $('#frmDatMua').find('input').val('');
+        $('.field-validation-valid').hide();
+        $('.field-validation-error').hide();
+    }
+
+    function parseDate(value) {
+        var dateSplited = value.split("/");
+        var dateObj = new Date(dateSplited[2], dateSplited[1] - 1, dateSplited[0]);
+        return dateObj;
+    }
+
+    function checkEndDateAfterStart() {
+        var startDate = $('#NgayBatDau').val();
+        var endDate = $('#NgayKetThuc').val();
+
+        if (!startDate || startDate.length == 0 || !endDate || endDate.length == 0 ) {
+            return true;
+        }
+
+        var startDateObj = parseDate($("#NgayBatDau").val());
+        var endDateObj = parseDate($("#NgayKetThuc").val());
+
+        return endDateObj >= startDateObj;
+    }
+
+    $(document).ready(function () {
+        $("#frmDatMua").submit(function (e) {
+            $("#msgStartDate").hide();
+            $("#msgEndDate").hide();
+            $("#msgEndDateAfterStart").hide();
+
+            $('.field-validation-error').show();
+
+            var startDate = $('#NgayBatDau').val();
+            var endDate = $('#NgayKetThuc').val();
+            if (!startDate || startDate.length == 0) {
+                $("#msgStartDate").show();
+            } else {
+                $("#msgStartDate").hide();
+            }
+            if (!endDate || endDate.length == 0) {
+                $("#msgEndDate").show();
+            } else {
+                $("#msgEndDate").hide();
+            }
+
+            if (!checkEndDateAfterStart()) {
+                $("#msgEndDateAfterStart").show();
+            } else {
+                $("#msgEndDateAfterStart").hide();
+            }
+
+            if (!startDate || startDate.length == 0 || !endDate || endDate.length == 0 || !checkEndDateAfterStart()) {
+                return false;
+            }
+
+            return true;
+        });
+
+        $("#NgayBatDau").change(function (e) {
+            $("#msgStartDate").hide();
+            var startDate = $('#NgayBatDau').val();
+            if (!startDate || startDate.length == 0) {
+                $("#msgStartDate").show();
+            } else {
+                $("#msgStartDate").hide();
+            }
+        });
+
+
+
+        $("#NgayKetThuc").change(function (e) {
+            $("#msgEndDate").hide();
+            $("#msgEndDateAfterStart").hide();
+
+            var startDate = $('#NgayBatDau').val();
+            var endDate = $('#NgayKetThuc').val();
+
+            if (!endDate || endDate.length == 0) {
+                $("#msgEndDate").show();
+            } else {
+                $("#msgEndDate").hide();
+                if (!checkEndDateAfterStart()) {
+                    $("#msgEndDateAfterStart").show();
+                } else {
+                    $("#msgEndDateAfterStart").hide();
+                }
+            }
+        });
+    });
+
+    jQuery.validator.methods.date = function (value, element) {
+        var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+        if (isChrome) {
+            var d = new Date();
+            return this.optional(element) || !/Invalid|NaN/.test(parseDate(value));
+        } else {
+            return this.optional(element) || !/Invalid|NaN/.test(parseDate(value));
+        }
+    };
+</script>

@@ -1,0 +1,283 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Kế hoạch chạy xe";
+    WebContext db = new WebContext();
+    var webModuleId = 87;
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModuleID == webModuleId);
+}
+<script type="text/javascript">
+    var rowselected = [];
+    var isCheckedAll = false;
+
+    //function change_handler(e) {
+    //    rowselected = [];
+    //    var len = this.select().length;
+    //    for (i = 0; i < len; i++) {
+    //        rowselected.push(this.dataItem(this.select()[i]).ID);
+    //    }
+    //}
+
+    function binding_handler(e) {
+        //rowselected = [];
+
+        //var grid = $("#grid").data("kendoGrid");
+        //var dataSource = grid.dataSource;
+        //var recordsOnCurrentView = dataSource.view().length;
+        //alert(recordsOnCurrentView);
+        //var rowItems = $("#grid").data("kendoGrid").dataSource.data();
+        //console.log(rowItems);
+        //let now = new Date();
+        //for (i = 0; i < recordsOnCurrentView; i++) {
+        //    if (rowItems[i].PlanDate.getTime() >= now.getTime()) {
+        //        row[i].find(".k-grid-Sửa");
+        //        alert("đâs");
+        //    }
+        //}
+    }
+
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            opendlg("/admin/DrivePlan/add/");
+        });
+
+        $("#export").click(function (e) {
+            var selected = [];
+            $('input:checkbox[name=checkedNodes]').each(function () {
+                if ($(this).is(':checked')) {
+                    selected.push($(this).val());
+                }
+            });
+            if (selected.length > 0) {
+                //alert("Selected values: " + selected.join(","));
+                opendlg("/admin/DrivePlan/ExportExcel/" + selected);
+            }
+            else {
+                alert("Vui lòng chọn để xuất file!");
+            }
+        });
+
+        $("#upload").click(function (e) {
+            opendlg("/admin/DrivePlan/UploadExcel");
+        });
+    });
+
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/managepricelist/delete/" + dataItem.ID);
+    }
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/DrivePlan/edit/" + dataItem.ID);
+    }
+
+    $(document).ready(function () {
+
+        $("#FieldFilter").keyup(function () {
+
+            var value = $("#FieldFilter").val();
+
+            $("#grid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "Route.RouteCode",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Route.StartLocation.LocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Route.EndLocation.LocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Weight.WeightName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "SourcePartner.PartnerName",
+                        operator: "contains",
+                        value: value
+                    }, {
+                        field: "DestinationPartner.PartnerName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Note",
+                        operator: "contains",
+                        value: value
+                    }
+                ]
+            });
+        });
+    });
+
+    function onDataBound(e) {
+        if (isCheckedAll) {
+            $('input[name="checkedNodes"]').each(function () {
+                $(this).attr('checked', 'checked');
+            });
+        }
+        else {
+            $('input[name="checkedNodes"]').each(function () {
+                if (rowselected.indexOf(this.value) != -1) {
+                    $(this).attr('checked', 'checked');
+                } else {
+                    $(this).removeAttr('checked');
+                }
+            });
+        }
+        var grid = this;
+        let now = new Date();
+        grid.tbody.find("tr[role='row']").each(function () {
+            var model = grid.dataItem(this);
+            if (model.PlanDate.getDate() <= now.getDate()) {
+                $(this).find(".k-grid-Sửa").remove();
+            }
+        });
+    };
+
+</script>
+<div class="row row-quanlyxe">
+    <div class="manage-car-search row-plan-drive">
+        <form action="">
+            <img src="~/Content/themes/admin/img/Vector-kehoach.png" alt="calendar" class="img-box-date-picker img-form-plan-drive img-calander-plan-drive">
+            <input type="text" name="daterange" class="box-date-picker" id="time" value="@ViewBag.Date">
+        </form>
+    </div>
+    <div class="manage-car-search row-plan-drive">
+        <form action="">
+            <img src="~/Content/themes/admin/img/Vector-search1.png" alt="search" class="img-box-search img-form-plan-drive img-search-plan-drive">
+            <input id='FieldFilter' type="text" name="" placeholder="Tìm kiếm" class="box-search box-search-quanlyxe box-search-drive-plan input-search-plan-drive">
+        </form>
+    </div>
+        @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+        {
+            <div class="btn-download btn-plan-drive" id="export">
+                <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Tải về</p>
+            </div>
+            <div class="btn-download btn-plan-drive" id="upload">
+                <img src="~/Content/themes/admin/img/Vector-upload.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Upload</p>
+            </div>
+            <div class="btn-download btn-plan-drive" id="btnadd">
+                <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Thêm</p>
+            </div>}
+    </div>
+
+<div id="daterangepicker"></div>
+@if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
+{
+    <div class="row-fluid"  id="scroll-table">
+        <div class="span12">
+            <div class="box">
+                <div class="box-content nopadding">
+                    @(Html.Kendo().Grid<WebModels.TransportPlan>()
+                .Name("grid")
+                .Columns(columns =>
+                {
+                    columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
+                       .HtmlAttributes(new { style = "text-align:center;" })
+                       .Filterable(false)
+                       .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>");
+                    columns.Bound(p => p.ID).Hidden();
+                    columns.Bound(p => p.PlanDate).Title(WebModels.WebResources.PlanDate).HtmlAttributes(new { style = "text-align:center;", @class = "col-fixed" }).Format("{0:dd-MM-yyyy}").Width(100);
+                    columns.Bound(p => p.TrackingCode).Title(WebModels.WebResources.TrackingCode).HtmlAttributes(new { style = "text-align:center;" }).Width(135);
+                    columns.Bound(p => p.Route.RouteCode).Title(WebModels.WebResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(120);
+                    columns.Bound(p => p.Route.StartLocation.LocationName).Title(WebModels.WebResources.StartLocation).Width(150);
+                    columns.Bound(p => p.Route.EndLocation.LocationName).Title(WebModels.WebResources.EndLocation).Width(150);
+                    columns.Bound(p => p.Vehicle.NumberPlate).Title(WebModels.WebResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(100);
+                    columns.Bound(p => p.Vehicle.VehicleWeight.WeightName).Title(WebModels.WebResources.VehicleWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(100);
+                    columns.Bound(p => p.ActualWeight.WeightName).Title(WebModels.WebResources.ActualWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(100);
+                    columns.Bound(p => p.TripCount).Title(WebModels.WebResources.TripCount).HtmlAttributes(new { style = "text-align:center;" }).Width(100);
+                    columns.Bound(p => p.SourcePartner.PartnerName).Title(WebModels.WebResources.SourcePartner).HtmlAttributes(new { style = "text-align:center;" }).Width(100);
+                    columns.Bound(p => p.DestinationPartner.PartnerName).Title(WebModels.WebResources.DestinationPartner).HtmlAttributes(new { style = "text-align:center;" }).Width(100);
+                    columns.Bound(p => p.Note).Title(WebModels.WebResources.Note).Width(100);
+                    columns.Command(command =>
+                    {
+                        if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            command.Custom(Resources.Common.Edit).Click("edit_handler");
+                        }
+                    }).HtmlAttributes(new { style = "text-align:center;" });
+                })
+
+                .Pageable()
+                .Selectable(select => select.Mode(GridSelectionMode.Single))
+                .Sortable()
+                .Filterable()
+                .Reorderable(reorder => reorder.Columns(true))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model => model.Id(p => p.ID))
+                    .PageSize(20)
+                 .Read(read => read.Action("TransportPlanLists_Read", "DrivePlan").Data("getTime"))
+                     .ServerOperation(false)
+                 )
+                     .Events(events => events.DataBinding("binding_handler").DataBound("onDataBound")
+           )
+
+                        )
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript" src="~/Content/themes/admin/js/tableHeadFixer.js"></script>
+
+<script>
+
+    function childNodeClick(element) {
+        isCheckedAll = $('input[class="k-checkbox"]:checked').length == $('input[class="k-checkbox"]').length;
+        $('#chkAll').prop('checked', isCheckedAll);
+
+        var id = element.value;
+        if (rowselected.indexOf(id) !== -1) {
+            rowselected.splice(rowselected.indexOf(id), 1);
+        } else {
+            rowselected.push(id);
+        }
+    }
+
+    function checkAll(e) {
+        var rowItems = $("#grid").data("kendoGrid").dataSource.data();
+
+        isCheckedAll = $(e.target).prop('checked');
+        if (isCheckedAll) {
+            for (var i = 0; i < rowItems.length; i++) {
+                rowselected.push(String(rowItems[i].ID));
+            }
+        }
+        else if (!isCheckedAll) {
+            rowselected.length = 0;
+        }
+
+        $('input[name="checkedNodes"]').each(function () {
+            $(this).prop('checked', isCheckedAll);
+        });
+    }
+
+    function getTime(e) {
+        return {
+            datetime: $("#time").val()
+        };
+    }
+
+    $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+        $("#grid").data("kendoGrid").dataSource.read();
+    });
+</script>
+

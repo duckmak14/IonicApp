@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Phân quyền";
+    WebContext db = new WebContext();
+    var webModuleId = 1086;
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModuleID == webModuleId);
+
+}
+@if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
+{
+    <div id="main">
+
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="pull-left">
+                    <div class="breadcrumbs"></div>
+                </div>
+                <div class="pull-right">
+                    <ul class="actions">
+                        @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+                        {
+                            <li>
+                                <a href="#" id="btnadd" class="btn btn-mini  btn-blue btn-inverse"><i class="icon-plus"></i> @Resources.Common.Add</a>
+                            </li>
+                        }
+                        @if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            <li>
+                                <a href="#" id="btnedit" class="btn btn-mini   btn-blue btn-inverse"><i class="icon-edit"></i> @Resources.Common.Edit</a>
+                            </li>
+                        }
+                        @if (roleWebModule != null && roleWebModule.Delete.HasValue && roleWebModule.Delete.Value)
+                        {
+                            <li>
+                                <a href="#" id="btndelete" class="btn btn-mini  btn-red btn-inverse"><i class="icon-trash"></i> @Resources.Common.Delete</a>
+                            </li>
+                        }
+                        </ul>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="box">
+                        <div class="box-content nopadding">
+
+                            @(Html.Kendo().Grid<WebModels.WebRole>()
+                                .Name("grid")
+                                .Columns(columns =>
+                                {
+                                    columns.Bound("").ClientTemplate("<input type='checkbox' class='k-checkbox'/>").HtmlAttributes(new { style = "text-align:center;" }).Filterable(false);
+                                    columns.Bound(p => p.RoleId).Title(WebModels.AccountResources.RoleId);
+                                    columns.Bound(p => p.RoleName).Title(WebModels.AccountResources.RoleName);
+                                    columns.Bound(p => p.Title).Title(WebModels.AccountResources.Title);
+                                    columns.Bound(p => p.Description).Title(WebModels.AccountResources.RoleDescription);
+                                    columns.Command(command =>
+                                    {
+                                        if(roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                                        {
+
+                                            command.Custom("Module").Click("modules_handler");
+                                            command.Custom(Resources.Common.Edit).Click("edit_handler");
+                                        }
+                                        if (roleWebModule != null && roleWebModule.Delete.HasValue && roleWebModule.Delete.Value)
+                                        {
+                                            command.Custom(Resources.Common.Delete).Click("delete_handler");
+                                        }
+                                    }).Width(160).HtmlAttributes(new { style = "text-align:center;" }
+                                        ).Width(400).HtmlAttributes(new { style = "text-align:center;" }); ;
+                                })
+                                .Pageable()
+                                .Selectable(select => select.Mode(GridSelectionMode.Multiple))
+                                .Sortable()
+                                .Filterable()
+                                .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .Model(model => model.Id(p => p.RoleId))
+                                    .PageSize(30)
+                                    .Read(read => read.Action("Roles_Read", "Role"))
+                                 )
+                                 .Events(events => events.Change("change_handler").DataBinding("binding_handler").DataBound("onDataBound"))
+                        )
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/role/delete/" + dataItem.RoleId);
+    }
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/role/edit/" + dataItem.RoleId);
+    }
+
+    var rowselected = [];
+
+    function change_handler(e) {
+        rowselected = [];
+        var len = this.select().length;
+        for (i = 0; i < len; i++) {
+            rowselected.push(this.dataItem(this.select()[i]).RoleId);
+        }
+    }
+
+    function binding_handler(e) {
+        rowselected = [];
+    }
+
+    function modules_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/role/ModulesMapping/" + dataItem.RoleId);
+
+    }
+    function sites_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/role/AdminSitesMapping/" + dataItem.RoleId);
+    }
+
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            opendlg("/admin/role/add");
+        });
+
+        $("#btnedit").click(function () {
+            if (rowselected.length > 0) {
+                opendlg("/admin/role/edit/" + rowselected[0]);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+
+        $("#btndelete").click(function () {
+            if (rowselected.length > 0) {
+                opendlg("/admin/role/deletes/" + rowselected);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+
+    });
+
+    function onDataBound(e) {
+        var grid = e.sender;
+        var rows = grid.tbody.find("[role='row']");
+        rows.unbind("click");
+        rows.on("click", onClick);
+    };
+
+    function onClick(e) {
+        if ($(e.target).hasClass("k-checkbox")) {
+            return;
+        }
+        var row = $(e.target).closest("tr");
+        var checkbox = $(row).find(".k-checkbox");
+        checkbox.click();
+
+    };
+</script>

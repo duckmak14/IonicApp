@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WebCategory>
+
+@{int level = 0;}
+
+<div class="category">
+    <div class="titleproduct"><h2>Danh mục </h2></div>
+   
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li class="png">          
+                    @Html.ActionLink(item.Title, "Index", "ProductCategory", new { metatitle = item.MetaTitle != null ? item.MetaTitle : "web", id = item.ID }, new { title = item.Title })
+                    @if (item.SubWebCategories.Count > 0)
+                    {
+                        @SubItems(item.SubWebCategories, level + 1)
+                    }
+                </li>
+            }
+        </ul>                
+</div>
+
+@helper SubItems(IEnumerable<WebCategory> nodes, int level)
+{
+    <ul>
+        @foreach (var item in nodes)
+        {
+            <li class="png">         
+                @Html.ActionLink(item.Title, "Index", "ProductCategory", new { metatitle = item.MetaTitle != null ? item.MetaTitle : "web", id = item.ID }, new { title = item.Title })
+                @if (item.SubWebCategories.Count > 0)
+                {
+                    @SubItems(item.SubWebCategories, level + 1)
+                }
+            </li>
+        }
+    </ul>
+}

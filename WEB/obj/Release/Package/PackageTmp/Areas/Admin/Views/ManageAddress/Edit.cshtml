@@ -1,0 +1,138 @@
+﻿@model WebModels.Location
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@*<div class="change-car-form">
+    <div class="text header-change-car-form">
+        <p>Sửa thông tin xe</p>
+    </div>
+    <div class="form-change-car">*@
+@using (Html.BeginForm("Edit", "ManageAddress", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+    <div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.LocationName, new { @class = "control-label" })
+            </div>
+            <div>
+                @Html.TextBoxFor(m => m.LocationName, new { type = "text", name = "BKS", @class = "input-block-level" })
+                @Html.ValidationMessageFor(m => m.LocationName)
+                @Html.ValidationSummary(true)
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.AddressName, new { @class = "control-label" })
+            </div>
+            <div>
+                @Html.TextBoxFor(m => m.AddressName, new { type = "text", name = "BKS", @class = "input-block-level" })
+                @Html.ValidationMessageFor(m => m.AddressName)
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.Province.ProvinceName, new { @class = "control-label" })
+            </div>
+            <div>
+
+                @(Html.Kendo().DropDownList()
+                              .Name("ProvinceID")
+                              .HtmlAttributes(new { style = "width:100%" })
+                              .OptionLabel("Chọn tỉnh...")
+                              .DataTextField("ProvinceName")
+                              .DataValueField("ID")
+                              .DataSource(source =>
+                              {
+                                  source.Read(read =>
+                                  {
+                                      read.Action("GetProvinces", "ManageAddress");
+
+                                  })
+                                   .ServerFiltering(false);
+                              })
+
+                              .Events(events => events.DataBound("setRequiredAttrProvices"))
+
+                        )
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.District.DistrictName, new { @class = "control-label" })
+            </div>
+            <div>
+                @(Html.Kendo().DropDownList()
+                                  .Name("DistrictID")
+                                  .HtmlAttributes(new { style = "width:100%", data_value_primitive = "true" })
+                                  .OptionLabel("Chọn quận/huyện...")
+                                  .DataTextField("DistrictName")
+                                  //.Events(events => events.Error("grid_errorHandler"))
+                                  .DataValueField("districtID")
+                                  .DataSource(source =>
+                                  {
+                                      source.Read(read =>
+                                      {
+                                          read.Action("GetDistricts", "ManageAddress").Data("filterProvinces");
+
+                                      }).ServerFiltering(true);
+                                  })
+                             
+                                  .AutoBind(false)
+                                  .Enable(false)
+                                  .CascadeFrom("ProvinceID")
+                        )
+            </div>
+        </div>
+       
+        <div class="row top-rows">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+                <div class="exit-car-form">Hủy</div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+                <div>
+                    <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+}
+@*</div>
+    </div>*@
+
+<script type="text/javascript">
+    top.winsetup("Sửa địa điểm", 600 , 290, true);
+    function edit_success() {
+        top.$("#window").data("kendoWindow").close();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+
+    function filterProvinces() {
+        return {
+            provinceId: $("#ProvinceID").val()
+        };
+    }
+    function setRequiredAttrProvices(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+    function setRequiredAttrDistrict(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+</script>
+
+

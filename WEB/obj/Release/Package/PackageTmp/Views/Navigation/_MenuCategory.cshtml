@@ -1,0 +1,17 @@
+﻿@model IEnumerable<WebModule>
+
+<div id="menu-trigger" style="display: block;">Sản phẩm<i class="menu-icon icon-plus-sign-alt"></i></div>
+<ul id="menu-custom" style="overflow: hidden; display: none;">
+@foreach (var node in Model)
+            {
+                var url = Url.Action("Index", "Home", new
+                {
+                    metatitle = node.MetaTitle != null ? node.MetaTitle : "web",
+                    id = node.ID,
+                    area = ""
+                });
+
+    <li><a href="@url" title="@node.Title"> @node.Title </a></li>
+}
+</ul>
+

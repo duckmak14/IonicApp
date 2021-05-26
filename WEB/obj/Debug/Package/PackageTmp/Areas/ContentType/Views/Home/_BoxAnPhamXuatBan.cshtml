@@ -1,0 +1,155 @@
+﻿@model IEnumerable<WebModels.WebContent>
+@{
+    var webmodule = (WebModule)ViewBag.WebModule;
+    var urlcat = webmodule.URL;
+    if (string.IsNullOrEmpty(webmodule.URL) || string.IsNullOrWhiteSpace(webmodule.URL))
+    {
+        urlcat = Url.Action("Index", "Home", new { metatitle = webmodule.MetaTitle != null ? webmodule.MetaTitle : "web", id = webmodule.ID, area = "" });
+    }
+}
+
+
+
+<script>
+    var slider;
+
+    $(document).ready(function () {
+        slider = $('.sliderLocation').bxSlider({
+            auto: false,
+            slideWidth: 200,
+            minSlides: 1,
+            maxSlides: 4,
+            moveSlides: 1,
+            slideMargin: 10,
+            pager: false,
+            mode: 'horizontal',
+            touchEnabled: false,
+            nextSelector: '#slider-next',
+            prevSelector: '#slider-prev',
+            //nextText: '<img src="Content/themes/web/img/btn2-next.png"/>',
+            //prevText: '<img src="Content/themes/web/img/btn2-pre.png"/>'
+        });
+
+        $('#btn-dinhKy').removeClass("box-btn-gray");
+        $('#btn-tiengAnh').addClass("box-btn-gray");
+        $('#btn-tiengViet').addClass("box-btn-gray");
+
+
+        setInterval(function () {
+            onChangePublications(1);
+        }, 10000);
+
+    });
+
+    function viewAnPhamByType(type) {
+        $("#currentTabPublication").val(type);
+
+        if (type == 1) {
+            $('.sliderLocation').html($('#sliderDinhKy').html());
+
+            $('#btn-dinhKy').removeClass("box-btn-gray");
+            $('#btn-tiengAnh').addClass("box-btn-gray");
+            $('#btn-tiengViet').addClass("box-btn-gray");
+        } else if (type == 2) {
+            $('.sliderLocation').html($('#sliderTiengAnh').html());
+
+            $('#btn-dinhKy').addClass("box-btn-gray");
+            $('#btn-tiengAnh').removeClass("box-btn-gray");
+            $('#btn-tiengViet').addClass("box-btn-gray");
+        } else {
+            $('.sliderLocation').html($('#sliderTiengViet').html());
+
+            $('#btn-dinhKy').addClass("box-btn-gray");
+            $('#btn-tiengAnh').addClass("box-btn-gray");
+            $('#btn-tiengViet').removeClass("box-btn-gray");
+        }
+        slider.reloadSlider();
+
+    }
+
+    function autoNextTabPublications() {
+
+        //setTimeout(function () {
+        //    onChangePublications(1);
+        //}, 60000);
+    }
+
+    function onChangePublications(type) {
+        //type: 1: next, 2: pre
+        // 1: dinh ky, 2: tieng anh, 3 tieng viet
+
+        var currentTab = $("#currentTabPublication").val();
+        if (type == 1) {
+            if (currentTab == 3) {
+                currentTab = 1;
+            } else {
+                currentTab++;
+            }
+        } else {
+            if (currentTab == 1) {
+                currentTab = 3;
+            } else {
+                currentTab--;
+            }
+        }
+        viewAnPhamByType(currentTab)
+    }
+</script>
+
+<input hidden value="1" id="currentTabPublication" />
+<div class="title-box">
+    <a href="@urlcat" title="@webmodule.Title">  @webmodule.Title </a>
+</div>
+
+<div class="sliderLocation">
+    @*định kỳ*@
+    @foreach (var item in Model.Where(x => x.WebModule.UID.Equals("an-pham-dinh-ky")))
+    {
+        var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+        <div class="slide"> <a href="@item.Link" target="_blank"><img src="@img"></a></div>
+    }
+</div>
+
+<div id="sliderDinhKy" style="display:none;">
+    @foreach (var item in Model.Where(x => x.WebModule.UID.Equals("an-pham-dinh-ky")))
+    {
+        var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+        <div class="slide"> <a href="@item.Link" target="_blank"><img src="@img"></a></div>
+    }
+</div>
+
+
+<div id="sliderTiengViet" style="display:none;">
+    @foreach (var item in Model.Where(x => x.WebModule.UID.Equals("an-pham-tieng-viet")))
+    {
+        var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+        <div class="slide"> <a href="@item.Link" target="_blank"><img src="@img"></a></div>
+    }
+</div>
+
+
+<div id="sliderTiengAnh" style="display:none;">
+    @foreach (var item in Model.Where(x => x.WebModule.UID.Equals("an-pham-tieng-anh")))
+    {
+        var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+        <div class="slide"> <a href="@item.Link" target="_blank"><img src="@img"></a></div>
+    }
+</div>
+
+<div class="type margin-top-20">
+
+    <span class="box-btn margin-right-20-anpham" id="btn-dinhKy" onclick="viewAnPhamByType(1)">
+        Số định kỳ
+    </span> <span class="box-btn margin-right-20-anpham" id="btn-tiengViet" onclick="viewAnPhamByType(3)">
+        Chuyên đề Tiếng việt
+    </span>
+    <span class="box-btn margin-right-20-anpham" id="btn-tiengAnh" onclick="viewAnPhamByType(2)">
+        Chuyên đề Tiếng anh
+    </span>
+
+
+    <div class="outside pull-right" style="line-height: 1.8">
+        <img src="Content/themes/web/img/btn2-next.png" style="width: 30px; float: right; cursor: pointer" onclick="onChangePublications(1);" />
+        <img src="Content/themes/web/img/btn2-pre.png" style="width: 30px; float: right; margin-right: 10px;cursor: pointer" onclick="onChangePublications(2);" />
+    </div>
+</div>

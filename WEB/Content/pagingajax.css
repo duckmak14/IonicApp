@@ -1,0 +1,26 @@
+/*CSS FOR PAGING*/
+#pagination {
+    list-style: none;
+    margin: 5px;
+    padding: 0;
+    float: right;
+    margin-top: 15px;
+}
+
+    #pagination li {
+        float: left;
+    }
+
+        #pagination li.currentpage a, #pagination li:hover a {
+            background: #7ac0da;
+            color: #fff;
+        }
+
+        #pagination li a {
+            background: #d3dce0;
+            color: #999;
+            text-decoration: none;
+            margin-right: 5px;
+            border-radius: 18px;
+            padding: 5px 9px;
+        }

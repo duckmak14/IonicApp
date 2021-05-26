@@ -1,0 +1,121 @@
+﻿@model WebModels.Vehicle
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "ManageCar", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.CarOwerName, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.CarOwerName, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.CarOwerName)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.NumberPlate, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.NumberPlate, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.NumberPlate)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.VehicleWeight.WeightName, new { @class = "control-label" })
+        </div>
+        <div>
+
+            @(Html.Kendo().DropDownList()
+      .Name("WeightID")
+      .HtmlAttributes(new { style = "width:100%" })
+      .OptionLabel("Chọn tải trọng...")
+      .DataTextField("WeightName")
+      .DataValueField("ID")
+      .DataSource(source =>
+      {
+          source.Read(read =>
+          {
+              read.Action("GetWeights", "ManageCar");
+
+          })
+           .ServerFiltering(true);
+      })
+
+      )
+            @Html.ValidationMessageFor(m => m.WeightID)
+
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Mobile, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Mobile, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Mobile)
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.PartnerID, new { @class = "control-label" })
+        </div>
+        <div>
+
+            @(Html.Kendo().DropDownList()
+      .Name("PartnerID")
+      .HtmlAttributes(new { style = "width:100%" })
+      .OptionLabel("Chọn đối tác...")
+      .DataTextField("PartnerName")
+      .DataValueField("ID")
+      .DataSource(source =>
+      {
+          source.Read(read =>
+          {
+              read.Action("GetPartners", "ManagePartner");
+
+          })
+           .ServerFiltering(true);
+
+      })
+      )
+            @Html.ValidationMessageFor(m => m.PartnerID)
+        </div>
+    </div>
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    top.winsetup("Thêm xe", 600, 350, true);
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+    function setRequiredAttr(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+</script>

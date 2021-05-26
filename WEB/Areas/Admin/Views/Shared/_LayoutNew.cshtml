@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="/Content/themes/admin/css/bootstrap.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/plugins/icheck/all.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/plugins/pageguide/pageguide.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/plugins/chosen/chosen.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/plugins/select2/select2.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/plugins/colorbox/colorbox.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/style.css">
+    <link rel="stylesheet" href="/Content/themes/admin/css/themes.css">
+    <link href="/Content/themes/admin/css/zstyle.css" rel="stylesheet" />
+    @Styles.Render("~/Content/themes/base/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <link href="@Url.Content("~/Content/kendo.compatibility.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/kendo.metro.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/kendo/kendo.all.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+    <script src="/Content/themes/admin/js/plugins/icheck/jquery.icheck.min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/fileupload/bootstrap-fileupload.min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/bootbox/jquery.bootbox.js"></script>
+    <script src="/Content/themes/admin/js/plugins/colorbox/jquery.colorbox-min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/select2/select2.min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/pageguide/jquery.pageguide.js"></script>
+    <script src="/Content/themes/admin/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/gritter/jquery.gritter.min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="/Content/themes/admin/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="/Content/themes/admin/js/bootstrap.min.js"></script>
+    <script src="~/Content/jwplayer/jwplayer.js"></script>
+    <script src="~/Content/jwplayer/jwplayer.html5.js"></script>
+    <script src="/Content/ckeditor/ckeditor.js"></script>
+    <link href="~/Content/jtreetable/jquery.treetable.css" rel="stylesheet" />
+    <link href="~/Content/jtreetable/jquery.treetable.theme.default.css" rel="stylesheet" />
+    <script src="~/Content/jtreetable/jquery.treetable.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.0.2.js"></script>
+    <script type="text/javascript" src="/signalr/hubs"></script>
+    <script src="/Content/themes/admin/js/eakroko.js"></script>
+    <script src="/Content/themes/admin/js/application.js"></script>
+    <script>
+        jwplayer.key = "YSk//8Zj0IeDptpwU5mUOULS6tF11ch2rfhMYF0A1gbLp9WQer0yBjiSJf4=";
+    </script>
+    <!--[if lte IE 9]>
+        <script src="/Content/themes/admin/js/plugins/placeholder/jquery.placeholder.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('input, textarea').placeholder();
+            });
+        </script>
+    <![endif]-->
+    <script src="@Url.Content("~/Scripts/kendo/cultures/kendo.vi-VN.js")"></script>
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+    <link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png" />
+    <script> adminsitemap('@ViewBag.GAK');  </script>
+</head>
+<body data-layout-sidebar="fixed" data-layout-topbar="fixed">
+    <section class="contentLeft">
+        @Html.Action("_ContentLeft", "Home", new { areas = "admin" })
+    </section>
+
+    @RenderBody()
+    <script type="text/javascript">
+        var win = $("#window").kendoWindow({ width: 600 + "px", height: 350 + "px", modal: true, draggable: true, resizable: true, actions: ["Minimize", "Maximize", "Close"], visible: false, iframe: true, pinned: true });
+        win.data("kendoWindow").bind("close", function (e) {
+            setTimeout(function () {
+                winsize(600, 350);
+                win.data("kendoWindow").refresh('/admin/home/loading');
+                wintitle(''); wincenter();
+            }, 200);
+        });
+        $(document).ready(function () { win.data("kendoWindow").refresh({ url: '/admin/home/loading' }); wincenter(); });
+        function wintitle(t) { win.data("kendoWindow").title(t); }
+        function winsize(w, h) {
+            if (h != null) win.data("kendoWindow").setOptions({ height: h });
+            if (w != null) win.data("kendoWindow").setOptions({ width: w });
+        }
+        function winmaxi() { win.data("kendoWindow").toggleMaximization(); }
+        function wincenter() { win.data("kendoWindow").center(); }
+        function winclose() { win.data("kendoWindow").close(); }
+        function winsetup(t, w, h, center) {
+            winsize(w, h);
+            win.data("kendoWindow").title(t); if (center == true) win.data("kendoWindow").center();
+        }
+        function opendlg(link) { win.data("kendoWindow").open().refresh({ url: link }); }
+        function openwin(url, target, w, h) {
+            var left = (window.screen.availWidth / 2) - (w / 2);
+            var top = (window.screen.availHeight / 2) - (h / 2);
+            return window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+        }
+    </script>
+    <script type="text/javascript" defer="defer">
+        $(document).ready(function () {
+            @Html.Raw(ViewBag.StartupScript)
+        });
+
+    </script>
+</body>
+
+
+
+</html>

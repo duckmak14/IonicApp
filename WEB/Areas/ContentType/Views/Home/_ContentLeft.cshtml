@@ -1,0 +1,11 @@
+﻿@model IEnumerable<WebModels.AdminSite>
+
+
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>
+            <a href=@item.Url>@item.Title</a>
+        </li>
+    }
+</ul>

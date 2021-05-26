@@ -1,0 +1,107 @@
+﻿@{
+   
+}
+
+ 
+<div id="main">
+    <div id="left" style="padding:0 2px;"></div>  
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="pull-left">
+                <div class="breadcrumbs"></div>
+            </div>
+            <div class="pull-right">
+                <ul class="actions">
+                    <li>
+                        <a href="javascript:void(0);" id="btnadd" class="btn btn-mini  btn-blue btn-inverse"><i class="icon-plus"></i> @Resources.Common.Add  </a>
+                    </li>
+                </ul>
+            </div>
+        </div>     
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="box">
+                    <div class="box-content nopadding">
+                        <div id="grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
+                                     
+<script>
+    $(function () {
+        renderTreetable();
+        $('#grid').on('click', 'a[data-button="btnEdit"]', function (e) {
+            e.preventDefault();
+            opendlg($(this).attr('href'));               
+        });
+        $('#grid').on('click', 'a[data-button="btnDelete"]', function (e) {
+            e.preventDefault();
+            opendlg($(this).attr('href'));                           
+        });
+    });
+
+    function renderTreetable() {
+        var rowTemplate = "<tr data-tt-id='#id' #parent>" +
+                               
+                                "<td><span class='#class'>#title</span></td>" +
+                                "<td>#id</td>" +
+                                "<td>#metatitle</td>" +
+                                "<td>" +
+                                    "<center>" +
+                                        "<a href='/admin/webcategory/edit/#id' class='k-button   btn-small' data-button=\"btnEdit\" onclick=\"javascript:void(0);\"></a> &nbsp" +
+                                        "<a href='/admin/webcategory/delete/#id' class='k-button btn-small' data-button=\"btnDelete\" onclick=\"javascript:void(0);\"> Xóa </a>" +
+                                    "</center>" +
+                                "</td>" +
+                            "</tr>";
+        $.getJSON('/admin/webcategory/treetable?s=').done(function (jdata) {
+             var data = $.parseJSON(jdata.json);    
+             var rows = "";
+            $.each(data, function (index, element) {
+                var id = element.ID;
+                var title = element.Title;
+                var metaTitle = element.MetaTitle != null ? element.MetaTitle : "";  
+                var hasChild = element.HasChild;
+                var parent = element.Parent;
+                var row = rowTemplate.replace(/#id/g, id).replace(/#title/g, title).replace(/#metatitle/g, metaTitle);
+                if (parent != null) {
+                    row = row.replace("#parent", "data-tt-parent-id='" + parent + "'");
+                } else {
+                    row = row.replace("#parent", "");
+                } 
+                row = row.replace("#class", "folder");
+                rows += row;
+            });
+            var table = "";
+            table += "<table id=\"treetable\" class='table'  >" +
+                            "<thead>" +
+                                "<tr>" +
+                                    "<th>Tiêu đề</th>" +
+                                    "<th  style='width:40px;'>ID</th>" +
+                                    "<th>Meta Title</th>" +
+                                    "<th style='width:90px;'></th>" +
+                                "</tr>" +
+                            "</thead>" +
+                            "<tbody>" + rows + "</tbody>" +
+                        "</table>";
+            $('#grid').html(table);         
+            $("#treetable").treetable({ expandable: true });
+            $("#treetable tbody").on("mousedown", "tr", function () {
+                $(".selected").not(this).removeClass("selected");
+                $(this).toggleClass("selected");
+            });       
+            $('#treetable').treetable('expandAll');
+        });
+        
+    }
+                 
+    $(document).ready(function () { 
+        $("#btnadd").click(function () {
+            opendlg("/admin/webcategory/add");  
+        });
+    });
+
+ 
+</script>

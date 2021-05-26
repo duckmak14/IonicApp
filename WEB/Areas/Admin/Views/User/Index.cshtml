@@ -1,0 +1,280 @@
+﻿@{
+    ViewBag.Title = "Người dùng ";
+    WebContext db = new WebContext();
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModule.URL == "/admin/user");
+
+}
+
+<script type="text/javascript">
+    var rowselected = [];
+    var isCheckedAll = false;
+
+
+    //function change_handler(e) {
+    //rowselected = [];
+    //var len = this.select().length;
+    //for (i = 0; i < len; i++) {
+    //    rowselected.push(this.dataItem(this.select()[i]).UserId);
+    //}
+    //}
+    function binding_handler(e) {
+        //rowselected = [];
+    }
+    function changepassword_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/user/changepassword/?userName=" + dataItem.UserName);
+    }
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/user/delete/" + dataItem.UserId);
+    }
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/user/edit/" + dataItem.UserId);
+    }
+
+    function modules_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/user/ModulesMapping/" + dataItem.UserId);
+
+    }
+    function sites_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/user/AdminSitesMapping/" + dataItem.UserId);
+    }
+
+    $(document).ready(function () {
+        $("#btnadd").click(function () {
+            opendlg("/admin/user/add");
+        });
+        $("#btnedit").click(function () {
+            var selected = [];
+            $('input:checkbox[name=checkedNodes]').each(function () {
+                if ($(this).is(':checked')) {
+                    selected.push($(this).val());
+                }
+            });
+            if (rowselected.length > 0) {
+                opendlg("/admin/user/edit/" + selected[0]);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+        $("#btndelete").click(function () {
+            var selected = [];
+            $('input:checkbox[name=checkedNodes]').each(function () {
+                if ($(this).is(':checked')) {
+                    selected.push($(this).val());
+                }
+            });
+            if (rowselected.length > 0) {
+                opendlg("/admin/user/deletes/" + rowselected);
+            } else {
+                alert("Không có khoản mục nào được chọn.");
+            }
+        });
+    });
+    function onDataBound(e) {
+        $('#grid .k-grid-content').height(screen.height * 0.5);
+
+        $('input[name="checkedNodes"]').each(function () {
+            if (rowselected.indexOf(this.value) != -1) {
+                $(this).attr('checked', 'checked');
+            } else {
+                $(this).removeAttr('checked');
+            }
+        });
+    };
+</script>
+
+@if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
+{
+    <div id="main">
+        <div id="left"></div>
+        <div class="container-fluid">
+            <div class="page-header">
+                @*<div class="pull-left">
+                        <div class="breadcrumbs"></div>
+                    </div>*@
+                <div class="flex float-right-custom">
+                    <ul class="actions">
+                        @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+                        {
+                            <li>
+                                <a href="#" id="btnadd" class="btn btn-mini   btn-blue btn-inverse">@Resources.Common.Add</a>
+                            </li>
+                        }
+                        @if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            <li>
+                                <a href="#" id="btnedit" class="btn btn-mini   btn-blue btn-inverse">@Resources.Common.Edit</a>
+                            </li>
+                        }
+                        @if (roleWebModule != null && roleWebModule.Delete.HasValue && roleWebModule.Delete.Value)
+                        {
+                            <li>
+                                <a href="#" id="btndelete" class="btn btn-mini  btn-red btn-inverse">@Resources.Common.Delete</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="box">
+                        <div class="box-content nopadding">
+                            @(Html.Kendo().Grid<WebModels.UserProfile>()
+                                .Name("grid")
+                                .Columns(columns =>
+                                {
+                                    columns.Command(command =>
+                                    {
+                                        //command.Custom("Module").Click("modules_handler");
+                                        //command.Custom("Site").Click("sites_handler");
+                                        if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                                        {
+                                            command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" }); ;
+                                            command.Custom(Resources.Common.SetPassword).Click("changepassword_handler").HtmlAttributes(new { title = "Đổi mật khẩu" }); ;
+                                        }
+                                        if (roleWebModule != null && roleWebModule.Delete.HasValue && roleWebModule.Edit.Value)
+                                        {
+                                            command.Custom(Resources.Common.Delete).Click("delete_handler").HtmlAttributes(new { title = "Xóa" }); ;
+                                        }
+                                    }).Width(100).HtmlAttributes(new { style = "text-align:center; display: flex;" }).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
+                                    columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=UserId#' onclick='childNodeClick(this)'/>")
+                                    .HtmlAttributes(new { style = "text-align:center;" })
+                                    .Filterable(false)
+                                    .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
+                                    columns.Bound(p => p.UserId).Title(Resources.Common.ID).HtmlAttributes(new { style = "text-align:center;" }).Hidden();
+                                    columns.Bound(p => p.UserName).Title(WebModels.AccountResources.UserName);
+                                    columns.Bound(p => p.FullName).Title(WebModels.AccountResources.FulllName);
+                                    columns.Bound(p => p.Email).Title(WebModels.AccountResources.Email);
+                                    columns.Bound(p => p.Mobile).Title(WebModels.AccountResources.Mobile);
+
+                                })
+                                .Pageable()
+                                .Sortable()
+                                .Filterable()
+                                .Reorderable(reorder => reorder.Columns(true))
+                                .Selectable(select => select.Mode(GridSelectionMode.Single))
+                                .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .Model(model => model.Id(p => p.UserId))
+                                    .PageSize(30)
+                                    .Read(read => read.Action("Users_Read", "User"))
+                                    .ServerOperation(false)
+
+                                 )
+                                  .Events(events => events.DataBinding("binding_handler").DataBound("onDataBound"))
+                        )
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    function getDataFilter() {
+        var dataSource = $("#grid").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var result = query.filter(filters).data;
+        return result;
+    }
+    function getCheckAll() {
+        var dataFilterID = [];
+        var dataFilter = getDataFilter();
+        var check;
+        for (var i = 0; i < dataFilter.length; i++) {
+            dataFilterID.push(String(dataFilter[i].UserId));
+        }
+        for (var i = 0; i < dataFilterID.length; i++) {
+            var index = rowselected.indexOf(dataFilterID[i]);
+            if (index != -1) {
+                check = true;
+            }
+            else {
+                check = false;
+                break;
+            }
+        }
+        return check;
+    }
+
+    function childNodeClick(element) {
+        var dataID = getCheckAll();
+        var id = element.value;
+        if (rowselected.indexOf(id) !== -1) {
+            rowselected.splice(rowselected.indexOf(id), 1);
+        } else {
+            rowselected.push(id);
+        }
+        isCheckedAll = getCheckAll();
+        $('#chkAll').prop('checked', isCheckedAll);
+    }
+
+    $(function () {
+        $(".k-filter").click(function () {
+            setTimeout(function () {
+                $(".k-filter-menu .k-button").click(function () {
+                    setTimeout(function () {
+                        rowselected = [];
+                        isCheckedAll = getCheckAll();
+                        $('#chkAll').prop('checked', isCheckedAll);
+                        $('input[name="checkedNodes"]').each(function () {
+                            if (rowselected.indexOf(this.value) != -1) {
+                                $(this).attr('checked', 'checked');
+                            } else {
+                                $(this).removeAttr('checked');
+                            }
+                        });
+                    }, 10)
+                })
+            }, 100);
+        });
+    });
+
+    function checkAll(e) {
+
+        var rowItems = getDataFilter();
+        isCheckedAll = $(e.target).prop('checked');
+        if (isCheckedAll) {
+            for (var i = 0; i < rowItems.length; i++) {
+                var index = rowselected.indexOf(String(rowItems[i].UserId));
+                if (index == -1) {
+                    rowselected.push(String(rowItems[i].UserId));
+                }
+            }
+        }
+        else if (!isCheckedAll) {
+            var dataFilterID = [];
+            var dataFilter = getDataFilter();
+            for (var i = 0; i < dataFilter.length; i++) {
+                dataFilterID.push(String(dataFilter[i].UserId));
+            }
+            for (var i = 0; i < dataFilterID.length; i++) {
+                var index = rowselected.indexOf(dataFilterID[i]);
+                if (index != -1) {
+                    rowselected.splice(index, 1);
+                }
+            }
+        }
+
+        $('input[name="checkedNodes"]').each(function () {
+            $(this).prop('checked', isCheckedAll);
+        });
+    }
+
+
+</script>

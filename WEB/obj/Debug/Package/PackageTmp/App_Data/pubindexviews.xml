@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Views>
+  <Article>
+    <Item  Text="Hiển thị chuẩn (_PubIndex)" Value="_PubIndex" />
+    <Item  Text="Hiển thị danh sách con" Value="_PubIndexEdition" />
+    <Item  Text="Hiển thị Môi trường và doanh nghiệp" Value="_PubIndexEnterprise" />
+    <Item  Text="Hiển thị chuyên mục Nghiên cứu" Value="_PubIndexEnterprise" />
+  </Article>
+  <Contact>
+    <Item  Text="Đặt mua" Value="_PubDatMua" />
+    <Item  Text="Liên hệ tòa sọan" Value="_PubLienHeToaSoan" />
+    <Item  Text="Thư mời nghiên cứu" Value="_PubThuMoiNghienCuu" />    
+  </Contact>
+  
+  <UploadFileVideo>
+    <Item  Text="Hiển thị hình ảnh" Value="_PubIndexImg" />
+    <Item  Text="Hiển thị video" Value="_PubIndexVideo" />
+  </UploadFileVideo>
+  
+</Views>

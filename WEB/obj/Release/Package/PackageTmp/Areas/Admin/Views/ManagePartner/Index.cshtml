@@ -1,0 +1,226 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Quản lý đối tác";
+    WebContext db = new WebContext();
+    var webModuleId = 89;
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModuleID == webModuleId);
+
+}
+<script type="text/javascript">
+    var rowselected = [];
+    var isCheckedAll = false;
+    //function change_handler(e) {
+    //    rowselected = [];
+    //    var len = this.select().length;
+    //    for (i = 0; i < len; i++) {
+    //        rowselected.push(this.dataItem(this.select()[i]).ID);
+    //    }
+    //}
+    function binding_handler(e) {
+        //rowselected = [];
+    }
+    $(document).ready(function () {
+
+        $("#btnadd").click(function () {
+            opendlg("/admin/managepartner/add/");
+        });
+    });
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/managepartner/delete/" + dataItem.ID);
+    }
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/managepartner/edit/" + dataItem.ID);
+    }
+
+    $(document).ready(function () {
+
+        $("#FieldFilter").keyup(function () {
+
+            var value = $("#FieldFilter").val();
+
+            $("#grid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "PartnerName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Address",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Email",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Mobile",
+                        operator: "contains",
+                        value: value
+                    }
+                ]
+            });
+        });
+    });
+
+    function onDataBound(e) {
+        console.log(rowselected);
+        if (isCheckedAll) {
+            $('input[name="checkedNodes"]').each(function () {
+                $(this).attr('checked', 'checked');
+            });
+        }
+        else {
+            $('input[name="checkedNodes"]').each(function () {
+                if (rowselected.indexOf(this.value) != -1) {
+                    $(this).attr('checked', 'checked');
+                } else {
+                    $(this).removeAttr('checked');
+                }
+            });
+        }
+    };
+
+</script>
+<div class="row row-quanlyxe">
+    <div class="manage-car-search row-plan-drive">
+        <form action="">
+            <img src="~/Content/themes/admin/img/Vector-search1.png" alt="search" class="img-box-search img-form-plan-drive img-search-plan-drive">
+            <input id='FieldFilter' type="text" name="" placeholder="Tìm kiếm" class="box-search box-search-quanlyxe box-search-drive-plan input-search-plan-drive">
+        </form>
+    </div>
+    @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+    {
+        <div class="btn-download btn-plan-drive" id="export">
+            <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+            <p class="text-14-500 padding-text-plan-drive">Tải về</p>
+        </div>
+        <div class="btn-download btn-plan-drive" id="upload">
+            <img src="~/Content/themes/admin/img/Vector-upload.png" alt="text-14-700">
+            <p class="text-14-500 padding-text-plan-drive">Upload</p>
+        </div>
+        <div class="btn-download btn-plan-drive" id="btnadd">
+            <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+            <p class="text-14-500 padding-text-plan-drive">Thêm đối tác</p>
+        </div>
+    }
+</div>
+@if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="box">
+                <div class="box-content nopadding">
+                    @(Html.Kendo().Grid<WebModels.Partner>()
+                .Name("grid")
+                .Columns(columns =>
+                {
+                    columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
+                       .HtmlAttributes(new { style = "text-align:center;" })
+                       .Filterable(false)
+                       .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>");
+                    //columns.Bound(p => p.ID).Title(Resources.Common.ID);
+                    columns.Bound(p => p.PartnerName).Title(WebModels.AccountResources.PartnerName).Width(150);
+                    columns.Bound(p => p.Address).Title(WebModels.AccountResources.AddressName);
+                    columns.Bound(p => p.Email).Title(WebModels.AccountResources.Email);
+                    columns.Bound(p => p.Mobile).Title(WebModels.AccountResources.Mobile).HtmlAttributes(new { style = "text-align:center;" });
+                    columns.Command(command =>
+                    {
+                        if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            //command.Custom("Module").Click("modules_handler");
+                            //command.Custom("Site").Click("sites_handler");
+                            command.Custom(Resources.Common.Edit).Click("edit_handler");
+                            //command.Custom(Resources.Common.SetPassword).Click("changepassword_handler");
+                            //command.Custom(Resources.Common.Delete).Click("delete_handler");
+                        }
+                    }).HtmlAttributes(new { style = "text-align:center;" });
+                })
+                .ToolBar(toolbar =>
+                {
+                toolbar.Template(@<text>
+
+
+
+                                        </text>);
+                })
+                .Pageable()
+                .Selectable(select => select.Mode(GridSelectionMode.Single))
+                .Sortable()
+                .Filterable()
+                .Reorderable(reorder => reorder.Columns(true))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model => model.Id(p => p.ID))
+                    .PageSize(20)
+                    .Read(read => read.Action("Partners_Read", "ManagePartner"))
+                     .ServerOperation(false)
+                 )
+                    .Events(events => events.DataBinding("binding_handler").DataBound("onDataBound")
+            )
+
+                        )
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+<script>
+
+    $("#export").click(function (e) {
+        if (rowselected.length > 0) {
+            //alert("Selected values: " + selected.join(","));
+            opendlg("/admin/ManagePartner/ExportExcel/" + rowselected);
+        }
+        else {
+            alert("Vui lòng chọn để xuất file!");
+        }
+    });
+
+    $("#upload").click(function (e) {
+        opendlg("/admin/ManagePartner/UploadExcel");
+    });
+
+    function childNodeClick(element) {
+        isCheckedAll = $('input[class="k-checkbox"]:checked').length == $('input[class="k-checkbox"]').length;
+        $('#chkAll').prop('checked', isCheckedAll);
+
+        var id = element.value;
+        if (rowselected.indexOf(id) !== -1) {
+            rowselected.splice(rowselected.indexOf(id), 1);
+        } else {
+            rowselected.push(id);
+        }
+    }
+
+    function checkAll(e) {
+        var rowItems = $("#grid").data("kendoGrid").dataSource.data();
+
+        isCheckedAll = $(e.target).prop('checked');
+        if (isCheckedAll) {
+            for (var i = 0; i < rowItems.length; i++) {
+                rowselected.push(String(rowItems[i].ID));
+            }
+        }
+        else if (!isCheckedAll) {
+            rowselected.length = 0;
+        }
+
+        $('input[name="checkedNodes"]').each(function () {
+            $(this).prop('checked', isCheckedAll);
+        });
+    }
+</script>

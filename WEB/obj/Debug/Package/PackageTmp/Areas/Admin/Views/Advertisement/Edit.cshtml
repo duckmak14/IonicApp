@@ -1,0 +1,112 @@
+﻿@model WebModels.Advertisement
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "Advertisement", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+{
+    if (ApplicationService.Languages != null)
+    {
+        <div class="control-group">
+            @Html.LabelFor(m => m.Culture, new { @class = "control-label" })
+            <div class="controls">
+                @(Html.Kendo().DropDownListFor(m => m.Culture)
+                                  .HtmlAttributes(new { style = "width: 150px" })
+                                  .DataTextField("Title")
+                                  .DataValueField("ID").BindTo(
+                                    (IEnumerable<WebModels.Language>)ApplicationService.Languages
+                                  )
+                )
+            </div>
+        </div>
+    }
+    <div class="control-group">
+        @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Title, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+    </div>
+    <div class="control-group">
+        @Html.LabelFor(m => m.Media, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Media, new { @class = "input-xlarge", id = "txtmedia" })
+            <a href="javascript:void(0);" onclick="javascript: openwin('/admin/upload/file?uid=@ViewBag.GAK&func=setmediapath', '_blank', 800, 550);" class="btn">Tải Tệp</a>
+        </div>
+    </div>
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.Link, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Link, new { @class = "span7" })
+            @Html.DropDownListFor(
+                                m => m.Target,
+                                new SelectList(new List<SelectListItem>
+                                 {
+                                    new SelectListItem{ Text="Chuyển trang", Value = "_self" },
+                                    new SelectListItem{ Text="Trang mới", Value = "_blank" }
+                                 }, "Value", "Text")
+                                )
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label"> Upload Video</label>
+
+        <div class="controls">
+            <input type="text" class="input-block-level" id="linkOrg" name="Video" value="@Model.Video" />
+            <input type="file" class="upload" name="fileVideo" accept=".mp4,.wmv,.flv,.avi" />
+        </div>
+    </div>
+
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.AdvertisementPositionID, new { @class = "control-label" })
+        <div class="controls">
+            @(Html.Kendo().DropDownList().Name("AdvertisementPositionID")
+                          .HtmlAttributes(new { style = "width: 250px" })
+                              .DataTextField("Title")
+                              .DataValueField("ID").BindTo(ViewBag.AdvPositions)
+            )
+        </div>
+    </div>
+    <div class="control-group">
+        @Html.LabelFor(m => m.Description, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextAreaFor(m => m.Description, new { @class = "input-block-level" })
+        </div>
+    </div>
+
+
+
+    <div class="validation-group">
+        <div class="controls">
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">@Resources.Common.SaveChanges</button>
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        top.winsetup("@Html.Raw(Resources.Common.EditItem)", 800, 550, true);
+    });
+    function edit_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+
+    $(document).ready(function () {      
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            $("#linkOrg").val(fileName);
+        });
+    });
+    
+    function setmediapath(path) {
+        $('#txtmedia').val(path);
+    }
+</script>

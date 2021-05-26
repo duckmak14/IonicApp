@@ -1,0 +1,88 @@
+﻿@{
+     
+}
+
+ <table style="width:100%;">
+    <tr>
+        <td style="width:50%">
+            @(Html.Kendo().Grid<WebModels.WebContent>()
+                     .Name("AllHighlight_Read")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(c => c.ID).Title("ID").Width(50);
+                        columns.Bound(c => c.Title).Title("Tiêu đề");
+                        columns.Template(e => { }).ClientTemplate("<input type='number' style='width:30px;' value='1'/>").Width(55).Title("TT");
+                        columns.Command(command =>
+                        {
+                            command.Custom(Resources.Common.Choose).Click("choose_handler");
+                        }).Width(80).HtmlAttributes(new { style = "text-align:center;" });
+                    }).HtmlAttributes(new { style = "height:500px" })
+                    .Scrollable().Filterable()
+                    .Sortable().Selectable()
+                    .Pageable(pageable => pageable.Refresh(true).PageSizes(false).Info(false))
+                            .DataSource(dataSource => dataSource.Ajax().Read(read => read.Action("AllHighlight_Read", "Home")).PageSize(20)
+                 )
+            )
+        </td>
+        <td>
+            @(Html.Kendo().Grid<WebModels.WebContent>()
+                     .Name("Highlight_Read")
+                    .Columns(columns =>
+                            {
+                                columns.Bound(c => c.ID).Title("ID").Width(50);
+                        columns.Bound(c => c.Title).Title("Tiêu đề");
+                        columns.Command(command =>
+                        {
+                            command.Custom(Resources.Common.Delete).Click("delete_handler");
+                        }).Width(80).HtmlAttributes(new { style = "text-align:center;" });
+                    }).HtmlAttributes(new { style = "height:500px" })
+                    .Scrollable()
+                    .Sortable().Selectable()
+                    .Pageable(pageable => pageable.Refresh(true).PageSizes(false).Info(false))
+                                    .DataSource(dataSource => dataSource.Ajax().Read(read => read.Action("Highlight_Read", "Home")).PageSize(20)
+                 )
+            )
+
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    function delete_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        $.ajax({
+            url: "@Url.Action("Highlight_Delete")",
+            type: "post",
+            data: { id: dataItem.ID },
+            dataType: "json",
+            success: function (data) {
+                if (data.success) {
+                    $("#Highlight_Read").data("kendoGrid").dataSource.read();
+                    top.load_hightlight();
+                } else {
+                    alert(data.error);
+                }
+            }
+        });
+    }
+    function choose_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+       var order = $(e.currentTarget).closest("tr").find('input').val();
+        $.ajax({
+            url: "@Url.Action("Highlight_Update")",
+            type: "post",
+            data: { id: dataItem.ID, order: order },
+            dataType: "json",
+            success: function (data) {
+                if (data.success) {
+                    $("#Highlight_Read").data("kendoGrid").dataSource.read(); top.load_hightlight();
+                } else {
+                    alert(data.error);
+                }
+            }
+        });
+
+    }
+</script>

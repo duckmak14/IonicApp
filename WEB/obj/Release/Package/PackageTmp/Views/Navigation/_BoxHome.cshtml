@@ -1,0 +1,86 @@
+﻿@model IEnumerable<WebModule>
+
+@{
+    var root = from x in Model where x.Status == (int)Status.Public select x;
+}
+
+
+
+@foreach (var node in root)
+{
+    var urlModule = node.URL;
+
+    if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+    {
+        urlModule = Url.Action("Index", "Home", new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID });
+    }
+    var contents = WEB.Controllers.NavigationController.GetAllContent(node.ID, 3);
+
+    <div class="col-md-6">
+        <div class="title-box">
+            <a href="@urlModule" title="@node.Title">  @node.Title </a>
+        </div>
+        @if (contents.Count() > 0)
+        {
+            var lstChild = contents.Skip(1).Take(2);
+
+            var firtItem = contents.FirstOrDefault();
+            var imgFirtItem = firtItem.Image != null ? firtItem.Image : "/images/no-image.jpg";
+
+            var urlFirtItem = Url.Action("Detail", "Home", new
+            {
+                metatitle = firtItem.MetaTitle != null ? firtItem.MetaTitle : "tapchimoitruong",
+                id = firtItem.ID,
+                m_metatitle = firtItem.WebModule.MetaTitle != null ? firtItem.WebModule.MetaTitle : "tapchimoitruong",
+                m_id = firtItem.WebModule.ID,
+                area = ""
+            });
+
+            <div class="margin-top-20 big-box-news">
+                <img class="card-img-top" src="@imgFirtItem" alt="@firtItem.Title">
+                <div class="card-body">
+                    <a href="@urlFirtItem" title="@firtItem.Title">
+                        <h6 class="card-title">
+                            @Html.RawSubString(firtItem.Title, 90)
+                        </h6>
+                    </a>
+                    <p class="single-blog-post-desc">
+                        @if (!string.IsNullOrWhiteSpace(firtItem.Description))
+                        {
+                            @Html.RawSubString(firtItem.Description, 190)
+                        }
+                    </p>
+                </div>
+            </div>
+
+            foreach (var item in lstChild)
+            {
+                var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+
+                var url = Url.Action("Detail", "Home", new
+                {
+                    metatitle = item.MetaTitle != null ? item.MetaTitle : "tapchimoitruong",
+                    id = item.ID,
+                    m_metatitle = item.WebModule.MetaTitle != null ? item.WebModule.MetaTitle : "tapchimoitruong",
+                    m_id = item.WebModule.ID,
+                    area = ""
+                });
+
+                <div class="single-blog-post d-flex">
+                    <div class="post-content"  style="padding-left: 0px;">
+                        <a href="@url" title="@item.Title" class="post-title">
+                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                            @Html.RawSubString(item.Title, 105)
+                        </a>
+                        <p class="single-blog-post-desc">
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                @Html.RawSubString(item.Description, 190)
+                            }
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+}

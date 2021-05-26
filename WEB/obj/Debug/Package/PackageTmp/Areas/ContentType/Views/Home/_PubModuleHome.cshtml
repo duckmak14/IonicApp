@@ -1,0 +1,85 @@
+﻿@{
+    
+}
+<div id="body_modulehome">
+
+</div> 
+ 
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () { 
+        load_modulehome();
+
+    });
+    function load_modulehome() {
+        var tempHtml = "";
+        tempHtml += "<div class=\"lbox\">";
+        tempHtml += "    <div class=\"ltitle\">  <h4 class=\"ltitle-body\"><a href=\"/$lang/$metatitle-$id\">$webmodule</a></h4> </div>";
+        tempHtml += "    <div class=\"lbody\"> <div class=\"home-news\"> $contents <div class=\"clear\"></div></div> </div>";
+        tempHtml += "</div>";
+        var tempitem1 = "";
+        tempitem1+="<div class=\"item\">";
+        tempitem1+="    <a href=\"$href\"><img src=\"$image\" class=\"thumb\" /></a>";
+        tempitem1+="    <h3 class=\"article-title\"><a href=\"$href\">$title</a></h3>";
+        tempitem1+="    <p class=\"date\">$createdDate</p>";
+        tempitem1+="    <p>$description</p>";
+        tempitem1 += "</div>";
+
+        var tempitem2=" <li> <img src=\"$image\" /><a target=\"_blank\" href=\"$href\" >$title</a></li>"; 
+
+        var html = "";
+        $.getJSON('@Url.Action("_PubModuleHome_Read", new { take=7})').done(function (data) {
+            var jdata = $.parseJSON(data.JsonArray);
+            $.each(jdata, function (i, jobject) {
+                var temp = tempHtml;
+                temp = temp.replace("$webmodule", jobject.Title).replace("$metatitle", jobject.MetaTitle).replace("$id", jobject.ID).replace("$lang", jobject.Lang);
+                var jcontent = jobject.JContent;
+                var chtml = ""; var itemcontent = ""; var itemother = " <div class=\"others\"><ul class=\"default\">";
+                $.each(jcontent, function (j, jcobject) {
+                   
+                    var href = "/" + jcobject.Lang + "/" + jcobject.WebModule_MetaTitle + "-" + jcobject.WebModuleID + "/" + jcobject.MetaTitle + "-" + jcobject.ID;
+                    var image = jcobject.Image;
+                    if (image==null || image=="") {
+                        image = '@ApplicationService.NoImage'+"";
+                    }
+                    var title = jcobject.Title;
+                    if (title.length > 100)
+                    {
+                        title = title.substr(0, 100)+"..";
+                    }
+                    if (j == 0)
+                    {
+                        var item1 = tempitem1;
+                        item1 = item1.replace("$title", title).replace("$image", image).replace("$href", href).replace("$href", href).replace("$createdDate", jcobject.CreatedDate).replace("$description", jcobject.Description)
+                        itemcontent += item1;
+                    } else {
+
+                        var item2 = tempitem2;
+                        item2 = item2.replace("$title", title).replace("$image", image).replace("$href", href);
+                        itemother += item2;
+                    }
+                  
+
+                });
+                itemother += "</ul></div>";
+                itemcontent += itemother;
+                chtml += itemcontent;
+                temp = temp.replace("$contents", chtml  );
+                html += temp;
+            });
+            $('#body_modulehome').html(html);
+        });
+    }
+</script>
+
+
+
+
+
+
+
+
+
+ 

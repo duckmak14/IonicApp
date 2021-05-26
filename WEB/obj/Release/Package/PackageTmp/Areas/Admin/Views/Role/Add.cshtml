@@ -1,0 +1,48 @@
+﻿@model WebModels.WebRole
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "Role", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{  
+<div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Mã nhóm", new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.RoleName, new { type = "text", name = "Tên nhóm", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.RoleName)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Tên nhóm", new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Title, new { type = "text", name = "Title", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Title)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Description, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Description, new { type = "text", name = "Mô tả nhóm", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Description)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+<div class="validation-group"><div class="controls">@Html.ValidationSummary(true)</div></div>
+    <div class="form-actions"><button class="btn btn-primary" type="submit"><i class="icon-save"></i> @Resources.Common.SaveChanges</button></div> @Html.AntiForgeryToken()
+
+</div>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        top.winsetup("Thêm phân quyền", 500, 250, true);  
+    });
+    function create_success() { top.winclose(); top.$("#grid").data("kendoGrid").dataSource.read(); }
+</script>

@@ -1,0 +1,17 @@
+﻿ 
+<div id="window" style="overflow: hidden;"></div>
+<script type="text/javascript">
+    var w = $("#window").kendoWindow({
+        width: 550 + "px", height: 280 + "px", modal: true, draggable: true,
+        resizable: true,
+        actions: ["Minimize", "Maximize", "Close"],
+        visible: false, iframe: true,
+        pinned: false
+    });
+    w.parent().css("position", "fixed");
+</script>
+<div class="row-fluid">
+    <div class="span5">
+        @Html.Action("_Highlight", new { take = 6 })                        
+    </div>   
+</div>

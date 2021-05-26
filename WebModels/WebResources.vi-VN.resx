@@ -1,0 +1,540 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AccessAdminSites" xml:space="preserve">
+    <value>AccessAdminSites</value>
+  </data>
+  <data name="AccessKey" xml:space="preserve">
+    <value>AccessKey</value>
+  </data>
+  <data name="AccessLogs" xml:space="preserve">
+    <value>AccessLogs</value>
+  </data>
+  <data name="AccessWebModules" xml:space="preserve">
+    <value>AccessWebModules</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Thêm</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Địa chỉ</value>
+  </data>
+  <data name="AdminSite" xml:space="preserve">
+    <value>AdminSite</value>
+  </data>
+  <data name="AdminSiteAccessKey" xml:space="preserve">
+    <value>Access Key</value>
+  </data>
+  <data name="AdminSiteDescription" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="AdminSiteID" xml:space="preserve">
+    <value>Mã Site</value>
+  </data>
+  <data name="AdminSiteParent" xml:space="preserve">
+    <value>Parent</value>
+  </data>
+  <data name="AdminSiteTitle" xml:space="preserve">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="AdminSiteUrl" xml:space="preserve">
+    <value>Site URL</value>
+  </data>
+  <data name="AirportCode" xml:space="preserve">
+    <value>Mã sân bay</value>
+  </data>
+  <data name="AirportName" xml:space="preserve">
+    <value>Tên sân bay</value>
+  </data>
+  <data name="Answer" xml:space="preserve">
+    <value>Nội dung trả lời</value>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Vùng</value>
+  </data>
+  <data name="Avatar" xml:space="preserve">
+    <value>Ảnh đại diện</value>
+  </data>
+  <data name="Body" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="CodeColor" xml:space="preserve">
+    <value>Mã mầu</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Công ty</value>
+  </data>
+  <data name="ContentType" xml:space="preserve">
+    <value>Kiểu nội dung</value>
+  </data>
+  <data name="ContentTypeID" xml:space="preserve">
+    <value>Mã kiểu nội dung</value>
+  </data>
+  <data name="Controller" xml:space="preserve">
+    <value>Controller</value>
+  </data>
+  <data name="CountryID" xml:space="preserve">
+    <value>Mã quốc gia</value>
+  </data>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Người tạo</value>
+  </data>
+  <data name="CreatedDate" xml:space="preserve">
+    <value>Ngày tạo</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Mô tả</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Sửa</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailNotValid" xml:space="preserve">
+    <value>Email không hợp lệ</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Họ tên</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="ID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Hình ảnh</value>
+  </data>
+  <data name="IndexLayout" xml:space="preserve">
+    <value>IndexLayout</value>
+  </data>
+  <data name="IndexView" xml:space="preserve">
+    <value>IndexView</value>
+  </data>
+  <data name="IsoCode" xml:space="preserve">
+    <value>Mã ISO</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>Khóa</value>
+  </data>
+  <data name="Link" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="Media" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="MetaDescription" xml:space="preserve">
+    <value>MetaDescription</value>
+  </data>
+  <data name="MetaKeywords" xml:space="preserve">
+    <value>MetaKeywords</value>
+  </data>
+  <data name="MetaTitle" xml:space="preserve">
+    <value>MetaTitle</value>
+  </data>
+  <data name="Mobile" xml:space="preserve">
+    <value>Di động</value>
+  </data>
+  <data name="ModifiedBy" xml:space="preserve">
+    <value>Người sửa</value>
+  </data>
+  <data name="ModifiedDate" xml:space="preserve">
+    <value>Ngày sửa</value>
+  </data>
+  <data name="Object" xml:space="preserve">
+    <value>Đối tượng</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Thứ tự</value>
+  </data>
+  <data name="ParentAdminSite" xml:space="preserve">
+    <value>ParentAdminSite</value>
+  </data>
+  <data name="ParentID" xml:space="preserve">
+    <value>Mã cấp cha</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Quyền </value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Giá</value>
+  </data>
+  <data name="PriceInfo" xml:space="preserve">
+    <value>Thông tin giá</value>
+  </data>
+  <data name="PriceOld" xml:space="preserve">
+    <value>Giá cũ</value>
+  </data>
+  <data name="ProductCode" xml:space="preserve">
+    <value>Mã sản phẩm</value>
+  </data>
+  <data name="PublishDetailLayout" xml:space="preserve">
+    <value>PublishDetailLayout</value>
+  </data>
+  <data name="PublishDetailView" xml:space="preserve">
+    <value>PublishDetailView</value>
+  </data>
+  <data name="PublishIndexLayout" xml:space="preserve">
+    <value>PublishIndexLayout</value>
+  </data>
+  <data name="PublishIndexView" xml:space="preserve">
+    <value>PublishIndexView</value>
+  </data>
+  <data name="RequiredTitle" xml:space="preserve">
+    <value>Vui lòng nhập tiêu đề</value>
+  </data>
+  <data name="RequiredUserName" xml:space="preserve">
+    <value>Vui lòng nhập username</value>
+  </data>
+  <data name="SeoTitle" xml:space="preserve">
+    <value>SeoTitle</value>
+  </data>
+  <data name="Skype" xml:space="preserve">
+    <value>Skype</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="SubAdminSites" xml:space="preserve">
+    <value>SubAdminSites</value>
+  </data>
+  <data name="SubQuerys" xml:space="preserve">
+    <value>SubQuerys</value>
+  </data>
+  <data name="SubWebModules" xml:space="preserve">
+    <value>SubWebModules</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="UID" xml:space="preserve">
+    <value>UID</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="UserId" xml:space="preserve">
+    <value>User ID</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="UserNameNotValid" xml:space="preserve">
+    <value>Username không hợp lệ</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Giá trị</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Xem</value>
+  </data>
+  <data name="WebCategoryID" xml:space="preserve">
+    <value>Mã danh mục</value>
+  </data>
+  <data name="WebContacts" xml:space="preserve">
+    <value>WebContacts</value>
+  </data>
+  <data name="WebContentID" xml:space="preserve">
+    <value>Web Content ID</value>
+  </data>
+  <data name="WebContents" xml:space="preserve">
+    <value>WebContents</value>
+  </data>
+  <data name="WebModule" xml:space="preserve">
+    <value>WebModule</value>
+  </data>
+  <data name="WebModuleID" xml:space="preserve">
+    <value>WebModuleID</value>
+  </data>
+  <data name="Yahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="LinkVideo" xml:space="preserve">
+    <value>Link video</value>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value>Sự kiện</value>
+  </data>
+  <data name="Assizes" xml:space="preserve">
+    <value>Số đo 3 vòng</value>
+  </data>
+  <data name="Bday" xml:space="preserve">
+    <value>Ngày sinh</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Giới tính</value>
+  </data>
+  <data name="Height" xml:space="preserve">
+    <value>Chiều cao</value>
+  </data>
+  <data name="Marriage" xml:space="preserve">
+    <value>Tình trạng hôn nhân</value>
+  </data>
+  <data name="Nationality" xml:space="preserve">
+    <value>Quốc tịch</value>
+  </data>
+  <data name="Event" xml:space="preserve">
+    <value>Ngày diễn ra sự kiện</value>
+  </data>
+  <data name="PublishDate" xml:space="preserve">
+    <value>Ngày phát hành</value>
+  </data>
+  <data name="PartnerName" xml:space="preserve">
+    <value>Tên đối tác</value>
+  </data>
+  <data name="CarOwerName" xml:space="preserve">
+    <value>Tên lái xe</value>
+  </data>
+  <data name="NumberPlate" xml:space="preserve">
+    <value>BKS</value>
+  </data>
+  <data name="Weight" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+  <data name="PartnerID" xml:space="preserve">
+    <value>PartnerID</value>
+  </data>
+  <data name="DistrictName" xml:space="preserve">
+    <value>Quận/Huyện</value>
+  </data>
+  <data name="LocationName" xml:space="preserve">
+    <value>Tên địa điểm</value>
+  </data>
+  <data name="ProvinceName" xml:space="preserve">
+    <value>Tỉnh</value>
+  </data>
+  <data name="AddressName" xml:space="preserve">
+    <value>Địa chỉ</value>
+  </data>
+  <data name="EndLocation" xml:space="preserve">
+    <value>Nơi trả</value>
+  </data>
+  <data name="RouteCode" xml:space="preserve">
+    <value>Mã lộ trình</value>
+  </data>
+  <data name="StartLocation" xml:space="preserve">
+    <value>Nơi nhận</value>
+  </data>
+  <data name="EndLocationID" xml:space="preserve">
+    <value>EndLocationID</value>
+  </data>
+  <data name="StartLocationID" xml:space="preserve">
+    <value>StartLocationID</value>
+  </data>
+  <data name="CarPartnerName" xml:space="preserve">
+    <value>Đơn vị chủ quản</value>
+  </data>
+  <data name="PartnerNameExists" xml:space="preserve">
+    <value>Tên đối tác </value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Khoảng cách</value>
+  </data>
+  <data name="WeightName" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+  <data name="WeightID" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+  <data name="ChangePrice" xml:space="preserve">
+    <value>Tùy biến giá</value>
+  </data>
+  <data name="DestinationPartner" xml:space="preserve">
+    <value>Đơn vị thuê</value>
+  </data>
+  <data name="DestinationPartnerID" xml:space="preserve">
+    <value>DestinationPartnerID</value>
+  </data>
+  <data name="Note" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="SourcePartner" xml:space="preserve">
+    <value>Nhà thầu</value>
+  </data>
+  <data name="SourcePartnerID" xml:space="preserve">
+    <value>SourcePartnerID</value>
+  </data>
+  <data name="ActualWeight" xml:space="preserve">
+    <value>TT chạy</value>
+  </data>
+  <data name="PlanDate" xml:space="preserve">
+    <value>Ngày</value>
+  </data>
+  <data name="TripCount" xml:space="preserve">
+    <value>SL</value>
+  </data>
+  <data name="VehicleWeight" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+  <data name="VehicleID" xml:space="preserve">
+    <value>Tải trọng</value>
+  </data>
+  <data name="TrackingCode" xml:space="preserve">
+    <value>Mã</value>
+  </data>
+  <data name="TotalMoney" xml:space="preserve">
+    <value>Thành tiền</value>
+  </data>
+  <data name="UnitPrice" xml:space="preserve">
+    <value>Đơn giá</value>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>Giờ đến</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>Giờ đi</value>
+  </data>
+  <data name="PartnerCode" xml:space="preserve">
+    <value>Mã đối tác</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Số lượng</value>
+  </data>
+  <data name="DetailCode" xml:space="preserve">
+    <value>Mã chi tiết</value>
+  </data>
+  <data name="LocationParentID" xml:space="preserve">
+    <value>Địa điểm cha</value>
+  </data>
+  <data name="OtherName" xml:space="preserve">
+    <value>Tên gọi khác</value>
+  </data>
+  <data name="TripBack" xml:space="preserve">
+    <value>Chiều về</value>
+  </data>
+</root>

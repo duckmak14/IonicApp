@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+<ul class="actions">
+    @if (ViewBag.Add)
+    {
+        <li>
+            <a href="javascript:void(0)" id="btnadd" class="btn btn-mini  btn-blue btn-inverse"><i class="icon-plus"></i> @Resources.Common.Add  </a>
+        </li>
+    }
+    @if (ViewBag.Edit)
+    {
+        <li>
+            <a href="javascript:void(0)" id="btnedit" class="btn btn-mini   btn-blue btn-inverse"><i class="icon-edit"></i> @Resources.Common.Edit  </a>
+        </li>
+    }
+    @if (ViewBag.Delete)
+    {
+        <li>
+            <a href="javascript:void(0)" id="btndelete" class="btn btn-mini  btn-red btn-inverse"><i class="icon-trash"></i> @Resources.Common.Delete  </a>
+        </li>
+    }
+</ul>
+

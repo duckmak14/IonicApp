@@ -1,0 +1,37 @@
+﻿@model List<WebModels.Route>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+@using (Html.BeginForm("ExportExcel", "ManageRoute", FormMethod.Post, new { @class = "form-horizontal fix" }))
+{
+    @*<p>Bạn có muốn xuất file Excel?</p>*@
+<div class="alert alert-info">
+    @Html.Raw("Bạn có muốn xuất file Excel?") <br />
+    @foreach (var item in Model)
+    {
+        @Html.Hidden("[" + Model.IndexOf(item) + "].RouteCode", @item.RouteCode)
+        @Html.Hidden("[" + Model.IndexOf(item) + "].StartLocationID", @item.StartLocationID)
+        @Html.Hidden("[" + Model.IndexOf(item) + "].EndLocationID", @item.EndLocationID)
+        @Html.Hidden("[" + Model.IndexOf(item) + "].ID", @item.ID)
+        @Html.Hidden("[" + Model.IndexOf(item) + "].Distance", @item.Distance)
+
+    }
+</div>
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Xác nhận</button>
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+
+    function deletes_success() {
+        top.$("#window").data("kendoWindow").close();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+
+    $(document).ready(function () {
+        top.winsetup("Xuất file Quản lý lộ trình", 400, 85, true);
+    });
+</script>

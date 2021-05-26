@@ -1,0 +1,171 @@
+﻿@model IEnumerable<WebModule>
+@{
+    var root = from x in Model where x.ParentID == null select x;
+}
+
+<script>
+    function calc() {
+        if (document.getElementById('check').checked) {
+            $('body').addClass("body-fix");
+        } else {
+            $('body').removeClass("body-fix");
+        }
+      
+    }
+</script>
+
+<header id="menu-div">
+    <div class="container">
+        <input type="checkbox" name="" id="check" onclick="calc();">
+        <div class="nav-btn">
+            <div class="nav-links">
+                <ul>
+                    @foreach (var node in root)
+                    {
+                        var sub = from x in Model where x.ParentID == node.ID select x;
+                        var url = node.URL;
+                        if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+                        {
+                            if (node.ID == 3)
+                            {
+                                url = "#";
+                            }
+                            else
+                            if (node.ID != 11)
+                            {
+                                url = Url.Action("Index", "Home", new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID });
+                            }
+                            else
+                            {
+                                url = "https://www.facebook.com/sharer/sharer.php?u=tapchimoitruong.vn&t=TITLE";
+                            }
+                        }
+                        <li class="nav-link" style="--i: .6s;">
+                            @if (sub.Any())
+                            {
+                                <a title="@node.Title" href="@url">
+                                    @node.Title
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                                @CreateSubMenuLv1(sub)
+                            }
+                            else
+                            {
+                                if (node.ID != 11)
+                                {
+                                    <a title="@node.Title" href="@url">
+                                        @node.Title
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a title="@node.Title" href="@url" class="share facebook" data-network="facebook">
+                                        @node.Title
+                                    </a>
+                                }
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="box-date">
+            @String.Format("{0:dddd}", DateTime.Now), ngày @String.Format("{0:dd/MM/yyyy}", DateTime.Now)
+        </div>
+
+        <div class="hamburger-menu-container">
+            <div class="hamburger-menu">
+                <div></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+@helper CreateSubMenuLv1(IEnumerable<WebModels.WebModule> nodes)
+{
+    <div class="dropdown">
+        <ul>
+            @foreach (var node in nodes)
+            {
+
+                var sub = from x in Model where x.ParentID == node.ID select x;
+                var url = node.URL;
+                if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+                {
+                    url = Url.Action("Index", "Home", new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID });
+                }
+                <li class="dropdown-link">
+                    @if (sub.Any())
+                    {
+                        <a title="@node.Title" href="@url">
+                            @node.Title
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        @CreateSubMenuLv2(sub)
+                    }
+                    else
+                    {
+                        <a title="@node.Title" href="@url">
+                            @node.Title
+                        </a>
+                    }
+                </li>
+            }
+            <div class="arrow"></div>
+        </ul>
+    </div>
+}
+
+@helper CreateSubMenuLv2(IEnumerable<WebModels.WebModule> nodes)
+{
+    <div class="dropdown second">
+        <ul>
+            @foreach (var node in nodes)
+            {
+                <li class="dropdown-link">
+                    @if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+                    {
+                        @Html.ActionLink(@node.Title, "Index", "Home",
+                        new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID },
+                        new { title = node.Title })
+                    }
+                    else
+                    {
+                        <a href="@node.URL" target="@node.Target">@node.Title</a>
+                    }
+                </li>
+            }
+            <div class="arrow"></div>
+        </ul>
+    </div>
+}
+
+<script>
+    $('a.share').click(function (e) {
+        e.preventDefault();
+        var $link = $(this);
+        var href = $link.attr('href');
+        var network = $link.attr('data-network');
+
+        var networks = {
+            facebook: { width: 600, height: 300 },
+            twitter: { width: 600, height: 254 },
+            google: { width: 515, height: 490 },
+            linkedin: { width: 600, height: 473 }
+        };
+
+        var popup = function (network) {
+            var leftPosition, topPosition;
+            //Allow for borders.
+            leftPosition = (window.screen.width / 2) - ((networks[network].width / 2) + 10);
+            //Allow for title and status bars.
+            topPosition = (window.screen.height / 2) - ((networks[network].height / 2) + 50);
+
+            var options = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,';
+            window.open(href, '', options + 'height=' + networks[network].height + ',width=' + networks[network].width + ',left=' + leftPosition + ',top=' + topPosition);
+        }
+
+        popup(network);
+    });
+</script>

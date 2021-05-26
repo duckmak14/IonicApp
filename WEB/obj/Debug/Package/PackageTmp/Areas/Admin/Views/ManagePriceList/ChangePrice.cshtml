@@ -1,0 +1,58 @@
+﻿@model PercentPriceViewModel
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("ChangePrice", "ManagePriceList", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Percent, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Percent, new { type = "text", name = "BKS", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Percent)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.AntiForgeryToken()
+}
+
+<script type="text/javascript">
+    //    if (screen.width > 1500) {
+    //        top.winsetup("Thay đổi giá", 1440 * 0.3, screen.height * 0.06, true);
+    //    } else if (screen.width < 400) {
+    //        top.winsetup("Thay đổi giá", screen.width * 0.8, screen.height * 0.1, true);
+    //    }
+    //    else {
+    //        top.winsetup("Thay đổi giá", screen.width * 0.3, screen.height * 0.08, true);
+    //}
+    top.winsetup("Thay đổi giá", 500, 115, true);
+    if (screen.width < 576) {
+        top.winsetup("Thay đổi giá", screen.width * 0.8, screen.height * 0.12, true);
+    }
+    function change_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Đổi giá', 'Đổi thành công.');
+
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+</script>
+
+

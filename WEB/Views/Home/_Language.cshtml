@@ -1,0 +1,11 @@
+﻿@model IList<Language>
+@{
+    Layout = null;
+}
+@foreach (Language language in Model)
+{
+    string img = language.ID + ".png";
+    <a href="/base/changelanguage/@language.ID">
+        <img src="/images/flags/@img" title="@language.Title" alt="@img" />@language.Title
+    </a>
+}

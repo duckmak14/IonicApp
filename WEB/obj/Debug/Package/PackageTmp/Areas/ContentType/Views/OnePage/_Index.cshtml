@@ -1,0 +1,45 @@
+﻿@model WebModels.WebModule
+@{
+   
+}
+
+<div class="page-header">
+    <div class="pull-left">
+        <div class="breadcrumbs"></div>
+    </div>
+    <div class="pull-right"> 
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="box">
+            <div class="box-content nopadding">
+
+                
+                        <div class="row-fluid control-group">
+                            <div style="width:99%;">
+                                <div class="box"> 
+                                    <div class="box-content nopadding">
+                                        @Html.Raw(Model.Body)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                <div class="form-actions" style="text-align:center;">
+                    <button class="btn btn-primary btneditmodule" type="button">@Resources.Common.Edit</button>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+                                            
+<script type="text/javascript">
+   
+   
+    $(document).ready(function () { 
+        $(".btneditmodule").click(function () {
+            opendlg("/contenttype/onepage/editmodule/" + @Model.ID +"");  
+        }); 
+     });
+</script>

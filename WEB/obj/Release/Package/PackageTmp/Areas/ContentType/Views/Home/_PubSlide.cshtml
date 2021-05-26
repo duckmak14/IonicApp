@@ -1,0 +1,11 @@
+﻿@model IEnumerable<WebModels.WebSlide>
+@{
+}
+
+
+<div class="bxslider">
+    @foreach (var m in Model)
+    {
+        <div> <a href="@m.Link"> <img src="@m.Image" alt="@m.Title" title="@m.Title"></a></div>
+    }
+</div>

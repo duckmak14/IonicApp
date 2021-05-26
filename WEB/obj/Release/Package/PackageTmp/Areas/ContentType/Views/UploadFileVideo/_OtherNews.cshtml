@@ -1,0 +1,68 @@
+﻿@model IEnumerable<WebModels.WebContent>
+@{
+    var webmodule = (WebModule)ViewBag.WebModule;
+    ViewBag.Title = "_OtherNews";
+    Layout = "";
+}
+
+
+<hr class="style-three2" />
+
+<div class="other-news">
+    <h3>Các tin khác</h3>
+    <ul class="other-news">
+        @foreach (var item in Model)
+        {
+            var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+            var url = Url.Action("Detail", "Home", new
+            {
+                metatitle = item.MetaTitle != null ? item.MetaTitle : "web",
+                id = item.ID,
+                m_metatitle = webmodule.MetaTitle != null ? webmodule.MetaTitle : "web",
+                m_id = webmodule.ID,
+                area = ""
+            });
+            <li>
+                <a href="@url" title="@item.Title">
+                    <h2>
+                        <i class="fa fa-check"></i>
+                        @item.Title
+                    </h2>
+                </a>
+
+            </li>
+        }
+    </ul>
+</div>
+
+<style>
+    hr.style-three2 {
+        border: 0;
+        border-bottom: 1px dashed #ccc;
+        background: #999;
+    }
+
+    .other-news h3 {
+        color: red;
+        text-transform: uppercase;
+        margin: 10px 0;
+        font-size: 17px;
+    }
+
+    .other-news li {
+        list-style: none;
+    }
+
+        .other-news li h2 {
+            font-size: 15px;
+            margin: 10px;
+            color: #000;
+        }
+        .other-news li i {
+            color: #ccc !important;
+        }
+
+        .other-news li h2:hover {
+            color: #ff6a00;
+        }
+</style>

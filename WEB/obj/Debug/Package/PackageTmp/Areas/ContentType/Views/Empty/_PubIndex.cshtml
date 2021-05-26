@@ -1,0 +1,126 @@
+﻿@model WebModule
+@*@{
+        Layout = "~/Views/Shared/_Layout_Introduction.cshtml";
+    }*@
+
+@{
+    var webmodule = Model;
+    var urlcat = webmodule.URL;
+    if (string.IsNullOrEmpty(webmodule.URL) || string.IsNullOrWhiteSpace(webmodule.URL))
+    {
+        urlcat = Url.Action("Index", "Home", new { metatitle = webmodule.MetaTitle != null ? webmodule.MetaTitle : "web", id = webmodule.ID, area = "" });
+    }
+    TempData["Title"] = Utility.UseStringHasValue(webmodule.SeoTitle, webmodule.Title);
+    TempData["Description"] = Utility.UseStringHasValue(webmodule.MetaDescription, webmodule.Description);
+    TempData["Keywords"] = Utility.UseStringHasValue(webmodule.MetaKeywords, webmodule.SeoTitle);
+    TempData["Description"] = String.IsNullOrEmpty(webmodule.Description) ? webmodule.Title : webmodule.Description;
+    TempData["URL"] = ApplicationService.Domain + urlcat;
+    TempData["Cat"] = webmodule.Title;
+
+    <link href="~/Content/themes/web/css/jquery-ui.css" rel="stylesheet" />
+
+    
+<img src="@webmodule.Icon" class="img-responsive col-lg-12 col-md-12 col-sm-12 col-xs-12 padd0" />
+<div class="sitemap">
+    <div class="container">
+        <div class="col-md-12">
+            <ol class="breadcrumb">
+                @Html.Action("_SiteMap", "Home", new { area = "" })
+            </ol>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="sidebar ">
+                    <h1 class="hidden"> @webmodule.Title </h1>
+
+                    @Html.Raw(HttpUtility.HtmlDecode(webmodule.Body))
+                    <div id="tabContainer"></div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="fb">
+
+                    <div id="fb-root"></div>
+                    <script>
+                        (function (d, s, id) {
+                            var js, fjs = d.getElementsByTagName(s)[0];
+                            if (d.getElementById(id)) return;
+                            js = d.createElement(s); js.id = id;
+                            js.src = "//connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v2.8&appId=726004724136122";
+                            fjs.parentNode.insertBefore(js, fjs);
+                        }(document, 'script', 'facebook-jssdk'));</script>
+
+                    <div class="fb-comments" data-href="@ApplicationService.Domain@urlcat" data-numposts="15" data-colorscheme="light" data-width="100%" data-numposts="5"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                @Html.Action("_ColLeft", "WebModule", new { area = "" })
+                @Html.Action("_TopDestination", "Navigation", new { key = "_TopDestination", area = "" })
+                @*@Html.Action("_OtherTour", new { id = webmodule.ID })*@
+                @Html.Action("_Adv", "Advertisement", new { position = "adv_right", area = "" })
+            </div>
+        </div>
+    </div>
+
+}
+<style>
+    .ckeditor-tabber {
+        display: none;
+    }
+</style>
+<script src="~/Content/themes/web/js/jquery-ui.js"></script>
+<script>
+
+    $(document).ready(function () {
+        var test = document.getElementsByClassName("ckeditor-tabber");
+
+        if (test.length == 0) {
+            $("#tabContainer").addClass("hidden");
+        }
+        else {
+            $("#tabContainer").removeClass("hidden");
+        }
+
+    });
+
+    function generateTabs() {
+        var jqueryTabRoot = $('#tabContainer');
+
+        var jqueryTabULTag = $(document.createElement('ul'));
+        $(jqueryTabRoot).append(jqueryTabULTag);
+
+        var dlTag = $('.ckeditor-tabber');
+        var dtTags = $(dlTag).find('dt');
+        // append UL Tag
+        for (var i = 0; i < dtTags.length ; i++) {
+            var jqueryTabLITag = $(document.createElement('li'));
+
+            var jqueryTabATag = $(document.createElement('a'));
+            $(jqueryTabATag).attr('href', '#tabs-' + (i + 1));
+            $(jqueryTabATag).html($(dtTags[i]).html());
+
+            $(jqueryTabLITag).append(jqueryTabATag);
+
+            $(jqueryTabULTag).append(jqueryTabLITag);
+        }
+        $(jqueryTabRoot).append(jqueryTabULTag);
+
+        // append DIV Tag
+        for (var i = 0; i < dtTags.length; i++) {
+            var ddTag = $(dtTags[i]).next('dd');
+            var ddTagContent = $(ddTag).html();
+            var jqueryTabDivTag = $(document.createElement('div'));
+            $(jqueryTabDivTag).attr('id', 'tabs-' + (i + 1));
+            $(jqueryTabDivTag).html(ddTagContent);
+
+            $(jqueryTabRoot).append(jqueryTabDivTag);
+        }
+
+        $(jqueryTabRoot).tabs();
+    }
+
+    generateTabs();
+</script>

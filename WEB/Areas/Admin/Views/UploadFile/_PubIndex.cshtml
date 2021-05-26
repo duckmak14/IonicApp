@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SupportOnline>
+@{
+   
+    Layout = "";
+}
+@foreach (var item in Model)
+{
+    <div class="banner">
+        <div class="title-box">
+            @item.Title
+        </div>
+        <div class="content-box">
+            @foreach (var subitem in WEB.Areas.Admin.Controllers.SupportController.GetListSP(item.ID))
+            {
+                <div class="item-sp">
+                    <div class="support-detail">
+                        <a href="ymsgr:sendim?@subitem.Yahoo&amp;m=Hello."><img src="/content/themes/web/image/yahoo.jpg"></a>
+                        <a href="skype:@subitem.Skype?chat"><img src="/content/themes/web/image/skype1.png"></a>
+                        <div class="clear"></div>
+                        <div style="height: 50px;">
+                            <p> @subitem.Title: @subitem.Phone </p>
+                            <p> Email: @subitem.Email </p>
+                          
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

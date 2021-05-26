@@ -1,0 +1,49 @@
+﻿@model IEnumerable<WebModels.WebModule>
+
+@{
+    var webmodule = (WebModule)ViewBag.WebModule;
+    var moduletran = webmodule;
+    var urlcat = webmodule.URL;
+    if (string.IsNullOrEmpty(webmodule.URL) || string.IsNullOrWhiteSpace(webmodule.URL))
+    {
+        urlcat = Url.Action("Index", "Home", new { metatitle = webmodule.MetaTitle != null ? webmodule.MetaTitle : "web", id = webmodule.ID, area = "" });
+    }
+    TempData["Title"] = Utility.UseStringHasValue(webmodule.SeoTitle, webmodule.Title);
+    TempData["Description"] = Utility.UseStringHasValue(webmodule.MetaDescription, webmodule.Description);
+    TempData["Keywords"] = Utility.UseStringHasValue(webmodule.MetaKeywords, webmodule.SeoTitle);
+    TempData["URL"] = ApplicationService.Domain + urlcat;
+    TempData["Cat"] = webmodule.Title;
+}
+
+
+<div class="row margin-top-20">
+    <div class="col-md-8">
+
+        <ul class="list-edition">
+            @foreach (var node in Model)
+            {
+                var url = node.URL;
+                if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+                {
+                    url = Url.Action("Index", "Home", new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID, area = "" });
+                }
+                <li>
+                    <a title="@node.Title" href="@url">
+                        <h2> <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                         @node.Title</h2>
+                    </a>
+                </li>
+            }
+        </ul>
+
+
+    </div>
+    <div class="col-md-4">
+        @*@Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_chi_tiet" })*@
+        @Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_home_news" })
+
+        @Html.Action("_Body", "WebSimpleContent", new { area = "", key = "facebook" })
+
+        @Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_home_news_bottom" })
+    </div>
+</div>

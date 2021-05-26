@@ -1,0 +1,166 @@
+﻿@model WebModels.WebContent
+
+<script>
+    $(document).ready(function () {
+        $('.mydatepicker').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true
+        });
+    });
+
+    jQuery.validator.methods.date = function (value, element) {
+        var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+        if (isChrome) {
+            var d = new Date();
+            return this.optional(element) || !/Invalid|NaN/.test(parseDate(value));
+        } else {
+            return this.optional(element) || !/Invalid|NaN/.test(parseDate(value));
+        }
+    };
+</script>
+
+@using (Html.BeginForm("Add", "UploadFilePdf", new { WebModuleID = ViewBag.ID, UID = ViewBag.UID }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+{
+    <div class="control-group">
+        @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Title, new { @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+    </div>
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.PublishDate, new { @class = "control-label" })
+        <div class="controls">
+            @Html.TextBoxFor(m => m.PublishDate, new { Value = (Model.PublishDate.HasValue ? Model.PublishDate.Value.ToString("dd/MM/yyyy") : ""), @class = "input-block-level mydatepicker", @readonly = "readonly" })
+        </div>
+    </div>
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.Link, new { @class = "control-label" })
+
+        <div class="controls">
+            <input class="input-xlarge" disabled="disabled" id="linkOrg" />
+            <input type="file" class="upload input-block-level" name="file" id="filePdf" />
+        </div>
+    </div>
+
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.Image, new { @class = "control-label" })
+        <div class="controls">
+            <div class="ctr-thumb" data-lang="">
+                <div class="thumb" style="width: 120px; height: 100px;">
+                    <img src='@String.Format("{0}",!string.IsNullOrEmpty(Model.Image)?Model.Image:ApplicationService.NoImage)' />
+                    @Html.HiddenFor(m => m.Image, new { @class = "hf-image" })
+                </div>
+                <div class="act">
+                    <ul>
+                        <li>
+                            <a href="javascrit:void(0)" style="position:relative; ">
+                                <span style=" top:0px; width: 140px; left: 0; position: absolute">Ảnh từ máy tính</span>
+                                <input class="file-image" name="image" data-lang="" accept="image/jpeg,image/png"
+                                       style="opacity: 0; height:20px; cursor: pointer;" type="file" />
+                            </a>
+                        </li>
+                        <li><a class="thumb-gallery" href="javascript: openwin('/admin/upload/image?uid=@ViewBag.UID&func=setimagepath', '_blank', 900, 550)">Ảnh từ thư viện</a></li>
+                        <li><a href="javascript:openwin('/admin/upload/imagelink?uid=@ViewBag.UID&func=setimagepath', '_blank', 700, 180)" class="thumb-link">Ảnh từ liên kết khác</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-group">
+        @Html.LabelFor(m => m.Status, new { @class = "control-label" })
+        <div class="controls">
+            @Html.DropDownListFor(
+                            m => m.Status,
+                            new SelectList(new List<SelectListItem>
+                                {
+                                new SelectListItem{ Text="Phát hành", Value = "1" },
+                                new SelectListItem{ Text="Nội bộ", Value = "0" },
+                                    new SelectListItem{ Text="Khóa", Value = "-1" }
+
+                                }, "Value", "Text")
+                            )
+        </div>
+    </div>
+    <div class="validation-group">
+        <div class="controls">
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><i class="icon-save"></i>@Resources.Common.SaveChanges</button>
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    top.winsetup("@Html.Raw(Resources.Common.AddItem)", 500, 500, true);
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+
+
+    var imageFilter = new Array('.jpg', '.png', '.gif', '.bmp');
+    function checkFileType(file, filter) {
+        var fileName = file.name;
+        var fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+        if (filter.indexOf(fileExtension.toLowerCase()) < 0) {
+            return false;
+        }
+        return true;
+    }
+    var maxImageFileSize = 5242880;
+    function checkFileSize(file, maxFileSize) {
+        if (file.size > maxFileSize) {
+            return false;
+        }
+        return true;
+    }
+    var current_thumb = "";
+
+    $(document).ready(function () {
+        $('#filePdf').change(function (e) {
+            var fileName = e.target.files[0].name;
+            $("#linkOrg").val(fileName);
+            //alert('The file "' + fileName + '" has been selected.');
+        });
+        current_thumb = $('.thumb #image').val();
+    });
+
+
+    $('.file-image').change(function (e) {
+        var files = this.files;
+        if (files.length > 0) {
+            var i = 0;
+            var isValid = checkFileType(files[i], imageFilter) && checkFileSize(files[i], maxImageFileSize);
+            if (isValid) {
+                var reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                reader.onloadend = function (e) {
+                    var result = e.target.result;
+                    if (result != null) {
+                        $('.ctr-thumb .thumb img').attr('src', result);
+                    }
+                }
+            }
+            else {
+                alert('File: [' + files[i].name + '] tải lên không hợp lệ.\nFile hợp lệ là file ảnh có định dạng: ' + imageFilter.toString() + ' và dung lượng tối đa cho phép là: ' + maxImageFileSize / (1024 * 1024) + 'MB');
+            }
+        }
+    });
+    function setimagepath(path) {
+        $('.ctr-thumb .thumb img').attr('src', path);
+        $('.ctr-thumb .thumb .hf-image').val(path);
+        var fileimage = $('.file-image');
+        fileimage = fileimage.replaceWith(fileimage.clone(true));
+    }
+</script>
+
+<link href="~/Content/themes/web/bootstrap/css/bootstrap-datepicker3.standalone.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-datepicker.min.js"></script>

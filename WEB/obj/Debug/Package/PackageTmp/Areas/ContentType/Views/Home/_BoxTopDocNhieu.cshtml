@@ -1,0 +1,28 @@
+﻿@model IEnumerable<WebModels.WebContent>
+
+
+
+@foreach (var item in Model)
+{
+    var img = item.Image != null ? item.Image : "/images/no-image.jpg";
+
+    var url = Url.Action("Detail", "Home", new
+    {
+        metatitle = item.MetaTitle != null ? item.MetaTitle : "tapchimoitruong",
+        id = item.ID,
+        m_metatitle = item.WebModule.MetaTitle != null ? item.WebModule.MetaTitle : "tapchimoitruong",
+        m_id = item.WebModule.ID,
+        area = ""
+    });
+
+    <div class="single-blog-post d-flex">
+        <div class="post-thumbnail">
+            <img src="@img" alt="@item.Title" />
+        </div>
+        <div class="post-content">
+            <a href="@url" title="@item.Title" class="post-title">
+                @Html.RawSubString(item.Title, 105)
+            </a>
+        </div>
+    </div>
+}

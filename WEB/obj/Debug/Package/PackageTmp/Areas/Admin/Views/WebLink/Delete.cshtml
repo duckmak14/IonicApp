@@ -1,0 +1,33 @@
+﻿@model WebModels.WebLink
+
+@{ 
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+     
+}
+
+@using (Html.BeginForm("Delete", "WebLink", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{   
+    <div class="alert alert-info"> 
+		@Html.Raw(Resources.Common.DeleteSureItem):  <strong>@Html.DisplayFor(m => m.Title )</strong>  ?
+	</div>
+ 
+    <div class="validation-group"> 
+        @Html.ValidationSummary(true) 
+    </div>
+
+    <div style="text-align:center;">
+        <button class="btn btn-primary" type="submit">@Resources.Common.Delete</button> 
+    </div>
+    @Html.HiddenFor(m => m.ID )
+    @Html.HiddenFor(m => m.Title ) 
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        top.winsetup("@Html.Raw(Resources.Common.DeleteItem)", 550, 150, true);
+    });
+    function delete_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+</script>

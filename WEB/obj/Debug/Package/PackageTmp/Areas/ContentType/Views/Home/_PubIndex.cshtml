@@ -1,0 +1,93 @@
+﻿<!--@{
+    var webmodule = (WebModule)ViewBag.WebModule;
+    TempData["Title"] = Utility.UseStringHasValue(webmodule.SeoTitle, webmodule.Title);
+    TempData["Description"] = Utility.UseStringHasValue(webmodule.MetaDescription, webmodule.Description);
+    TempData["Keywords"] = Utility.UseStringHasValue(webmodule.MetaKeywords, webmodule.SeoTitle);
+}
+
+<div class="notification">
+    <div class="row ">
+        <div class="col-md-8">
+            @Html.Action("_TieuDeHot", "Home", new { area = "ContentType", take = 5 })
+        </div>
+        <div class="col-md-4">
+            <form action="@Url.Action("Search", "Home", new { area = "" })" class="form-search">
+                <div class="input-group">
+                    <input type="text" class="form-control input-none-boder-radius"
+                           placeholder="Nhập từ khóa tìm kiếm" id="inputGroup" name="keyword" />
+                    <button class="input-group-addon">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row margin-top-30">
+    <div class="col-md-8">
+        <div class="page-left">
+            <div class="single-page-left">-->
+                @*@Html.Action("_PubSlide", "Home", new { area = "ContentType" })*@
+                <!--@Html.Action("_SlideSuKienHoatDong", "Home", new { area = "ContentType", uid = "su-kien-hoat-dong" })
+            </div>
+            <div class="single-page-left">
+                @Html.Action("_BoxAnPhamXuatBan", "Home", new { area = "ContentType" })
+            </div>
+            <div class="single-page-left">
+                @Html.Action("_AdvCenterHome", "Advertisement", new { area = "", position = "_banner_center_home" })              
+            </div>
+        </div>
+
+        <div class="single-page-left">
+            <div class="row">-->
+                @*@Html.Action("_BoxNewsByWebModuleUID", "Home", new { uid = "phap-luat-chinh-sach", area = "ContentType" })
+                @Html.Action("_BoxNewsByWebModuleUID", "Home", new { uid = "dien-dan-trao-doi", area = "ContentType" })
+                @Html.Action("_BoxNewsByWebModuleUID", "Home", new { uid = "phat-trien-ben-vung", area = "ContentType" })
+                @Html.Action("_BoxNewsByWebModuleUID", "Home", new { uid = "giai-phap-cong-nghe-xanh", area = "ContentType" })*@
+                <!--@Html.Action("_BoxHome", "Navigation", new { key = "box_home", area = "" })
+                
+            </div>
+            <div class="row">
+                @Html.Action("_BoxNghienCuu", "Home", new { uid = "nghien-cuu", area = "ContentType" })
+            </div>
+            <div class="row">
+                @Html.Action("_BoxThuVienAnh", "Home", new { uid = "thu-vien-anh", area = "ContentType" })
+                @Html.Action("_BoxVideo", "Home", new { uid = "thu-vien-video", area = "ContentType" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" id="tabs-home">
+        <div class="sidebar-widget">
+            <div class="single-sidebar">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item" style="width: 50%;">
+                        <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"> SỰ KIỆN - HOẠT ĐỘNG</a>
+                    </li>
+                    <li class="nav-item" style="width: 50%;">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">ĐỌC NHIỀU</a>
+                    </li>
+                </ul>--><!-- Tab panes -->
+                <!--<div class="tab-content">
+                    <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                        @Html.Action("_BoxSuKienHoatDong", "Home", new { uid = "su-kien-hoat-dong", area = "ContentType" })
+                    </div>
+                    <div class="tab-pane" id="tabs-2" role="tabpanel">
+                        @Html.Action("_BoxTopDocNhieu", "Home", new { area = "ContentType" })
+                    </div>
+                </div>
+            </div>
+
+
+            @Html.Action("_AdvHoSoTuLieu", "Advertisement", new { area = "", position = "_adv_home_news" })
+
+
+            <div class="single-sidebar-2">
+                @Html.Action("_Body", "WebSimpleContent", new { area = "", key = "facebook" })
+            </div>
+
+            @Html.Action("_Adv", "Advertisement", new { area = "", position = "_adv_home_news_bottom" })
+        </div>
+
+    </div>
+</div>-->

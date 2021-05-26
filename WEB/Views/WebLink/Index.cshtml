@@ -1,0 +1,25 @@
+﻿@model IEnumerable<WebLink>
+@{
+    
+}
+
+@if (Model != null && Model.Count() > 0) { 
+<div class="sbox">
+    <div class="stitle">
+        <h4 class="stitle-body"><span>Liên kết website</span></h4>
+    </div>
+    <div class="sbody">
+        <div class="web-links">
+            <div class="dd-wrap">
+                <select class="dropdown">
+                    <option value="">Liên kết Website</option>
+                    @foreach (var item in Model) { 
+                        <option data-target="@item.Target" value="@item.Link">@item.Title</option> 
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+}

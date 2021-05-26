@@ -1,0 +1,421 @@
+﻿@model TransportPlan
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml"; }
+@{
+    var StartTime = DateTime.Now;
+    var EndTime = DateTime.Now.AddHours(2);
+
+    if (Model.StartTime != null)
+    {
+        StartTime = new DateTime(Model.StartTime.Value);
+    }
+    if (Model.EndTime != null)
+    {
+        EndTime = new DateTime(Model.EndTime.Value);
+    }
+}
+@using (Html.BeginForm("Edit", "DrivePlan", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.PlanDate, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @(Html.Kendo().DatePicker()
+                    .Name("date") // The name of the DatePicker is mandatory. It specifies the "id" attribute of the widget.
+                    .Min(new DateTime(1900, 1, 1)) // Sets the min date of the DatePicker.
+                    .Max(new DateTime(2099, 12, 31)) // Sets the max date of the DatePicker.
+                    .Value(Model.PlanDate) // Sets the value of the DatePicker.
+                    .HtmlAttributes(new { type = "text" })
+                    .Culture("vi-VN")
+    )
+            <br />
+            @Html.ValidationMessageFor(m => m.PlanDate)
+
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.StartTime, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @(Html.Kendo().TimePicker()
+          .Name("start")
+          .Events(e => e.Change("startChange"))
+          //.Interval(15)
+          .Value(StartTime)
+          .Format("HH:mm")
+          .HtmlAttributes(new { style = "width: 100%", @type = "text" })
+    )
+            <br />
+            @Html.ValidationMessageFor(m => m.StartTime)
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.EndTime, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @(Html.Kendo().TimePicker()
+          .Name("end")
+          //.Interval(15)
+          .Value(EndTime)
+          .Format("HH:mm")
+          .HtmlAttributes(new { style = "width: 100%" , @type = "text" })
+    )
+            <br />
+            @Html.ValidationMessageFor(m => m.EndTime)
+            @Html.ValidationMessage("CustomError")
+
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.StartLocationID, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+
+            @(Html.Kendo().ComboBox()
+          .Name("StartLocationID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn nơi nhận...")
+          .DataTextField("startName")
+          .DataValueField("startID")
+          .Filter(FilterType.Contains)
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_Start_Locations", "ManageRoute");
+
+              })
+               .ServerFiltering(false);
+          })
+          .Events(e =>
+           {
+               e.Change("onChange");
+          })
+    )
+            <br />
+            @Html.ValidationMessage("CustomErrorStart", new { @class = "field-validation-timer" })
+
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.EndLocationID, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @(Html.Kendo().ComboBox()
+          .Name("EndLocationID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn nơi trả...")
+          .DataTextField("endName")
+          //.Events(events => events.Error("grid_errorHandler"))
+          .DataValueField("endID")
+          .Filter(FilterType.Contains)
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_End_Locations", "ManageRoute").Data("filterLocation");
+
+              }).ServerFiltering(true);
+          })
+          .Events(e =>
+          {
+                e.Change("onChange");
+          })
+          .AutoBind(false)
+          .Enable(false)
+          .CascadeFrom("StartLocationID")
+    )
+            <br />
+            @Html.ValidationMessage("CustomErrorEnd", new { @class = "field-validation-timer" })
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.RouteID, new { @class = "control-label" })
+        </div>
+        <div>
+            <input type="text" id="routeID" value="@ViewBag.RouteCode" class="input-block-level" readonly />
+            @Html.ValidationMessage("CustomErrorRoute", new { @class = "field-validation-timer" })
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label(WebModels.WebResources.ActualWeight, new { @class = "control-label" })
+        </div>
+        <div>
+            @(Html.Kendo().ComboBox()
+          .Name("ActualWeightID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn tải trọng chạy...")
+          .DataTextField("WeightName")
+          .DataValueField("ID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("GetWeights", "ManageCar");
+
+              })
+               .ServerFiltering(false);
+
+          })
+    )
+            @Html.ValidationMessageFor(m => m.ActualWeightID)
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Biển số xe", new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @(Html.Kendo().ComboBox()
+          .Name("VehicleID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn xe...")
+          .DataTextField("NumberPlate")
+          .DataValueField("ID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_Vehicles", "DrivePlan");
+
+              })
+               .ServerFiltering(false);
+          })
+    )
+            @Html.ValidationMessageFor(m => m.VehicleID)
+
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Nhà thầu", new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div>
+            @(Html.Kendo().ComboBox()
+          .Name("SourcePartnerID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn nhà thầu...")
+          .DataTextField("PartnerName")
+          .DataValueField("ID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_SourcePartners", "ManagePriceList");
+
+              })
+               .ServerFiltering(false);
+          })
+    )
+            @Html.ValidationMessageFor(m => m.SourcePartnerID)
+
+        </div>
+
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Đơn vị thuê", new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+
+        </div>
+        <div>
+            @(Html.Kendo().ComboBox()
+          .Name("DestinationPartnerID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn đơn vị vận chuyển...")
+          .DataTextField("PartnerName")
+          .DataValueField("ID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_DestinationPartners", "ManagePriceList").Data("filterPartner");
+
+              })
+               .ServerFiltering(true);
+          })
+          .AutoBind(false)
+          .Enable(false)
+          .CascadeFrom("SourcePartnerID")
+
+    )
+            @Html.ValidationMessageFor(m => m.DestinationPartnerID)
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label(WebModels.WebResources.TripBack, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.TripBack, new { type = "text", name = "BKS", @class = "input-block-level" })
+            @Html.ValidationMessage("CustomErrorTripBack", new { @class = "field-validation-timer" })
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label(WebModels.WebResources.DetailCode, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.DetailCode, new { type = "text", name = "BKS", @class = "input-block-level" })
+
+        </div>
+    </div>    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label(WebModels.WebResources.Amount, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Amount, new { type = "text", name = "BKS", @class = "input-block-level" })
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label(WebModels.AccountResources.Note, new { @class = "control-label" })
+        </div>
+        <div>
+            @Html.TextBoxFor(m => m.Note, new { type = "text", name = "BKS", @class = "input-block-level" })
+            @Html.ValidationMessageFor(m => m.Note)
+            @Html.ValidationSummary(true)
+        </div>
+    </div>
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.AntiForgeryToken()}
+
+<script type="text/javascript">
+    //if (screen.width > 1500) {
+    //    top.winsetup("Sửa kế hoạch", 1440 * 0.4, screen.height * 0.45, true);
+    //} else if (screen.width < 576) {
+    //    top.winsetup("Sửa kế hoạch", screen.width * 0.8, screen.height * 0.55, true);
+    //}
+    //else {
+    //    top.winsetup("Sửa kế hoạch", screen.width * 0.4, screen.height * 0.6, true);
+    //}
+
+    top.winsetup("Sửa kế hoạch", 600, 550, true);
+    if (screen.width < 576) {
+        top.winsetup("Sửa kế hoạch", screen.width * 0.8, screen.height * 0.5, true);
+    }
+    function edit_success() {
+        top.$("#window").data("kendoWindow").close();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Sửa kế hoạch', 'Sửa thành công.');
+
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+
+    function filterPartner() {
+        return {
+            sourceID: $("#SourcePartnerID").val()
+        };
+    }
+    function setInputFilter(textbox, inputFilter) {
+        ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function (event) {
+            textbox.addEventListener(event, function () {
+                if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    this.value = "";
+                }
+            });
+        });
+    }
+    setInputFilter(document.getElementById("price"), function (value) {
+        return /^\d*$/.test(value);
+    });
+    
+    function setRequiredAttr(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+    function startChange() {
+        var startTime = this.value(),
+            endPicker = $("#end").data("kendoTimePicker");
+
+        if (startTime) {
+            startTime = new Date(startTime);
+            endPicker.max(startTime);
+            startTime.setMinutes(startTime.getMinutes() + 120);
+            endPicker.min(startTime);
+            endPicker.value(startTime);
+        }
+    }
+    function filterLocation() {
+        return {
+            startID: $("#StartLocationID").val()
+        };
+    }
+
+      function onChange() {
+
+            var TransportPlan = {};
+            TransportPlan.StartLocationID = $("#StartLocationID").val();
+            TransportPlan.EndLocationID = $("#EndLocationID").val();
+             $.ajax({
+                    url: "@Url.Action("FindRoute", "DrivePlan")",
+                    contentType: "application/json",
+                 method: "post",
+                 data: JSON.stringify({ model: TransportPlan }),
+                 success: function (data) {
+                     document.getElementById("routeID").value = data.routeID;
+                     if ($("#routeID").val() == "") {
+                         $("#err-price").css("display", "block");
+                     }
+                     else {
+                         $("#err-price").css("display", "none");
+                     }
+                    },
+            error: function (d) {
+                console.log(d.responseText);
+                          }
+                    });
+    }
+</script>
+
+

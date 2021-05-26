@@ -1,0 +1,74 @@
+﻿@model IEnumerable<WebModels.WebModule>
+@{
+    var root = from x in Model where x.ParentID == null select x;
+}
+
+<footer class="py-4 bg-green footer">
+    <div class="container">
+        <div class="menu-footer">
+            <ul class="menu-footer-items">
+                @foreach (var node in root)
+                {
+                    var url = node.URL;
+                    if (string.IsNullOrEmpty(node.URL) || string.IsNullOrWhiteSpace(node.URL))
+                    {
+                        if (node.ID != 11)
+                        {
+                            url = Url.Action("Index", "Home", new { metatitle = node.MetaTitle != null ? node.MetaTitle : "web", id = node.ID });
+                        }
+                        else
+                        {
+                            url = "https://www.facebook.com/sharer/sharer.php?u=tapchimoitruong.vn&t=TITLE";
+                        }
+                    }
+
+                    if (node.ID != 11)
+                    {
+                        <li> <a title="@node.Title" style="color: #fff" href="@url">@node.Title</a>  </li>
+                    }
+                    else
+                    {
+                        <li> <a title="@node.Title" style="color: #fff" class="share facebook" data-network="facebook" href="@url">@node.Title</a>  </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-md-3 margin-bottom-30">
+                <img src="~/Content/themes/web/img/logo-footer.png">
+            </div>
+            <div class="col-md-9 footer-p">
+                @Html.Action("_Body", "WebSimpleContent", new { key = "content-footer" })
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    $('a.share').click(function (e) {
+        e.preventDefault();
+        var $link = $(this);
+        var href = $link.attr('href');
+        var network = $link.attr('data-network');
+
+        var networks = {
+            facebook: { width: 600, height: 300 },
+            twitter: { width: 600, height: 254 },
+            google: { width: 515, height: 490 },
+            linkedin: { width: 600, height: 473 }
+        };
+
+        var popup = function (network) {
+            var leftPosition, topPosition;
+            //Allow for borders.
+            leftPosition = (window.screen.width / 2) - ((networks[network].width / 2) + 10);
+            //Allow for title and status bars.
+            topPosition = (window.screen.height / 2) - ((networks[network].height / 2) + 50);
+
+            var options = 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,';
+            window.open(href, '', options + 'height=' + networks[network].height + ',width=' + networks[network].width + ',left=' + leftPosition + ',top=' + topPosition);
+        }
+
+        popup(network);
+    });
+</script>

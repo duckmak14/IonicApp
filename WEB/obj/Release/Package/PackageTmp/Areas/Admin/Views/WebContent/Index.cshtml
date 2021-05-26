@@ -1,0 +1,56 @@
+﻿@model WebModels.WebModule
+
+<div id="main">
+    <div id="left" style="padding:0 2px;">
+        <form action="search-results.html" method="GET" class="search-form">
+            <div class="search-pane">
+                <input type="text" name="search" placeholder="@Resources.Common.SearchHere">
+            </div>
+        </form>
+        <div class="box   box-small">
+            <div class="box-content">
+                @(Html.Kendo().TreeView()
+                .Name("treeview-left")
+                    .BindTo((IEnumerable<TreeViewItemModel>)ViewBag.TreeLeft)
+                )
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        @if (Model != null)
+        {
+            var module = Model;
+            try
+            {
+                if (!string.IsNullOrEmpty(module.IndexLayout))
+                {
+                    Layout = module.IndexLayout;
+                }    
+                @Html.Action(module.IndexView == null ? "_Index" : module.IndexView, Model.ContentType.Controller, new { area = "ContentType", id = Model.ID })   
+            }
+            catch (Exception) { }
+        }
+        else
+        {
+            @Html.Action("_Index" )
+        }
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+        try {
+            var treeview = $("#treeview-left").data("kendoTreeView");
+            var barDataItem = treeview.dataSource.get(@ViewBag.ID);
+            var selected = treeview.findByUid(barDataItem.uid);
+            treeview.select(selected);
+        } catch (e) { }
+
+    });
+
+</script>

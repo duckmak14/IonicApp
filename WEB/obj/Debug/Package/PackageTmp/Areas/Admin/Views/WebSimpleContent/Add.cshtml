@@ -1,0 +1,196 @@
+﻿@model WebModels.WebSimpleContent
+@{ 
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";  
+}
+ 
+@using (Html.BeginForm("Add", "WebSimpleContent", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+{                          
+    if (ApplicationService.Languages != null)
+    {
+        <div class="control-group">
+            @Html.LabelFor(m => m.Culture, new { @class = "control-label" })
+            <div class="controls">
+                @(Html.Kendo().DropDownListFor(m => m.Culture)
+                                  .HtmlAttributes(new { style = "width: 150px" })
+                                  .DataTextField("Title")
+                                  .DataValueField("ID").BindTo(
+                                    (IEnumerable<WebModels.Language>)ApplicationService.Languages
+                                  )
+                )
+            </div>
+        </div>
+    }
+    
+                     <div class="control-group">
+                         @Html.LabelFor(m => m.Title, new { @class = "control-label" })
+                         <div class="controls">
+                             @Html.TextBoxFor(m => m.Title, new { @class = "input-block-level" })
+                             @Html.ValidationMessageFor(m => m.Title)
+                         </div>
+                     </div>
+                     <div class="control-group">
+                         @Html.LabelFor(m => m.Description, new { @class = "control-label" })
+                         <div class="controls">
+                             @Html.TextAreaFor(m => m.Description, new { @class = "input-block-level" })
+                         </div>
+                     </div>
+                     <div class="control-group">
+                            @Html.LabelFor(m => m.Image, new { @class = "control-label" })
+                            <div class="controls">
+                                <div class="ctr-thumb" data-lang="">
+                                    <div class="thumb" style="width: 120px; height: 100px;">
+                                        <img src='@String.Format("{0}",!string.IsNullOrEmpty(Model.Image)?Model.Image:ApplicationService.NoImage)' />
+                                        @Html.HiddenFor(m => m.Image, new { @class = "hf-image" })
+                                    </div>
+                                    <div class="act">
+                                        <ul>
+                                            <li>
+                                                <a href="javascrit:void(0)" style="position:relative; ">
+                                                    <span style=" top:0px; width: 140px; left: 0; position: absolute">Ảnh từ máy tính</span>
+                                                    <input class="file-image" name="image" data-lang="" accept="image/jpeg,image/png"
+                                                           style="opacity: 0; height:20px; cursor: pointer;" type="file" />
+                                                </a>
+                                            </li>
+                                            <li><a class="thumb-gallery" href="javascript: openwin('/admin/upload/image?uid=@ViewBag.GAK&func=setimagepath', '_blank', 900, 550)">Ảnh từ thư viện</a></li>
+                                            <li><a href="javascript:openwin('/admin/upload/imagelink?uid=@ViewBag.GAK&func=setimagepath', '_blank', 700, 180)" class="thumb-link">Ảnh từ liên kết khác</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                      <div class="control-group">
+                        @Html.LabelFor(m => m.Link, new { @class = "control-label" })
+                        <div class="controls">
+                            @Html.TextBoxFor(m => m.Link, new { @class = "input-xlarge", id = "txtlink" })
+                            <a href="javascript:void(0);" onclick="javascript: openwin('/admin/upload/file?uid=@ViewBag.GAK&func=setlinkpath', '_blank', 800, 550);" class="btn">Tải Tệp</a>
+                        </div>
+                    </div>
+
+                     <div class="control-group">
+                         @Html.LabelFor(m => m.Key, new { @class = "control-label" })
+                         <div class="controls">
+                             @Html.TextBoxFor(m => m.Key, new { @class = "input-block-level" })
+                             @Html.ValidationMessageFor(m => m.Key)
+                         </div>
+                     </div>
+
+                     <div class="row-fluid control-group">
+                            <div style="width:99%;">
+                                <div class="box">
+                                    <div class="box-title">
+                                        <h3><i class="icon-th"></i>  @Html.DisplayNameFor(m => m.Body)</h3>
+                                    </div>
+                                    <div class="box-content nopadding">
+                                        @Html.TextAreaFor(m => m.Body, new { @id = "ckeditor", @style = "height:550px;" })
+                                        <script type="text/javascript">
+                                                    var editor = CKEDITOR.replace('ckeditor', {
+                                                        customConfig: '/content/ckeditor/config.js',
+                                                        filebrowserBrowseUrl: '/admin/upload/file?uid=@ViewBag.GAK',
+                                                        filebrowserImageBrowseUrl: '/admin/upload/image?uid=@ViewBag.GAK',
+                                                        filebrowserImageUploadUrl: '/admin/upload/imageck?uid=@ViewBag.GAK',
+                                                        filebrowserFlashBrowseUrl: '/admin/upload/flash?uid=@ViewBag.GAK',
+                                                        filebrowserFlashUploadUrl: '/admin/upload/flashck?uid=@ViewBag.GAK',
+                                                        height: '400px'
+                                                    });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     <div class="control-group">
+                         @Html.LabelFor(m => m.MetaTitle, new { @class = "control-label" })
+                         <div class="controls">
+                             @Html.TextBoxFor(m => m.MetaTitle, new { @class = "input-block-level" })
+                         </div>
+                     </div>
+
+                     <div class="control-group">
+                         @Html.LabelFor(m => m.MetaKeywords, new { @class = "control-label" })
+                         <div class="controls">
+                             @Html.TextAreaFor(m => m.MetaKeywords, new { @class = "input-block-level" })
+                         </div>
+                     </div>
+                     <div class="control-group">
+                         @Html.LabelFor(m => m.MetaDescription, new { @class = "control-label" })
+                         <div class="controls">
+                             @Html.TextAreaFor(m => m.MetaDescription, new { @class = "input-block-level" })
+                         </div>
+                     </div>
+
+                     <div class="validation-group">
+                         <div class="controls">
+                             @Html.ValidationSummary(true)
+                         </div>
+                     </div>
+                
+	
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">@Resources.Common.SaveChanges</button> 
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script src="~/Content/ckfinder/simplecontent.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        top.winsetup("@Html.Raw(Resources.Common.AddItem)",900, 550, true);
+    });
+  
+    function create_success() {
+        top.$("#window").data("kendoWindow").close();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+    }
+
+    var imageFilter = new Array('.jpg', '.png', '.gif', '.bmp');
+    function checkFileType(file, filter) {
+        var fileName = file.name;
+        var fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+        if (filter.indexOf(fileExtension.toLowerCase()) < 0) {
+            return false;
+        }
+        return true;
+    }
+    var maxImageFileSize = 5242880;
+    function checkFileSize(file, maxFileSize) {
+        if (file.size > maxFileSize) {
+            return false;
+        }
+        return true;
+    }
+    var current_thumb = "";
+    $(document).ready(function () {
+        current_thumb = $('.thumb #image').val();
+    });
+    $('.file-image').change(function (e) {
+        var files = this.files;
+        if (files.length > 0) {
+            var i = 0;
+            var isValid = checkFileType(files[i], imageFilter) && checkFileSize(files[i], maxImageFileSize);
+            if (isValid) {
+                var reader = new FileReader();
+                reader.readAsDataURL(files[i]);
+                reader.onloadend = function (e) {
+                    var result = e.target.result;
+                    if (result != null) {
+                        $('.ctr-thumb .thumb img').attr('src', result);
+                    }
+                }
+            }
+            else {
+                alert('File: [' + files[i].name + '] tải lên không hợp lệ.\nFile hợp lệ là file ảnh có định dạng: ' + imageFilter.toString() + ' và dung lượng tối đa cho phép là: ' + maxImageFileSize / (1024 * 1024) + 'MB');
+            }
+        }
+    });
+    function setimagepath(path) {
+        $('.ctr-thumb .thumb img').attr('src', path);
+        $('.ctr-thumb .thumb .hf-image').val(path);
+        var fileimage = $('.file-image');
+        fileimage = fileimage.replaceWith(fileimage.clone(true));
+    }
+
+    function setlinkpath(path) {
+        $('#txtlink').val(path);
+    }
+</script>
+ 
