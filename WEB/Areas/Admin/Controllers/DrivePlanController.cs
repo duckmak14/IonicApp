@@ -99,8 +99,7 @@ namespace WEB.Areas.Admin.Controllers
                                from h in group7.DefaultIfEmpty()
                                join j in db.Location on a.StartLocationID equals j.ID into group8
                                from j in group8.DefaultIfEmpty()
-                                   //join d in db.VehicleWeight on a.ActualWeightID equals d.ID into group3
-                                   //from d in group3.DefaultIfEmpty()
+                                   
                                select new
                                {
                                    a.ID,

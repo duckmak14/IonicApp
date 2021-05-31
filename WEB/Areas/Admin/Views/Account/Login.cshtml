@@ -12,8 +12,7 @@
             <img src="~/Content/themes/admin/img/delivery-truck.svg">
         </div>
         <div class="login-content">
-            <div action="index.html" class="form-login">
-                <img src="/Content/themes/admin/img/logo-company.png" class="img-company">
+            <div action="index.html" class="form-login">                
                 @*<h2>@WebModels.AccountResources.SignIn </h2>*@
                 @using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-validate" }))
                 {
