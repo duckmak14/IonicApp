@@ -61,6 +61,10 @@ namespace WEB.Areas.ContentType.Controllers
                     var currentSheet = package.Workbook.Worksheets;
                     var workSheet = currentSheet.First();
                     var noOfRow = workSheet.Dimension.End.Row;
+                    var locations = db.Location.ToList();
+                    var districts = db.District.ToList();
+                    var provinces = db.Province.ToList();
+                    var locationListAdd = new List<Location>();
 
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
@@ -73,9 +77,9 @@ namespace WEB.Areas.ContentType.Controllers
                         var isValid = true;
 
                         var locationName = CastToProperty<string>(workSheet, rowIterator, 1, "Tên địa điểm");
-                        if (locationName.IsSuccess )
+                        if (locationName.IsSuccess)
                         {
-                            var locationNameIsExist = db.Location.Where(x => x.LocationName == locationName.Value).Any();
+                            var locationNameIsExist = locations.Where(x => x.LocationName == locationName.Value).Any();
 
                             if (!locationNameIsExist)
                             {
@@ -86,14 +90,13 @@ namespace WEB.Areas.ContentType.Controllers
                                 AddErrorLocationModels(rowIterator, 1, "Tên địa điểm đã tồn tại");
                                 isValid = false;
                             }
-                                
                         }
                         else
                         {
                             isValid = false;
                         }
 
-                        var locationAddress = CastToProperty<string>(workSheet, rowIterator, 2, "Địa chỉ");
+                        var locationAddress = CastToProperty<string>(workSheet, rowIterator, 2, "Địa chỉ", false);
                         if (locationAddress.IsSuccess)
                         {
                             locationInfo.AddressName = locationAddress.Value;
@@ -104,37 +107,44 @@ namespace WEB.Areas.ContentType.Controllers
                         }
 
                         var district = CastToProperty<string>(workSheet, rowIterator, 3, "Quận/Huyện", false);
-                        if (district.IsSuccess )
+                        if (district.IsSuccess)
                         {
-                            var districtIsExist = db.District.Where(x => x.DistrictName.ToUpper() == district.Value.ToUpper()).FirstOrDefault();
-                            if (districtIsExist != null)
+                            if (district.Value != null)
                             {
-                                
-                                locationInfo.DistrictID = districtIsExist.ID;
+                                var districtIsExist = districts.Where(x => x.DistrictName.ToUpper() == district.Value.ToUpper()).FirstOrDefault();
+                                if (districtIsExist != null)
+                                {
+
+                                    locationInfo.DistrictID = districtIsExist.ID;
+                                }
+                                else if (district.Value != null)
+                                {
+                                    AddErrorLocationModels(rowIterator, 3, "Giá trị quận/huyện không tồn tại");
+                                    isValid = false;
+                                }
                             }
-                            else if(district.Value != null)
-                            {
-                                AddErrorLocationModels(rowIterator, 3, "Giá trị quận/huyện không tồn tại");
-                                isValid = false;
-                            }                        }
+                        }
                         else
                         {
                             isValid = false;
                         }
 
-                        var province = CastToProperty<string>(workSheet, rowIterator, 4, "Tỉnh",false);
+                        var province = CastToProperty<string>(workSheet, rowIterator, 4, "Tỉnh", false);
                         if (province.IsSuccess)
                         {
-                            var provinceIsExist = db.Province.Where(x => x.ProvinceName.ToUpper() == province.Value.ToUpper()).FirstOrDefault();
-                            if (provinceIsExist != null)
+                            if (province.Value != null)
                             {
-                                locationInfo.ProvinceID = provinceIsExist.ID;
+                                var provinceIsExist = provinces.Where(x => x.ProvinceName.ToUpper() == province.Value.ToUpper()).FirstOrDefault();
+                                if (provinceIsExist != null)
+                                {
+                                    locationInfo.ProvinceID = provinceIsExist.ID;
+                                }
+                                else if (province.Value != null)
+                                {
+                                    AddErrorLocationModels(rowIterator, 4, "Giá trị tỉnh/thành phố không tồn tại");
+                                    isValid = false;
+                                }
                             }
-                            else if(province.Value != null)
-                            {
-                                AddErrorLocationModels(rowIterator, 4, "Giá trị tỉnh/thành phố không tồn tại");
-                                isValid = false;
-                            }    
                         }
                         else
                         {
@@ -145,14 +155,33 @@ namespace WEB.Areas.ContentType.Controllers
                         {
                             locationInfo.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                             locationInfo.CreatedDate = DateTime.Now;
-                            db.Set<Location>().Add(locationInfo);
-                            db.SaveChanges();
+                            locations.Add(locationInfo);
+                            locationListAdd.Add(locationInfo);
                         }
                     }
+                    var checkSave = true;
+                    try
+                    {
+                        locationListAdd.Reverse();
+                        db.Location.AddRange(locationListAdd);
+                        db.SaveChanges();
+                    }
+                    catch
+                    {
+                        checkSave = false;
+                    }
+
+                    if (!checkSave)
+                    {
+                        byte[] err = { 1 };
+                        return err;
+                    }
+
                     if (!ErrorLocationModels.Any())
                     {
                         return null;
                     }
+
                     return LogErrorsToFile(workSheet);
                 }
 
@@ -250,7 +279,7 @@ namespace WEB.Areas.ContentType.Controllers
                     }
 
                     var allRowNumbers = ErrorLocationModels.Select(x => x.RowNumber).Distinct().OrderBy(x => x).ToList();
-                    
+
                     for (int i = 0; i < allRowNumbers.Count(); i++)
                     {
                         for (int j = 1; j <= noOfCol; j++)
@@ -304,4 +333,3 @@ namespace WEB.Areas.ContentType.Controllers
         public int ColumnNumber { get; set; }
     }
 }
-

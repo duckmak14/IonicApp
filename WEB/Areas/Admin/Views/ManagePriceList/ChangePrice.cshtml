@@ -11,7 +11,7 @@
             @Html.LabelFor(m => m.Percent, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Percent, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Percent)
             @Html.ValidationSummary(true)

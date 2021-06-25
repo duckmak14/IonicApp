@@ -12,7 +12,6 @@
     var isCheckedAll = false;
     var checkMerge = false;
     var idSuccess = 0;
-
     //function change_handler(e) {
     //    rowselected = [];
     //    var len = this.select().length;
@@ -20,11 +19,8 @@
     //        rowselected.push(this.dataItem(this.select()[i]).ID);
     //    }
     //}
-
     function binding_handler(e) {
-
         //rowselected = [];
-
         //var grid = $("#grid").data("kendoGrid");
         //var dataSource = grid.dataSource;
         //var recordsOnCurrentView = dataSource.view().length;
@@ -39,14 +35,11 @@
         //    }
         //}
     }
-
     $(document).ready(function () {
-
         $("#btnadd").click(function () {
             opendlg("/admin/Enumeration/add/");
         });
         $("#btnChangeStatus").click(function () {
-
             var GetSelected = {};
             GetSelected.ID = [];
             $('input:checkbox[name=checkedNodes]').each(function () {
@@ -56,7 +49,6 @@
             });
             if (GetSelected.ID.length > 0) {
                 console.log(GetSelected);
-
                 $.ajax({
                     url: "@Url.Action("ChangeStatus", "Enumeration")",
                     contentType: "application/json",
@@ -78,10 +70,8 @@
             else {
                 alert("Vui lòng chọn để duyệt!");
             }
-
         });
         $("#btnUnChangeStatus").click(function () {
-
             var GetSelected = {};
             GetSelected.ID = [];
             $('input:checkbox[name=checkedNodes]').each(function () {
@@ -91,7 +81,6 @@
             });
             if (GetSelected.ID.length > 0) {
                 console.log(GetSelected);
-
                 $.ajax({
                     url: "@Url.Action("UnChangeStatus", "Enumeration")",
                     contentType: "application/json",
@@ -113,13 +102,10 @@
             else {
                 alert("Vui lòng chọn để duyệt!");
             }
-
         });
-
         $("#upload").click(function (e) {
             opendlg("/admin/Enumeration/UploadExcel");
         });
-
         $("#btnMerge").click(function (e) {
             checkMerge = !checkMerge;
             $("#grid").data("kendoGrid").dataSource.read();
@@ -132,15 +118,11 @@
             }
         });
     });
-
-
-
     function duplicate_handler(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         opendlg("/admin/Enumeration/duplicate/" + dataItem.ID);
     }
-
     function edit_handler(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
@@ -148,7 +130,6 @@
     }
     function add_kendo_selected(id) {
         var grid = top.$("#grid").data("kendoGrid");
-
         grid.tbody.find("tr[role='row']").each(function () {
             var model = grid.dataItem(this);
             if (model.ID == id) {
@@ -156,9 +137,7 @@
             }
         });
     }
-
     $(document).ready(function () {
-
         $(".input-submit").click(function (e) {
             e.preventDefault();
             var dataSource = $("#grid").data("kendoGrid").dataSource.data();
@@ -167,32 +146,29 @@
                 for (var i = 0; i < rowselected.length; i++) {
                     for (var j = 0; j < dataSource.length; j++) {
                         var dataItem = dataSource[j];
-
                         if (dataItem.ID == rowselected[i]) {
                             var model = {};
                             model.ActualDate = dataItem.ActualDate;
                             model.TrackingCode = dataItem.TrackingCode;
-                            model.NumberPlate = dataItem.Vehicle.NumberPlate;
+                            model.NumberPlate = dataItem.NumberPlate;
                             model.TripCount = dataItem.TripCount;
-                            model.StartLocationName = dataItem.Route.StartLocation.LocationName;
-                            model.EndLocationName = dataItem.Route.EndLocation.LocationName;
-                            model.RouteCode = dataItem.Route.RouteCode;
-                            model.NumberPlate = dataItem.Vehicle.NumberPlate;
-                            model.VehicleWeightName = dataItem.Vehicle.VehicleWeight.WeightName;
-                            model.ActualWeightName = dataItem.ActualWeight.WeightName;
+                            model.StartLocationName = dataItem.StartLocationName;
+                            model.EndLocationName = dataItem.EndLocationName;
+                            model.RouteCode = dataItem.RouteCode;
+                            model.NumberPlate = dataItem.NumberPlate;
+                            model.VehicleWeightName = dataItem.VehicleWeightName;
+                            model.ActualWeightName = dataItem.ActualWeightName;
                             model.UnitPrice = dataItem.UnitPrice;
                             model.TotalMoney = dataItem.TotalMoney;
-                            model.SourcePartnerName = dataItem.SourcePartner.PartnerName;
-                            model.DestinationPartnerName = dataItem.DestinationPartner.PartnerName;
+                            model.SourcePartnerName = dataItem.SourcePartnerName;
+                            model.DestinationPartnerName = dataItem.DestinationPartnerName;
                             model.Note = dataItem.Note;
-
                             models.push(model);
                         }
                     }
                 }
                 var dataSubmit = JSON.stringify(models)
                 $("input[name='dataString']").val(dataSubmit);
-
                 setTimeout(function () {
                     $("#general").submit();
                 }, 100);
@@ -202,48 +178,43 @@
             }
         });
         $("#FieldFilter").keyup(function () {
-
             var value = $("#FieldFilter").val();
-
-
             var int = parseInt(value);
             var float = parseFloat(value);
-
             $("#grid").data("kendoGrid").dataSource.filter({
                 logic: "or",
                 filters: [
-
                     {
                         field: "TrackingCode",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Route.RouteCode",
+                        field: "RouteCode",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Route.StartLocation.LocationName",
+                        field: "StartLocationName",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Route.EndLocation.LocationName",
+                        field: "EndLocationName",
                         operator: "contains",
                         value: value
                     }, {
-                        field: "Vehicle.NumberPlate",
+                        field: "NumberPlate",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Vehicle.VehicleWeight.WeightName",
+                        field: "VehicleWeightName",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "ActualWeight.WeightName",
+                        field: "ActualWeightName",
                         operator: "contains",
                         value: value
                     },
@@ -253,12 +224,12 @@
                         value: int
                     },
                     {
-                        field: "SourcePartner.PartnerName",
+                        field: "SourcePartnerName",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "DestinationPartner.PartnerName",
+                        field: "DestinationPartnerName",
                         operator: "contains",
                         value: value
                     },
@@ -285,12 +256,8 @@
             });
         });
     });
-
-
-
     function onDataBound(e) {
-        $('#grid .k-grid-content').height(screen.height * 0.5);
-
+        $('#grid .k-grid-content').height(screen.height * 0.45);
         $('input[name="checkedNodes"]').each(function () {
             if (rowselected.indexOf(this.value) != -1) {
                 $(this).attr('checked', 'checked');
@@ -298,7 +265,6 @@
                 $(this).removeAttr('checked');
             }
         });
-
         var grid = this;
         let now = new Date();
         grid.tbody.find("tr[role='row']").each(function () {
@@ -314,17 +280,13 @@
                 $(this).addClass("fill-background");
             }
         });
-
         if (this.dataSource.view().length == 0) {
             //insert empty row
             var colspan = this.thead.find("th").length;
             var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
             this.tbody.html(emptyRow);
 
-            //workarounds for IE lt 9
-            this.table.width(1000);
         }
-
         //Disable button Edit
         if (checkMerge) {
             grid.tbody.find("tr[role='row']").each(function () {
@@ -334,18 +296,15 @@
                     //$(this).find(".k-grid-Sửa").prop("onclick", null).off("click");
                     $(this).find(".k-grid-Sửa").removeClass('k-grid-Sửa');
                 $(this).find(".disabled").addClass('k-grid-Edit');
-
                 //$(this).find(".k-grid-Thêmkhoảnmục").addClass('disabled');
                 ////$(".disabled").disabled = true;
                 //$(this).find(".k-grid-Thêmkhoảnmục").attr('onclick', false);
                 ////$(this).find(".k-grid-Sửa").prop("onclick", null).off("click");
                 //$(this).find(".k-grid-Thêmkhoảnmục").removeClass('k-grid-Thêmkhoảnmục');
                 //$(this).find(".disabled").addClass('k-grid-Add');
-
             });
         }
     };
-
 </script>
 <div class="flex row-quanlyxe block-div">
     <div class="flex">
@@ -408,17 +367,14 @@
                         if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
                         {
                             command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new {  title = "Sửa" });
-                            command.Custom(Resources.Common.AddItem).Click("duplicate_handler").HtmlAttributes(new { title = "Nhân đôi" }); ;
+                            command.Custom(Resources.Common.AddItem).Click("duplicate_handler").HtmlAttributes(new { title = "Nhân đôi" });
                         }
                     }).HtmlAttributes(new { style = "text-align:center; display:flex;" }).Width(140).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
                     columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
                        .HtmlAttributes(new { style = "text-align:center;" })
                        .Filterable(false)
                        .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
-                    columns.Bound(p => p.SourcePartner.Address).Hidden();
-                    columns.Bound(p => p.SourcePartner.Mobile).Hidden();
-                    columns.Bound(p => p.DestinationPartner.Address).Hidden();
-                    columns.Bound(p => p.DestinationPartner.Mobile).Hidden();
+
                     columns.Bound(p => p.StatusString).Title(WebModels.WebResources.Status).HtmlAttributes(new { style = "text-align:center;", @class = "status-style" }).Width(200);
                     columns.Bound(p => p.ActualDate).Title(WebModels.WebResources.PlanDate).HtmlAttributes(new { style = "text-align:center;", @class = "col-fixed" }).Format("{0:dd-MM-yyyy}").Width(175).Filterable(filterable =>filterable.UI(@<text>function (element) {
                                                 element.kendoDatePicker({
@@ -426,15 +382,15 @@
                                                 });
                                             }</text>));
                     columns.Bound(p => p.TrackingCode).Title(WebModels.WebResources.TrackingCode).HtmlAttributes(new { style = "text-align:center;" }).Width(135);
-                    columns.Bound(p => p.Route.RouteCode).Title(WebModels.WebResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(180);
-                    columns.Bound(p => p.Route.StartLocation.LocationName).Title(WebModels.WebResources.StartLocation).Width(200);
-                    columns.Bound(p => p.Route.EndLocation.LocationName).Title(WebModels.WebResources.EndLocation).Width(200);
-                    columns.Bound(p => p.Vehicle.NumberPlate).Title(WebModels.WebResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
-                    columns.Bound(p => p.Vehicle.VehicleWeight.WeightName).Title(WebModels.WebResources.VehicleWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
-                    columns.Bound(p => p.ActualWeight.WeightName).Title(WebModels.WebResources.ActualWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.RouteCode).Title(WebModels.WebResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(180);
+                    columns.Bound(p => p.StartLocationName).Title(WebModels.WebResources.StartLocation).Width(200);
+                    columns.Bound(p => p.EndLocationName).Title(WebModels.WebResources.EndLocation).Width(200);
+                    columns.Bound(p => p.NumberPlate).Title(WebModels.WebResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.VehicleWeightName).Title(WebModels.WebResources.VehicleWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.ActualWeightName).Title(WebModels.WebResources.ActualWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
                     columns.Bound(p => p.TripCount).Title(WebModels.WebResources.TripCount).Format("{0:N1}").HtmlAttributes(new { style = "text-align:center;" }).Width(120).ClientFooterTemplate("#= kendo.format('{0:N1}', sum)#");
-                    columns.Bound(p => p.SourcePartner.PartnerName).Title(WebModels.WebResources.SourcePartner).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
-                    columns.Bound(p => p.DestinationPartner.PartnerName).Title(WebModels.WebResources.DestinationPartner).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
+                    columns.Bound(p => p.SourcePartnerName).Title(WebModels.WebResources.SourcePartner).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
+                    columns.Bound(p => p.DestinationPartnerName).Title(WebModels.WebResources.DestinationPartner).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
                     columns.Bound(p => p.UnitPrice).Title(WebModels.WebResources.UnitPrice).Width(100).Format("{0:N0}+ đ").HtmlAttributes(new { style = "text-align:right;" }).Width(180);
                     columns.Bound(p => p.TotalMoney).Title(WebModels.WebResources.TotalMoney).Width(100).Format("{0:N0}+ đ").HtmlAttributes(new { style = "text-align:right;" }).Width(150).ClientFooterTemplate("#= kendo.format('{0:N0}', sum)# đ");
                     columns.Bound(p => p.Note).Title(WebModels.WebResources.Note).Width(200);
@@ -500,7 +456,6 @@
         }
         return check;
     }
-
     function childNodeClick(element) {
         var dataID = getCheckAll();
         var id = element.value;
@@ -511,10 +466,7 @@
         }
         isCheckedAll = getCheckAll();
         $('#chkAll').prop('checked', isCheckedAll);
-
-
     }
-
     $(function () {
         $(".k-filter").click(function () {
             setTimeout(function () {
@@ -535,9 +487,7 @@
             }, 100);
         });
     });
-
     function checkAll(e) {
-
         var rowItems = getDataFilter();
         isCheckedAll = $(e.target).prop('checked');
         if (isCheckedAll) {
@@ -561,17 +511,13 @@
                 }
             }
         }
-
         $('input[name="checkedNodes"]').each(function () {
             $(this).prop('checked', isCheckedAll);
         });
     }
-
-
     @*function childNodeClick(element) {
         isCheckedAll = $('input[class="k-checkbox"]:checked').length == $('input[class="k-checkbox"]').length;
         $('#chkAll').prop('checked', isCheckedAll);
-
         var id = element.value;
         if (rowselected.indexOf(id) !== -1) {
             rowselected.splice(rowselected.indexOf(id), 1);
@@ -579,7 +525,6 @@
             rowselected.push(id);
         }
         console.log(rowselected);
-
         //CHECK DOWNLOADEXCEL
          var GetSelected = {};
         GetSelected.ID = [];
@@ -591,7 +536,6 @@
                     method: "post",
                     data: JSON.stringify({ model: GetSelected }),
                     success: function (data) {
-
                         if (!data.checkPartner) {
                             $("#export").addClass('disabled');
                             $("#export").prop("onclick", null).off("click");
@@ -613,12 +557,9 @@
                 $("#export").addClass('disabled');
                     $("#export").prop("onclick", null).off("click");
             }
-
     }*@
-
     @*function checkAll(e) {
         var rowItems = $("#grid").data("kendoGrid").dataSource.data();
-
         isCheckedAll = $(e.target).prop('checked');
         if (isCheckedAll) {
             for (var i = 0; i < rowItems.length; i++) {
@@ -628,11 +569,9 @@
         else if (!isCheckedAll) {
             rowselected.length = 0;
         }
-
         $('input[name="checkedNodes"]').each(function () {
             $(this).prop('checked', isCheckedAll);
         });
-
          //CHECK DOWNLOADEXCEL
          var GetSelected = {};
         GetSelected.ID = [];
@@ -668,17 +607,13 @@
                 $("#export").prop("onclick", null).off("click");
             }
     }*@
-
-
     function getTime(e) {
         return {
             datetime: $("#time").val(),
             status: checkMerge
         };
     }
-
     $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
         $("#grid").data("kendoGrid").dataSource.read();
     });
 </script>
-

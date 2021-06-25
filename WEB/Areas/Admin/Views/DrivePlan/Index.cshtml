@@ -11,8 +11,7 @@
 <script type="text/javascript">
     var rowselected = [];
     var isCheckedAll = false;
-
-
+    var idSuccess = 0;
     //function change_handler(e) {
     //    rowselected = [];
     //    var len = this.select().length;
@@ -22,7 +21,6 @@
     //}
     function binding_handler(e) {
         //rowselected = [];
-
         //var grid = $("#grid").data("kendoGrid");
         //var dataSource = grid.dataSource;
         //var recordsOnCurrentView = dataSource.view().length;
@@ -37,12 +35,10 @@
         //    }
         //}
     }
-
     $(document).ready(function () {
        @*if (@ViewBag.CheckDriver != 0) {
             $("#time").removeAttr("style").hide();
         }*@
-
         $("#btnadd").click(function () {
             opendlg("/admin/DrivePlan/add/");
             var windowWidth = $(window).width();
@@ -50,7 +46,6 @@
                 $(".k-window").css("margin-top", "12%");
             }
         });
-
         $(".input-submit").click(function (e) {
             e.preventDefault();
             var dataSource = $("#grid").data("kendoGrid").dataSource.data();
@@ -59,32 +54,29 @@
                 for (var i = 0; i < rowselected.length; i++) {
                     for (var j = 0; j < dataSource.length; j++) {
                         var dataItem = dataSource[j];
-
                         if (dataItem.ID == rowselected[i]) {
                             var model = {};
                             model.PlanDate = dataItem.PlanDate;
                             model.StartTime = dataItem.StartTime;
                             model.EndTime = dataItem.EndTime;
-                            model.RouteCode = dataItem.Route.RouteCode;
+                            model.RouteCode = dataItem.RouteCode;
                             model.DetailCode = dataItem.DetailCode;
                             model.Amount = dataItem.Amount;
                             model.Note = dataItem.Note;
-                            model.SourcePartnerName = dataItem.SourcePartner.PartnerName;
-                            model.DestinationPartnerName = dataItem.DestinationPartner.PartnerName;
-                            model.CarOwerName = dataItem.Vehicle.CarOwerName;
-                            model.NumberPlate = dataItem.Vehicle.NumberPlate;
-                            model.VehicleWeightName = dataItem.Vehicle.VehicleWeight.WeightName;
-                            model.StartLocationnName = dataItem.StartLocation.LocationName;
-                            model.EndLocationName = dataItem.EndLocation.LocationName;
-                            model.ActualWeightName = dataItem.ActualWeight.WeightName;
+                            model.SourcePartnerName = dataItem.SourcePartnerName;
+                            model.DestinationPartnerName = dataItem.DestinationPartnerName;
+                            model.CarOwerName = dataItem.CarOwerName;
+                            model.NumberPlate = dataItem.NumberPlate;
+                            model.VehicleWeightName = dataItem.VehicleWeightName;
+                            model.StartLocationnName = dataItem.StartLocationName;
+                            model.EndLocationName = dataItem.EndLocationName;
+                            model.ActualWeightName = dataItem.ActualWeightName;
                             models.push(model);
                         }
                     }
-
                 }
                 var dataSubmit = JSON.stringify(models)
                 $("input[name='dataString']").val(dataSubmit);
-
                 setTimeout(function () {
                     $("#general").submit();
                 }, 100);
@@ -93,11 +85,71 @@
                 alert("Vui lòng chọn để xuất file!");
             }
         });
-
+          $("#btnChangeStatus").click(function () {
+            var GetSelected = {};
+            GetSelected.ID = [];
+            $('input:checkbox[name=checkedNodes]').each(function () {
+                if ($(this).is(':checked')) {
+                    GetSelected.ID.push($(this).val());
+                }
+            });
+            if (GetSelected.ID.length > 0) {
+                $.ajax({
+                    url: "@Url.Action("ChangeStatus", "DrivePlan")",
+                    contentType: "application/json",
+                    method: "post",
+                    data: JSON.stringify({ model: GetSelected }),
+                    success: function (data) {
+                        $("#grid").data("kendoGrid").dataSource.read();
+                        $('input:checkbox[name=checkedNodes]').each(function () {
+                            if ($(this).is(':checked')) {
+                                $(this).click();
+                            }
+                        });
+                    },
+                    error: function (d) {
+                        alert("Đã xảy ra lỗi vui lòng thực hiện lại thao tác!");
+                          }
+                    });
+            }
+            else {
+                alert("Vui lòng chọn để duyệt!");
+            }
+          });
+        $("#btnUnChangeStatus").click(function () {
+            var GetSelected = {};
+            GetSelected.ID = [];
+            $('input:checkbox[name=checkedNodes]').each(function () {
+                if ($(this).is(':checked')) {
+                    GetSelected.ID.push($(this).val());
+                }
+            });
+            if (GetSelected.ID.length > 0) {
+                $.ajax({
+                    url: "@Url.Action("UnChangeStatus", "DrivePlan")",
+                    contentType: "application/json",
+                    method: "post",
+                    data: JSON.stringify({ model: GetSelected }),
+                    success: function (data) {
+                        $("#grid").data("kendoGrid").dataSource.read();
+                        $('input:checkbox[name=checkedNodes]').each(function () {
+                            if ($(this).is(':checked')) {
+                                $(this).click();
+                            }
+                        });
+                    },
+            error: function (d) {
+                alert("Đã xảy ra lỗi vui lòng thực hiện lại thao tác!");
+                          }
+                    });
+            }
+            else {
+                alert("Vui lòng chọn để duyệt!");
+            }
+        });
         $("#upload").click(function (e) {
             opendlg("/admin/DrivePlan/UploadExcel");
         });
-
         $(".input-submit-delete").click(function (e) {
             e.preventDefault();
             var dataSource = $("#grid").data("kendoGrid").dataSource.data();
@@ -105,14 +157,11 @@
             if (rowselected.length > 0) {
                 $("div[class='loader-delete']").show();
                 $("#background-black").css("filter", "contrast(60%)");
-
                 for (var i = 0; i < rowselected.length; i++) {
                     for (var j = 0; j < dataSource.length; j++) {
                         var dataItem = dataSource[j];
-
                         if (dataItem.ID == rowselected[i]) {
                             var model = {};
-
                             model.ID = dataItem.ID;
                             model.PlanDate = dataItem.PlanDate;
                             model.TrackingCode = dataItem.TrackingCode;
@@ -124,15 +173,13 @@
                             model.DestinationPartnerID = dataItem.DestinationPartnerID;
                             model.ActualWeightID = dataItem.ActualWeightID;
                             models.push(model);
-
                         }
                     }
                 }
                 var date = $("#time").val();
                 var dataSubmit = JSON.stringify(models)
                 $("input[name='dataStringDelete']").val(dataSubmit);
-                $("input[name='dataString']").val(date);
-
+                $("input[name='dataStringDate']").val(date);
                 setTimeout(function () {
                     $("#delete").submit();
                 }, 100);
@@ -142,28 +189,31 @@
             }
         });
     });
-
     function delete_handler(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         opendlg("/admin/managepricelist/delete/" + dataItem.ID);
     }
-
     function edit_handler(e) {
         e.preventDefault();
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
         opendlg("/admin/DrivePlan/edit/" + dataItem.ID);
         var windowWidth = $(window).width();
+        if (windowWidth <= 1300) {
+            $(".k-window").css("margin-top", "12%");
+        }
+    }
+    function show_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/DrivePlan/show/" + dataItem.ID);
         var windowWidth = $(window).width();
         if (windowWidth <= 1300) {
             $(".k-window").css("margin-top", "12%");
         }
     }
-
-
     function onDataBound(e) {
-        $('#grid .k-grid-content').height(screen.height * 0.5);
-
+        $('#grid .k-grid-content').height(screen.height * 0.45);
         $('input[name="checkedNodes"]').each(function () {
             if (rowselected.indexOf(this.value) != -1) {
                 $(this).attr('checked', 'checked');
@@ -174,17 +224,25 @@
         var grid = this;
         let now = new Date().addDays(-10);
         now.setHours(0, 0, 0);
-
+        grid.tbody.find("tr[role='row']").each(function () {
+            var model = grid.dataItem(this);
+            var status = $(this).find(".status-style").html();
+            if (status == "Chưa chạy") {
+                $(this).find(".status-style").addClass("status-red");
+            }
+            else {
+                $(this).find(".status-style").addClass("status-green");
+            }
+            if (model.ID == idSuccess) {
+                $(this).addClass("fill-background");
+            }
+        });
         if (this.dataSource.view().length == 0) {
             //insert empty row
             var colspan = this.thead.find("th").length;
             var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
             this.tbody.html(emptyRow);
-
-            //workarounds for IE lt 9
-            this.table.width(1000);
         }
-
         //Disable button Edit
         //grid.tbody.find("tr[role='row']").each(function () {
         //    var model = grid.dataItem(this);
@@ -198,13 +256,12 @@
         //    }
         //});
     };
-
 </script>
 
 <div class="loader-delete" style="display:none"></div>
 
-<div class="flex row-quanlyxe block-div">
-    <div class="flex">
+<div class="flex row menu-drivePlan">
+    <div class="flex mt-2 mr-2">
         @if (@ViewBag.CheckDriver == 0)
         {
             <div class="manage-car-search row-plan-drive">
@@ -226,23 +283,23 @@
             </form>
         </div>
     </div>
-    <div class="flex block-two-row">
-        @using (Html.BeginForm("ExportExcel", "DrivePlan", FormMethod.Post, new { @id = "general", enctype = "multipart/form-data", @class = "form-horizontal fix" }))
-        {
-            @Html.HiddenFor(m => m.dataString)
-            <div class="btn-download btn-plan-drive input-submit">
-                <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
-                <input id="exportData" type="submit" class="text-14-500 padding-text-plan-drive" value="Tải về">
-            </div>
-        }
+    <div class="flex mt-2">
 
         @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
         {
+            using (Html.BeginForm("ExportExcel", "DrivePlan", FormMethod.Post, new { @id = "general", enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+            {
+                @Html.HiddenFor(m => m.dataString)
+                <div class="btn-download btn-plan-drive input-submit">
+                    <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+                    <input id="exportData" type="submit" class="text-14-500 padding-text-plan-drive" value="Tải về">
+                </div>
+            }
 
             using (Html.BeginForm("Deletes", "DrivePlan", FormMethod.Post, new { @id = "delete", enctype = "multipart/form-data", @class = "form-horizontal fix" }))
             {
                 @Html.HiddenFor(m => m.dataStringDelete)
-                @Html.HiddenFor(m => m.dataString)
+                @Html.HiddenFor(m => m.dataStringDate)
 
                 <div class="btn-download btn-plan-drive input-submit-delete">
                     <img src="~/Images/icon-delete.png" alt="text-14-700">
@@ -257,7 +314,17 @@
             <div class="btn-download btn-plan-drive" id="btnadd">
                 <img src="~/Content/themes/admin/img/Vector-add-white.png" alt="text-14-700">
                 <p class="text-14-500 padding-text-plan-drive">Thêm</p>
-            </div>}
+            </div>
+
+        }
+        <div class="btn-download btn-plan-drive" id="btnChangeStatus">
+            <img src="~/Content/themes/admin/img/Vector-accpect2.png" alt="text-14-700">
+            <p class="text-14-500 padding-text-plan-drive">Hoàn thành</p>
+        </div>
+        <div class="btn-download btn-plan-drive" id="btnUnChangeStatus">
+            <img src="~/Content/themes/admin/img/Vector-unapproved1.png" alt="text-14-700">
+            <p class="text-14-500 padding-text-plan-drive">Hủy</p>
+        </div>
     </div>
 </div>
 
@@ -274,32 +341,42 @@
 
                         .Columns(columns =>
                         {
-                        columns.Command(command =>
-                        {
-                            if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+
+                            columns.Command(command =>
                             {
+
                                 //command.Custom("Module").Click("modules_handler");
                                 //command.Custom("Site").Click("sites_handler");
-                                command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" }); ;
+                                if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                                {
+                                    command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" });
+                                }
+                                if(@ViewBag.CheckDriver != 0)
+                                {
+                                    command.Custom("Show").Click("show_handler").HtmlAttributes(new { title = "Xem thông tin" });
+
+                                }
                                 //command.Custom(Resources.Common.SetPassword).Click("changepassword_handler");
                                 //command.Custom(Resources.Common.Delete).Click("delete_handler");
-                            }
-                        }).HtmlAttributes(new { style = "text-align:center;" }).Width(75).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
-                        columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
-                             .HtmlAttributes(new { style = "text-align:center;" })
-                             .Filterable(false)
-                             .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
 
-                        columns.Bound(p => p.ID).Hidden();
-                        columns.Bound(p => p.TrackingCode).Hidden();
-                        columns.Bound(p => p.VehicleID).Hidden();
-                        columns.Bound(p => p.RouteID).Hidden();
-                        columns.Bound(p => p.StartTime).Hidden();
-                        columns.Bound(p => p.EndTime).Hidden();
-                        columns.Bound(p => p.SourcePartnerID).Hidden();
-                        columns.Bound(p => p.DestinationPartnerID).Hidden();
-                        columns.Bound(p => p.ActualWeightID).Hidden();
 
+                            }).HtmlAttributes(new { style = "text-align:center;" }).Width(73).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
+                            columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
+                                     .HtmlAttributes(new { style = "text-align:center;" })
+                                     .Filterable(false)
+                                     .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
+
+
+                            columns.Bound(p => p.ID).Hidden();
+                            columns.Bound(p => p.TrackingCode).Hidden();
+                            columns.Bound(p => p.VehicleID).Hidden();
+                            columns.Bound(p => p.RouteID).Hidden();
+                            columns.Bound(p => p.StartTime).Hidden();
+                            columns.Bound(p => p.EndTime).Hidden();
+                            columns.Bound(p => p.SourcePartnerID).Hidden();
+                            columns.Bound(p => p.DestinationPartnerID).Hidden();
+                            columns.Bound(p => p.ActualWeightID).Hidden();
+                            columns.Bound(p => p.StatusString).Title(WebModels.WebResources.Status).HtmlAttributes(new { style = "text-align:center;", @class = "status-style" }).Width(150);
                             columns.Bound(p => p.PlanDate).Title(WebModels.WebResources.PlanDate).Filterable(filterable =>filterable.UI(@<text>function (element) {
                                                 element.kendoDatePicker({
                                                     culture: 'vi-VN'
@@ -317,22 +394,25 @@
                                             }</text>)).Title(WebModels.WebResources.EndTime).HtmlAttributes(new { style = "text-align:center;" }).Width(150).Format("{0:HH:mm}").Width(150);
                             if(ViewBag.CheckDriver == 0)
                             {
-                                columns.Bound(p => p.Route.RouteCode).Title(WebModels.WebResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(165);
+                                columns.Bound(p => p.RouteCode).Title(WebModels.WebResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(165);
                             }
-                            columns.Bound(p => p.StartLocation.LocationName).Title(WebModels.WebResources.StartLocation).Width(170);
-                            columns.Bound(p => p.EndLocation.LocationName).Title(WebModels.WebResources.EndLocation).Width(170);
-                            columns.Bound(p => p.Vehicle.NumberPlate).Title(WebModels.WebResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(130);
+                            columns.Bound(p => p.StartLocationName).Title(WebModels.WebResources.StartLocation).Width(170);
+                            columns.Bound(p => p.EndLocationName).Title(WebModels.WebResources.EndLocation).Width(170);
+                            columns.Bound(p => p.NumberPlate).Title(WebModels.WebResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(130);
+
                             if (ViewBag.CheckDriver == 0)
                             {
-                                columns.Bound(p => p.Vehicle.VehicleWeight.WeightName).Title(WebModels.WebResources.VehicleWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(160);
-                                columns.Bound(p => p.ActualWeight.WeightName).Title(WebModels.WebResources.ActualWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(160);
+
+                                columns.Bound(p => p.VehicleWeightName).Title(WebModels.WebResources.VehicleWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(160);
+                                columns.Bound(p => p.ActualWeightName).Title(WebModels.WebResources.ActualWeight).HtmlAttributes(new { style = "text-align:center;" }).Width(160);
                                 columns.Bound(p => p.TripBack).Title(WebModels.WebResources.TripBack).HtmlAttributes(new { style = "text-align:center; color:red; font-weight:500;" }).Width(150);
-                                columns.Bound(p => p.SourcePartner.PartnerName).Title(WebModels.WebResources.SourcePartner).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
-                                columns.Bound(p => p.DestinationPartner.PartnerName).Title(WebModels.WebResources.DestinationPartner).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
+                                columns.Bound(p => p.SourcePartnerName).Title(WebModels.WebResources.SourcePartner).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                                columns.Bound(p => p.DestinationPartnerName).Title(WebModels.WebResources.DestinationPartner).HtmlAttributes(new { style = "text-align:center;" }).Width(170);
                                 columns.Bound(p => p.DetailCode).Title(WebModels.WebResources.DetailCode).HtmlAttributes(new { style = "text-align:center;" }).Width(165);
                                 columns.Bound(p => p.Amount).Title(WebModels.WebResources.Amount).HtmlAttributes(new { style = "text-align:center;" }).Width(165);
-                                columns.Bound(p => p.Note).Title(WebModels.WebResources.Note).Width(150);
-                            }})
+                            }
+                            columns.Bound(p => p.Note).Title(WebModels.WebResources.Note).Width(150);
+                        })
                 .Pageable()
                 .Filterable()
                 .Sortable()
@@ -358,27 +438,23 @@
 <script type="text/javascript" src="~/Content/themes/admin/js/tableHeadFixer.js"></script>
 
 <script>
-
     function deletes_success() {
         $("div[class='loader-delete']").hide();
         $("#background-black").css("filter", "contrast(100%)");
         window.parent.show_stack_bottom_right('success', 'Xóa kế hoạch', 'Xóa thành công.');
     }
-
     function deletes_unsuccess() {
         $("div[class='loader-delete']").hide();
         alert("Đã xuất hiện lỗi trong quá trình xóa kế hoạch!");
         $("#background-black").css("filter", "contrast(100%)");
         window.parent.show_stack_bottom_right('error', 'Xóa kế hoạch', 'Xóa không thành công.');
     }
-
     $(grid.element).kendoTooltip({
         filter: ".k-grid-Edit",
         width: 120,
         position: "top",
         content: 'ahihihihi'
     });
-
     function getDataFilter() {
         var dataSource = $("#grid").data("kendoGrid").dataSource;
         var filters = dataSource.filter();
@@ -406,7 +482,6 @@
         }
         return check;
     }
-
     function childNodeClick(element) {
         var dataID = getCheckAll();
         var id = element.value;
@@ -418,7 +493,6 @@
         isCheckedAll = getCheckAll();
         $('#chkAll').prop('checked', isCheckedAll);
     }
-
     $(function () {
         $(".k-filter").click(function () {
             setTimeout(function () {
@@ -439,7 +513,6 @@
             }, 100);
         });
     });
-
     function checkAll(e) {
         var rowItems = getDataFilter();
         isCheckedAll = $(e.target).prop('checked');
@@ -464,79 +537,103 @@
                 }
             }
         }
-
         $('input[name="checkedNodes"]').each(function () {
             $(this).prop('checked', isCheckedAll);
         });
         console.log(rowselected);
-
     }
-
-
     function getTime(e) {
         return {
             datetime: $("#time").val()
         };
     }
-
     $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
         $("#grid").data("kendoGrid").dataSource.read();
     });
-
     $(document).ready(function () {
-
         $("#FieldFilter").keyup(function () {
-
             var value = $("#FieldFilter").val();
+            if (@ViewBag.CheckDriver == 0) {
+                $("#grid").data("kendoGrid").dataSource.filter({
+                    logic: "or",
+                    filters: [
+                        {
+                            field: "StatusString",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "TrackingCode",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "StartLocationName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "NumberPlate",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "EndLocationName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "VehicleWeightName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "SourcePartnerName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "DestinationPartnerName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "Note",
+                            operator: "contains",
+                            value: value
+                        }
+                    ]
+                });
+            }
+            else {
+                $("#grid").data("kendoGrid").dataSource.filter({
+                    logic: "or",
+                    filters: [
 
-            $("#grid").data("kendoGrid").dataSource.filter({
-                logic: "or",
-                filters: [
+                        {
+                            field: "StatusString",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "StartLocationName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "EndLocationName",
+                            operator: "contains",
+                            value: value
+                        },
+                        {
+                            field: "Note",
+                            operator: "contains",
+                            value: value
+                        }
+                    ]
+                });
+            }
 
-                    {
-                        field: "TrackingCode",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "Route.StartLocation.LocationName",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "Vehicle.NumberPlate",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "Route.EndLocation.LocationName",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "Vehicle.VehicleWeight.WeightName",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "SourcePartner.PartnerName",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "DestinationPartner.PartnerName",
-                        operator: "contains",
-                        value: value
-                    },
-                    {
-                        field: "Note",
-                        operator: "contains",
-                        value: value
-                    }
-                ]
-            });
         });
     });
-
 </script>
-

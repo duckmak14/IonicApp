@@ -534,4 +534,118 @@
   <data name="TripBack" xml:space="preserve">
     <value>Trip Back</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="PriceOfDriver" xml:space="preserve">
+    <value>Price Of Driver</value>
+  </data>
+  <data name="RepairCategory" xml:space="preserve">
+    <value>Repair Category </value>
+  </data>
+  <data name="RepairContent" xml:space="preserve">
+    <value>Repair Content </value>
+  </data>
+  <data name="PayContent" xml:space="preserve">
+    <value>Pay Content</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="OilPrice" xml:space="preserve">
+    <value>Oil Price</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="DriverID" xml:space="preserve">
+    <value>Driver</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="AmountOil" xml:space="preserve">
+    <value>Amount Oil</value>
+  </data>
+  <data name="DifferenceOil" xml:space="preserve">
+    <value>DifferenceOil</value>
+  </data>
+  <data name="Km" xml:space="preserve">
+    <value>Km</value>
+  </data>
+  <data name="OilLevel" xml:space="preserve">
+    <value>Oil Level</value>
+  </data>
+  <data name="OtherRun" xml:space="preserve">
+    <value>Other Run</value>
+  </data>
+  <data name="SuppliedFromLevel" xml:space="preserve">
+    <value>Supplied From Level</value>
+  </data>
+  <data name="SuppliedOil" xml:space="preserve">
+    <value>SuppliedOil</value>
+  </data>
+  <data name="BonusCosts" xml:space="preserve">
+    <value>Bonus Costs</value>
+  </data>
+  <data name="DistancePrice" xml:space="preserve">
+    <value>Distance Price</value>
+  </data>
+  <data name="DistanceTotal" xml:space="preserve">
+    <value>Distance Total</value>
+  </data>
+  <data name="InsuranceCosts" xml:space="preserve">
+    <value>Insurance Costs</value>
+  </data>
+  <data name="PhoneCosts" xml:space="preserve">
+    <value>Phone Costs</value>
+  </data>
+  <data name="SalaryTotal" xml:space="preserve">
+    <value>Salary Total</value>
+  </data>
+  <data name="SupportCosts" xml:space="preserve">
+    <value>Support Costs</value>
+  </data>
+  <data name="WorkDay" xml:space="preserve">
+    <value>Work Day</value>
+  </data>
+  <data name="WorkDayPrice" xml:space="preserve">
+    <value>Work Day Price</value>
+  </data>
+  <data name="WorkDayTotal" xml:space="preserve">
+    <value>Work Day Total</value>
+  </data>
+  <data name="AdvanceCosts" xml:space="preserve">
+    <value>Advance Costs</value>
+  </data>
+  <data name="MortgageCosts" xml:space="preserve">
+    <value>Mortgage Costs</value>
+  </data>
+  <data name="OtherCosts" xml:space="preserve">
+    <value>Other Costs</value>
+  </data>
+  <data name="TotalDriverPay" xml:space="preserve">
+    <value>Total Driver Pay</value>
+  </data>
+  <data name="TotalOil" xml:space="preserve">
+    <value>Total Oil</value>
+  </data>
+  <data name="TotalSalary" xml:space="preserve">
+    <value>Total Salary</value>
+  </data>
+  <data name="PriceOfParking" xml:space="preserve">
+    <value>Price Of Parking</value>
+  </data>
+  <data name="TotalDateTicket" xml:space="preserve">
+    <value>Total Date Ticket</value>
+  </data>
+  <data name="TotalMonthTicket" xml:space="preserve">
+    <value>Total Month Ticket</value>
+  </data>
+  <data name="TotalParking" xml:space="preserve">
+    <value>Total Parking</value>
+  </data>
+  <data name="TotalTransportActual" xml:space="preserve">
+    <value>Total Transport Actual</value>
+  </data>
 </root>

@@ -1,0 +1,91 @@
+﻿@model TransportPlan
+@{ Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml"; }
+@{
+    var StartTime = DateTime.Now;
+    var EndTime = DateTime.Now.AddHours(2);
+
+    if (Model.StartTime != null)
+    {
+        StartTime = new DateTime(Model.StartTime.Value);
+    }
+    if (Model.EndTime != null)
+    {
+        EndTime = new DateTime(Model.EndTime.Value);
+    }
+}
+<form class="form-change-car">
+    <div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.WebResources.PlanDate, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@String.Format("{0:dd/MM/yyyy}",Model.PlanDate)" readonly>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.WebResources.StartTime, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@String.Format("{0:HH:mm}",StartTime)" readonly>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.WebResources.EndTime, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@String.Format("{0:HH:mm}",EndTime)" readonly>
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.WebResources.StartLocation, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@Model.StartLocation.LocationName" readonly>
+            </div>
+        </div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.WebResources.EndLocation, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@Model.EndLocation.LocationName" readonly>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.WebResources.NumberPlate, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@Model.Vehicle.NumberPlate" readonly>
+            </div>
+        </div>
+
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.Label(WebModels.AccountResources.Note, new { @class = "control-label" })
+            </div>
+            <div>
+                <input type="text" class="input-block-level" value="@Model.Note" readonly>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    top.winsetup("Chi tiết kế hoạch", 600, 420, true);
+    if (screen.width < 576) {
+        top.winsetup("Chi tiết kế hoạch", screen.width * 0.8, screen.height * 0.5, true);
+    }
+
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+</script>
+

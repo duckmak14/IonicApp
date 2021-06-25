@@ -32,31 +32,41 @@ namespace WEB.Areas.Admin.Controllers
             base.Dispose(disposing);
         }
         // GET: Admin/DrivePlan
-        public ActionResult Index()
+        public ActionResult Index(string dataString)
         {
             DateTime date = DateTime.Now;
+            ViewBag.DateNow = date;
             var firstDay = new DateTime();
             var lastDay = new DateTime();
             var user = WebHelpers.UserInfoHelper.GetUserData().UserName;
             List<string> role = Roles.GetRolesForUser(user).ToList();
-            var checkDriver = 1;
+            var checkDriver = 0;
             if (role.Contains("Lái xe"))
             {
-                firstDay = date.AddDays(-7);
-                lastDay = date.AddDays(7);
+                checkDriver = 1;
+                firstDay = date.AddDays(-1);
+                lastDay = date.AddDays(3);
             }
             else
             {
-                checkDriver = 0;
                 firstDay = date.AddDays(-7);
                 lastDay = date.AddDays(7);
-            }
-            string day = firstDay.Day.ToString() + "-" + firstDay.Month.ToString() + "-" + firstDay.Year.ToString() + " to " + lastDay.Day.ToString() + "-" + lastDay.Month.ToString() + "-" + lastDay.Year.ToString();
-            ViewBag.Date = day;
-            ViewBag.DateNow = date;
+            }    
             ViewBag.CheckDriver = checkDriver;
 
+            string day = "";
 
+            if (dataString == null)
+            {
+                day = firstDay.Day.ToString() + "-" + firstDay.Month.ToString() + "-" + firstDay.Year.ToString() + " to " + lastDay.Day.ToString() + "-" + lastDay.Month.ToString() + "-" + lastDay.Year.ToString();
+                ViewBag.Date = day;
+            } 
+            else
+            {
+                day = dataString;
+            }
+
+            ViewBag.Date = day;
 
             return View();
         }
@@ -68,14 +78,15 @@ namespace WEB.Areas.Admin.Controllers
             return Json(vehicles.Select(x => new
             {
                 x.ID,
-                x.NumberPlate
+                x.NumberPlate,
+                x.CarOwerName
             }), JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult TransportPlanLists_Read([DataSourceRequest] DataSourceRequest request, string datetime)
         {
-            List<TransportPlan> TransportPlanList = new List<TransportPlan>();
-            var user = db.Set<UserProfile>().Find(WebSecurity.GetUserId(User.Identity.Name));
+            var TransportPlanList = new List<TransportPlanViewModel>();
+            var user = db.Set<UserProfile>().Find(WebHelpers.UserInfoHelper.GetUserData().UserId);
             List<string> role = Roles.GetRolesForUser(user.UserName).ToList();
             DateTime date = DateTime.Now;
             string[] arrListStr = datetime.Split(new char[] { 't', 'o' });
@@ -84,237 +95,170 @@ namespace WEB.Areas.Admin.Controllers
             if (role.Contains("Lái xe"))
             {
                 var vehicleOfDriver = db.Vehicle.Where(x => x.Mobile == user.Mobile).Select(x => x.NumberPlate).ToList();
-                var planList = from a in db.TransportPlans.Where(x => vehicleOfDriver.Contains(x.Vehicle.NumberPlate)).Where(x => firstDay <= x.PlanDate && x.PlanDate <= lastDay && x.IsRemove != true)
-                               join b in db.Route on a.RouteID equals b.ID into group1
-                               from b in group1.DefaultIfEmpty()
-                               join d in db.Vehicle on a.VehicleID equals d.ID into group3
-                               from d in group3.DefaultIfEmpty()
-                               join e in db.Partner on a.SourcePartnerID equals e.ID into group4
-                               from e in group4.DefaultIfEmpty()
-                               join f in db.Partner on a.DestinationPartnerID equals f.ID into group5
-                               from f in group5.DefaultIfEmpty()
-                               join g in db.VehicleWeight on a.ActualWeightID equals g.ID into group6
-                               from g in group6.DefaultIfEmpty()
-                               join h in db.Location on a.EndLocationID equals h.ID into group7
-                               from h in group7.DefaultIfEmpty()
-                               join j in db.Location on a.StartLocationID equals j.ID into group8
-                               from j in group8.DefaultIfEmpty()
-                                   
-                               select new
-                               {
-                                   a.ID,
-                                   a.PlanDate,
-                                   a.Note,
-                                   a.StartTime,
-                                   a.EndTime,
-                                   a.DetailCode,
-                                   a.Amount,
-                                   b.RouteCode,
-                                   a.TrackingCode,
-                                   a.ActualWeightID,
-                                   a.CreatedDate,
-                                   a.ModifiedDate,
-                                   a.TripBack,
-                                   d.NumberPlate,
-                                   d.CarOwerName,
-                                   Weight = d.VehicleWeight.WeightName,
-                                   SourcePartnerName = e.PartnerName,
-                                   DestinationPartnerName = f.PartnerName,
-                                   SourcePartnerID = e.ID,
-                                   DestinationPartnerID = f.ID,
-                                   VehicleID = d.ID,
-                                   RouteID = b.ID,
-                                   ActualWeightName = g.WeightName,
-                                   endLocation = h.LocationName,
-                                   startLocation = j.LocationName
+                TransportPlanList = (from a in db.TransportPlans.Where(x => vehicleOfDriver.Contains(x.Vehicle.NumberPlate)).Where(x => DbFunctions.TruncateTime(firstDay) <= DbFunctions.TruncateTime(x.PlanDate) && DbFunctions.TruncateTime(x.PlanDate) <= DbFunctions.TruncateTime(lastDay) && x.IsRemove != true)
+                                     join b in db.Route on a.RouteID equals b.ID into group1
+                                     from b in group1.DefaultIfEmpty()
+                                     join d in db.Vehicle on a.VehicleID equals d.ID into group3
+                                     from d in group3.DefaultIfEmpty()
+                                     join e in db.Partner on a.SourcePartnerID equals e.ID into group4
+                                     from e in group4.DefaultIfEmpty()
+                                     join f in db.Partner on a.DestinationPartnerID equals f.ID into group5
+                                     from f in group5.DefaultIfEmpty()
+                                     join g in db.VehicleWeight on a.ActualWeightID equals g.ID into group6
+                                     from g in group6.DefaultIfEmpty()
+                                     join h in db.Location on a.EndLocationID equals h.ID into group7
+                                     from h in group7.DefaultIfEmpty()
+                                     join j in db.Location on a.StartLocationID equals j.ID into group8
+                                     from j in group8.DefaultIfEmpty()
+                                         //join d in db.VehicleWeight on a.ActualWeightID equals d.ID into group3
+                                         //from d in group3.DefaultIfEmpty()
+                                     select new
+                                     {
+                                         a.ID,
+                                         a.PlanDate,
+                                         a.Note,
+                                         a.StartTime,
+                                         a.EndTime,
+                                         a.DetailCode,
+                                         a.Amount,
+                                         a.Status,
+                                         b.RouteCode,
+                                         a.TrackingCode,
+                                         a.ActualWeightID,
+                                         a.CreatedDate,
+                                         a.ModifiedDate,
+                                         a.TripBack,
+                                         d.NumberPlate,
+                                         d.CarOwerName,
+                                         Weight = d.VehicleWeight.WeightName,
+                                         SourcePartnerName = e.PartnerName,
+                                         DestinationPartnerName = f.PartnerName,
+                                         SourcePartnerID = e.ID,
+                                         DestinationPartnerID = f.ID,
+                                         VehicleID = d.ID,
+                                         RouteID = b.ID,
+                                         ActualWeightName = g.WeightName,
+                                         endLocation = h.LocationName,
+                                         startLocation = j.LocationName
 
-                               };
+                                     }).AsEnumerable()
+                                        .Select(B => new TransportPlanViewModel()
+                                        {
+                                            ID = B.ID,
+                                            SourcePartnerID = B.SourcePartnerID,
+                                            DestinationPartnerID = B.DestinationPartnerID,
+                                            VehicleID = B.VehicleID,
+                                            RouteID = B.RouteID,
+                                            TripBack = B.TripBack,
+                                            Note = B.Note,
+                                            PlanDate = B.PlanDate,
+                                            TrackingCode = B.TrackingCode,
+                                            StartTime = B.StartTime,
+                                            EndTime = B.EndTime,
+                                            DetailCode = B.DetailCode,
+                                            Amount = B.Amount,
+                                            ActualWeightID = B.ActualWeightID,
+                                            CreatedDate = B.CreatedDate,
+                                            ModifiedDate = B.ModifiedDate,
+                                            Status = B.Status,
+                                            RouteCode = B.RouteCode,
+                                            NumberPlate = B.NumberPlate,
+                                            CarOwerName = B.CarOwerName,
+                                            VehicleWeightName = B.Weight,
+                                            SourcePartnerName = B.SourcePartnerName,
+                                            DestinationPartnerName = B.DestinationPartnerName,
+                                            ActualWeightName = B.ActualWeightName,
+                                            EndLocationName = B.endLocation,
+                                            StartLocationName = B.startLocation
 
-                var test = planList.ToList();
-                foreach (var item in planList)
-                {
-                    var plan = new TransportPlanViewModel();
-                    plan.ID = item.ID;
-                    plan.SourcePartnerID = item.SourcePartnerID;
-                    plan.DestinationPartnerID = item.DestinationPartnerID;
-                    plan.VehicleID = item.VehicleID;
-                    plan.RouteID = item.RouteID;
-                    plan.TripBack = item.TripBack;
-                    plan.Note = item.Note;
-                    plan.PlanDate = item.PlanDate;
-                    plan.TrackingCode = item.TrackingCode;
-                    plan.StartTime = item.StartTime;
-                    plan.EndTime = item.EndTime;
-                    plan.DetailCode = item.DetailCode;
-                    plan.Amount = item.Amount;
-                    plan.ActualWeightID = item.ActualWeightID;
-                    plan.CreatedDate = item.CreatedDate;
-                    plan.ModifiedDate = item.ModifiedDate;
+                                        }).ToList();
 
-
-                    plan.Route = new Route()
-                    {
-                        RouteCode = item.RouteCode
-                    };
-                    plan.Vehicle = new Vehicle()
-                    {
-                        NumberPlate = item.NumberPlate,
-                        VehicleWeight = new VehicleWeight()
-                        {
-                            WeightName = item.Weight
-                        },
-                        CarOwerName = item.CarOwerName
-                    };
-
-                    plan.SourcePartner = new Partner()
-                    {
-                        PartnerName = item.SourcePartnerName
-                    };
-                    plan.DestinationPartner = new Partner()
-                    {
-                        PartnerName = item.DestinationPartnerName
-                    };
-                    plan.ActualWeight = new VehicleWeight()
-                    {
-                        WeightName = item.ActualWeightName
-
-                    };
-                    plan.StartLocation = new Location()
-                    {
-                        LocationName = item.startLocation
-
-                    };
-                    plan.EndLocation = new Location()
-                    {
-                        LocationName = item.endLocation
-                    };
-                    TransportPlanList.Add(plan);
-                }
             }
             else
             {
-                var planList = from a in db.TransportPlans.Where(x => firstDay <= x.PlanDate && x.PlanDate <= lastDay && x.IsRemove != true)
-                               join b in db.Route on a.RouteID equals b.ID into group1
-                               from b in group1.DefaultIfEmpty()
-                               join d in db.Vehicle on a.VehicleID equals d.ID into group3
-                               from d in group3.DefaultIfEmpty()
-                               join e in db.Partner on a.SourcePartnerID equals e.ID into group4
-                               from e in group4.DefaultIfEmpty()
-                               join f in db.Partner on a.DestinationPartnerID equals f.ID into group5
-                               from f in group5.DefaultIfEmpty()
-                               join g in db.VehicleWeight on a.ActualWeightID equals g.ID into group6
-                               from g in group6.DefaultIfEmpty()
-                               join h in db.Location on a.EndLocationID equals h.ID into group7
-                               from h in group7.DefaultIfEmpty()
-                               join j in db.Location on a.StartLocationID equals j.ID into group8
-                               from j in group8.DefaultIfEmpty()
-                               select new
-                               {
-                                   a.ID,
-                                   a.PlanDate,
-                                   a.Note,
-                                   a.StartTime,
-                                   a.EndTime,
-                                   a.DetailCode,
-                                   a.Amount,
-                                   b.RouteCode,
-                                   a.TrackingCode,
-                                   a.ActualWeightID,
-                                   a.CreatedDate,
-                                   a.ModifiedDate,
-                                   a.TripBack,
-                                   StartLocation = b.StartLocation.LocationName,
-                                   EndLocation = b.EndLocation.LocationName,
-                                   d.NumberPlate,
-                                   d.CarOwerName,
-                                   Weight = d.VehicleWeight.WeightName,
-                                   SourcePartnerName = e.PartnerName,
-                                   DestinationPartnerName = f.PartnerName,
-                                   SourcePartnerID = e.ID,
-                                   DestinationPartnerID = f.ID,
-                                   VehicleID = d.ID,
-                                   RouteID = b.ID,
-                                   ActualWeightName = g.WeightName,
-                                   endLocation = h.LocationName,
-                                   startLocation = j.LocationName
-                               };
-                var test = planList.ToList();
+                TransportPlanList = (from a in db.TransportPlans.Where(x => DbFunctions.TruncateTime(firstDay) <= DbFunctions.TruncateTime(x.PlanDate) && DbFunctions.TruncateTime(x.PlanDate) <= DbFunctions.TruncateTime(lastDay) && x.IsRemove != true)
+                                     join b in db.Route on a.RouteID equals b.ID into group1
+                                     from b in group1.DefaultIfEmpty()
+                                     join d in db.Vehicle on a.VehicleID equals d.ID into group3
+                                     from d in group3.DefaultIfEmpty()
+                                     join e in db.Partner on a.SourcePartnerID equals e.ID into group4
+                                     from e in group4.DefaultIfEmpty()
+                                     join f in db.Partner on a.DestinationPartnerID equals f.ID into group5
+                                     from f in group5.DefaultIfEmpty()
+                                     join g in db.VehicleWeight on a.ActualWeightID equals g.ID into group6
+                                     from g in group6.DefaultIfEmpty()
+                                     join h in db.Location on a.EndLocationID equals h.ID into group7
+                                     from h in group7.DefaultIfEmpty()
+                                     join j in db.Location on a.StartLocationID equals j.ID into group8
+                                     from j in group8.DefaultIfEmpty()
+                                     select new
+                                     {
+                                         a.ID,
+                                         a.PlanDate,
+                                         a.Note,
+                                         a.StartTime,
+                                         a.EndTime,
+                                         a.DetailCode,
+                                         a.Amount,
+                                         a.Status,
+                                         b.RouteCode,
+                                         a.TrackingCode,
+                                         a.ActualWeightID,
+                                         a.CreatedDate,
+                                         a.ModifiedDate,
+                                         a.TripBack,
+                                         StartLocation = b.StartLocation.LocationName,
+                                         EndLocation = b.EndLocation.LocationName,
+                                         d.NumberPlate,
+                                         d.CarOwerName,
+                                         Weight = d.VehicleWeight.WeightName,
+                                         SourcePartnerName = e.PartnerName,
+                                         DestinationPartnerName = f.PartnerName,
+                                         SourcePartnerID = e.ID,
+                                         DestinationPartnerID = f.ID,
+                                         VehicleID = d.ID,
+                                         RouteID = b.ID,
+                                         ActualWeightName = g.WeightName,
+                                         endLocation = h.LocationName,
+                                         startLocation = j.LocationName
+                                     }).AsEnumerable()
+                                        .Select(B => new TransportPlanViewModel()
+                                        {
+                                            ID = B.ID,
+                                            SourcePartnerID = B.SourcePartnerID,
+                                            DestinationPartnerID = B.DestinationPartnerID,
+                                            VehicleID = B.VehicleID,
+                                            RouteID = B.RouteID,
+                                            TripBack = B.TripBack,
+                                            Note = B.Note,
+                                            PlanDate = B.PlanDate,
+                                            TrackingCode = B.TrackingCode,
+                                            StartTime = B.StartTime,
+                                            EndTime = B.EndTime,
+                                            DetailCode = B.DetailCode,
+                                            Amount = B.Amount,
+                                            ActualWeightID = B.ActualWeightID,
+                                            CreatedDate = B.CreatedDate,
+                                            ModifiedDate = B.ModifiedDate,
+                                            Status = B.Status,
+                                            RouteCode = B.RouteCode,
+                                            NumberPlate = B.NumberPlate,
+                                            CarOwerName = B.CarOwerName,
+                                            VehicleWeightName = B.Weight,
+                                            SourcePartnerName = B.SourcePartnerName,
+                                            DestinationPartnerName = B.DestinationPartnerName,
+                                            ActualWeightName = B.ActualWeightName,
+                                            EndLocationName = B.endLocation,
+                                            StartLocationName = B.startLocation
 
-                foreach (var item in planList)
-                {
-                    var plan = new TransportPlanViewModel();
-                    plan.ID = item.ID;
-                    plan.SourcePartnerID = item.SourcePartnerID;
-                    plan.DestinationPartnerID = item.DestinationPartnerID;
-                    plan.VehicleID = item.VehicleID;
-                    plan.RouteID = item.RouteID;
-                    plan.Note = item.Note;
-                    plan.PlanDate = item.PlanDate;
-                    plan.TrackingCode = item.TrackingCode;
-                    plan.StartTime = item.StartTime;
-                    plan.EndTime = item.EndTime;
-                    plan.DetailCode = item.DetailCode;
-                    plan.VehicleID = item.VehicleID;
-                    plan.ActualWeightID = item.ActualWeightID;
-                    plan.Amount = item.Amount;
-                    plan.TripBack = item.TripBack;
-                    plan.CreatedDate = item.CreatedDate;
-                    plan.ModifiedDate = item.ModifiedDate;
+                                        }).ToList();
 
-                    plan.Route = new Route()
-                    {
-                        RouteCode = item.RouteCode,
-                        StartLocation = new Location()
-                        {
-                            LocationName = item.StartLocation
-                        },
-                        EndLocation = new Location()
-                        {
-                            LocationName = item.EndLocation
-                        }
-
-                    };
-                    plan.Vehicle = new Vehicle()
-                    {
-                        NumberPlate = item.NumberPlate,
-                        VehicleWeight = new VehicleWeight()
-                        {
-                            WeightName = item.Weight
-                        },
-                        CarOwerName = item.CarOwerName
-                    };
-
-                    plan.SourcePartner = new Partner()
-                    {
-                        PartnerName = item.SourcePartnerName
-                    };
-                    plan.DestinationPartner = new Partner()
-                    {
-                        PartnerName = item.DestinationPartnerName
-                    };
-                    plan.ActualWeight = new VehicleWeight()
-                    {
-                        WeightName = item.ActualWeightName
-
-                    };
-                    plan.StartLocation = new Location()
-                    {
-                        LocationName = item.startLocation
-
-                    };
-                    plan.EndLocation = new Location()
-                    {
-                        LocationName = item.endLocation
-                    };
-                    TransportPlanList.Add(plan);
-                }
             }
-            var jsonResult = Json(TransportPlanList.OrderBy(x => x.PlanDate).ThenByDescending(x => x.ModifiedDate).ThenByDescending(x => x.CreatedDate).ToDataSourceResult(request));
+            var jsonResult = Json(TransportPlanList.OrderBy(x => x.PlanDate).ThenByDescending(x => x.CreatedDate).ToDataSourceResult(request));
             jsonResult.MaxJsonLength = int.MaxValue;
             return jsonResult;
-
-
         }
+
         public ActionResult Add()
         {
             var model = new TransportPlan();
@@ -661,32 +605,6 @@ namespace WEB.Areas.Admin.Controllers
                     return View(model);
                 }
 
-                //var checkPlan = db.TransportPlans.Where(x => x.ID != model.ID && x.PlanDate == date && x.RouteID == model.RouteID && x.VehicleID == model.VehicleID
-                //&& x.SourcePartnerID == model.SourcePartnerID && x.DestinationPartnerID == model.DestinationPartnerID).ToList();
-                //Boolean checkTime = true;
-                //string err = "Thời gian trùng trong khoảng:   ";
-                //if (checkPlan.Count() > 0)
-                //{
-                //    foreach (var item in checkPlan)
-                //    {
-                //        if (item.StartTime != null && item.EndTime != null)
-                //        {
-                //            var startDateTime = new DateTime(item.StartTime.Value);
-                //            var endDateTime = new DateTime(item.EndTime.Value);
-                //            if (startDateTime.TimeOfDay < end.Value.TimeOfDay && start.Value.TimeOfDay < endDateTime.TimeOfDay)
-                //            {
-                //                checkTime = false;
-                //                err += startDateTime.TimeOfDay.ToString() + " - " + endDateTime.TimeOfDay.ToString() + "   ";
-                //            }
-                //        }
-                //    }
-                //    if (!checkTime)
-                //    {
-                //        ModelState.AddModelError("CustomError", err);
-                //        return View(model);
-                //    }
-                //}
-
                 Boolean CheckChange = false;
                 Boolean CheckChangeActual = false;
                 Boolean checkChangePrice = false;
@@ -880,7 +798,6 @@ namespace WEB.Areas.Admin.Controllers
                                     }
 
                                     db.SaveChanges();
-
                                     enumaration.ChangeTime = findTranActualST.ActualDate;
                                     enumaration.ChangeStartTime = findTranActualST.StartTime;
                                     enumaration.ChangeEndTime = findTranActualST.EndTime;
@@ -930,8 +847,19 @@ namespace WEB.Areas.Admin.Controllers
             }
         }
 
+        public ActionResult Show(int id)
+        {
+            var model = db.Set<TransportPlan>().Find(id);
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View("Show", model);
+        }
+
         [HttpPost]
-        public ActionResult Deletes(string dataStringDelete, string dataString)
+        public ActionResult Deletes(string dataStringDelete, string dataStringDate)
         {
             List<TransportPlan> listData = new List<TransportPlan>();
             var dataListJson = dataStringDelete.Replace('?', '"');
@@ -1009,42 +937,21 @@ namespace WEB.Areas.Admin.Controllers
                     }
                 }
             }
-            DateTime date = DateTime.Now;
-            var firstDay = new DateTime();
-            var lastDay = new DateTime();
-            var user = WebHelpers.UserInfoHelper.GetUserData().UserName;
-            List<string> role = Roles.GetRolesForUser(user).ToList();
-            var checkDriver = 1;
-            if (role.Contains("Lái xe"))
-            {
-                firstDay = date.AddDays(-7);
-                lastDay = date.AddDays(7);
-            }
-            else
-            {
-                checkDriver = 0;
-                firstDay = date.AddDays(-7);
-                lastDay = date.AddDays(7);
-            }
-            //string day = firstDay.Day.ToString() + "-" + firstDay.Month.ToString() + "-" + firstDay.Year.ToString() + " to " + lastDay.Day.ToString() + "-" + lastDay.Month.ToString() + "-" + lastDay.Year.ToString();
-            ViewBag.Date = dataString;
-            ViewBag.DateNow = date;
-            ViewBag.CheckDriver = checkDriver;
 
             if (temp.Count == 0)
             {
                 ViewBag.StartupScript = "deletes_success();";
-                return View("Index");
+                return RedirectToAction("Index", new { dataString = dataStringDate });
             }
             else if (temp.Count > 0)
             {
                 ViewBag.StartupScript = "deletes_unsuccess();";
-                return View("Index");
+                return RedirectToAction("Index", new { dataString = dataStringDate });
             }
             else
             {
                 ViewBag.StartupScript = "deletes_success();";
-                return View("Index");
+                return RedirectToAction("Index", new { dataString = dataStringDate });
             }
 
         }
@@ -1237,6 +1144,12 @@ namespace WEB.Areas.Admin.Controllers
                         ViewBag.StartupScript = "upload_success();";
                         return View();
                     }
+                    else if (result.Count() == 1)
+                    {
+                        ViewBag.check = "Đã xảy ra lỗi trong quá trình lưu! Vui lòng thử lại";
+                        ViewBag.StartupScript = "hideLoading();";
+                        return View();
+                    }
                     else
                     {
                         String path = Server.MapPath("~/Uploads/FileResult/"); //Path
@@ -1296,6 +1209,42 @@ namespace WEB.Areas.Admin.Controllers
                 routeCode = model.Route.RouteCode;
             }
             return Json(new { ErrorMessage = string.Empty, routeID = routeCode }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult ChangeStatus(GetSelected model)
+        {
+            var temp = from p in db.Set<TransportPlan>()
+                       where model.ID.Contains(p.ID)
+                       select p;
+            foreach (var item in temp)
+            {
+                item.Status = true;
+                item.ModifiedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
+                item.ModifiedDate = DateTime.Now;
+            }
+            db.SaveChanges();
+            return Json(new { ErrorMessage = string.Empty }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult UnChangeStatus(GetSelected model)
+        {
+            var temp = from p in db.Set<TransportPlan>()
+                       where model.ID.Contains(p.ID)
+                       select p;
+
+            foreach (var item in temp)
+            {
+                item.Status = false;
+                item.ModifiedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
+                item.ModifiedDate = DateTime.Now;
+            }
+            db.SaveChanges();
+            return Json(new { ErrorMessage = string.Empty }, JsonRequestBehavior.AllowGet);
         }
     }
 }

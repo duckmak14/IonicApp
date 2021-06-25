@@ -131,11 +131,11 @@
             dataType: 'json',
             success: function (data) {
                 if (data.success)
-                    show_stack_bottomleft('success', 'Cập nhật quyền', 'Cập nhật thành công.');
+                    window.parent.show_stack_bottom_right('success', 'Cập nhật quyền', 'Cập nhật thành công.');
                 else
-                    show_stack_bottomleft('error', 'Cập nhật quyền', 'Cập nhật thất bại.');
+                    window.parent.show_stack_bottom_right('error', 'Cập nhật quyền', 'Cập nhật thất bại.');
             },
-            error: function () { show_stack_bottomleft('error', 'Cập nhật quyền', 'Có lỗi khi cập nhật quyền.'); }
+            error: function () { window.parent.show_stack_bottom_right('error', 'Cập nhật quyền', 'Có lỗi khi cập nhật quyền.'); }
         });
     }
 
@@ -159,11 +159,11 @@
             dataType: 'json',
             success: function (data) {
                 if (data.success)
-                    show_stack_bottomleft('success', 'Cập nhật quyền', 'Cập nhật thành công.');
+                    window.parent.show_stack_bottom_right('success', 'Cập nhật quyền', 'Cập nhật thành công.');
                 else
-                    show_stack_bottomleft('error', 'Cập nhật quyền', 'Cập nhật thất bại.');
+                    window.parent.show_stack_bottom_right('error', 'Cập nhật quyền', 'Cập nhật thất bại.');
             },
-            error: function () { show_stack_bottomleft('error', 'Cập nhật quyền', 'Có lỗi khi cập nhật quyền.'); }
+            error: function () { window.parent.show_stack_bottom_right('error', 'Cập nhật quyền', 'Có lỗi khi cập nhật quyền.'); }
         });
     }
 </script>

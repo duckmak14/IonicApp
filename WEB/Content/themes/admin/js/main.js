@@ -168,7 +168,7 @@ function setActiveMenuItem() {
     for (let index = 0; index < links.length; index++) {
         const element = links[index];
 
-        if (url.toLowerCase() === $(element).attr('href').toLowerCase()) {
+        if (url.toLowerCase().includes($(element).attr('href').toLowerCase())) {
             activeLink = element;
          
         }

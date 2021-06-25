@@ -43,7 +43,516 @@ namespace WebModels
         public virtual VehicleWeight VehicleWeight { get; set; }
         [NotMapped]
         public string dataString { get; set; }
+
     }
+
+    [Table("RepairVehicles")]
+    public partial class RepairVehicle
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredRepairCategory")]
+        [Display(ResourceType = typeof(WebResources), Name = "RepairCategory")]
+        public Nullable<int> CategoryID { get; set; }
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredRepairContent")]
+        [Display(ResourceType = typeof(WebResources), Name = "RepairContent")]
+        public string Content { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredRepairDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime RepairDate { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredRepairPrice")]
+        [Display(ResourceType = typeof(WebResources), Name = "PriceOfDriver")]
+        public Double? Price { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+        public Boolean? IsRemove { get; set; }
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("CategoryID")]
+        public virtual RepairCategory RepairCategory { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+        [NotMapped]
+        public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
+
+    }
+
+    [Table("DriverPays")]
+    public partial class DriverPay
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredPayContent")]
+        [Display(ResourceType = typeof(WebResources), Name = "PayContent")]
+        public string Content { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredPayDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime PayDate { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredPayPrice")]
+        [Display(ResourceType = typeof(WebResources), Name = "PriceOfDriver")]
+        public Double? Price { get; set; }
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+        public Boolean? IsRemove { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped] 
+        public string dataString { get; set; }
+
+        [NotMapped] 
+        public string dataStringDelete { get; set; }
+
+        [NotMapped] 
+        public string dataStringDate { get; set; }
+    }
+
+    [Table("ParkingCosts")]
+    public partial class ParkingCost
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime ParkingDate { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredParkingPrice")]
+        [Display(ResourceType = typeof(WebResources), Name = "PriceOfParking")]
+        public Double? Price { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+        public Boolean? IsRemove { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+        [NotMapped]
+        public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
+    }
+
+    [Table("ManageOils")]
+    public partial class ManageOil
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "Km")]
+        public Double Distance { get; set; }
+
+
+        [Display(ResourceType = typeof(WebResources), Name = "OilLevel")]
+        public Double OilLevel { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "SuppliedFromLevel")]
+        public Double SuppliedFromLevel
+        {
+            get; set;
+        }
+
+        [Display(ResourceType = typeof(WebResources), Name = "OtherRun")]
+        public Double OtherRun { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "AmountOil")]
+        public Double AmountOil
+        {
+            get; set;
+        }
+
+        [Display(ResourceType = typeof(WebResources), Name = "SuppliedOil")]
+        public Double SuppliedOil { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "DifferenceOil")]
+        public Double DifferenceOil
+        {
+            get; set;
+        }
+
+        [Display(ResourceType = typeof(WebResources), Name = "TotalMoney")]
+        public Double Total
+        {
+            get; set;
+        }
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "Note")]
+        public String Note { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+        public Boolean? IsRemove { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime OilDate { get; set; }
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+        [NotMapped]
+        public Double OilPrice { get; set; }
+
+        [NotMapped]
+        public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
+    }
+
+    [Table("OtherCosts")]
+    public partial class OtherCost
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "AdvanceCosts")]
+        public Double? AdvanceCosts { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "MortgageCosts")]
+        public Double? MortgageCosts { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "OtherCosts")]
+        public Double? OtherCosts { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "TotalMoney")]
+        public Double Total
+        {
+            get; set;
+        }
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "Note")]
+        public String Note { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+        public Boolean? IsRemove { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime OtherCostDate { get; set; }
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+        [NotMapped]
+        public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
+
+    }
+
+
+    [Table("ManageSalarys")]
+    public partial class ManageSalary
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime SalaryDate { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "Km")]
+        public Double Distance { get; set; }
+
+
+        [Display(ResourceType = typeof(WebResources), Name = "WorkDay")]
+        public Double WorkDay { get; set; }
+
+
+        [Display(ResourceType = typeof(WebResources), Name = "WorkDayPrice")]
+        public Double WorkDayPrice { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "DistancePrice")]
+        public Double DistancePrice { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "WorkDayTotal")]
+        public Double WorkDayTotal
+        {
+            get; set;
+        }
+
+        [Display(ResourceType = typeof(WebResources), Name = "DistanceTotal")]
+        public Double DistanceTotal
+        {
+            get; set;
+        }
+
+        [Display(ResourceType = typeof(WebResources), Name = "PhoneCosts")]
+        public Double? PhoneCosts { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "SupportCosts")]
+        public Double? SupportCosts { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "BonusCosts")]
+        public Double? BonusCosts { get; set; }
+
+        //Salary Total is total excluding InsuranceCosts
+        [Display(ResourceType = typeof(WebResources), Name = "SalaryTotal")]
+        public Double SalaryTotal {
+            get; set;
+        }
+
+        [Display(ResourceType = typeof(WebResources), Name = "InsuranceCosts")]
+        public Double? InsuranceCosts { get; set; }
+
+        // After included InsuranceCosts
+        [Display(ResourceType = typeof(WebResources), Name = "TotalMoney")]
+        public Double Total
+        {
+            get; set;
+        }
+
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "Note")]
+        public String Note { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+        public Boolean? IsRemove { get; set; }
+
+       
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+        [NotMapped]
+        public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
+
+
+    }
+
+
+
+    [Table("ManageTickets")]
+    public partial class ManageTicket
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredCategory")]
+        [Display(ResourceType = typeof(WebResources), Name = "Category")]
+        public String Category { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "Date")]
+        public DateTime TicketDate { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredPrice")]
+        [Display(ResourceType = typeof(WebResources), Name = "PriceOfDriver")]
+        public Double Price { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredVehicle")]
+        [Display(ResourceType = typeof(WebResources), Name = "VehicleID")]
+        public Nullable<int> VehicleID { get; set; }
+
+        //[Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredDriver")]
+        [Display(ResourceType = typeof(WebResources), Name = "DriverID")]
+        public Nullable<int> DriverID { get; set; }
+        public Nullable<int> TicketType { get; set; }
+
+        [Display(ResourceType = typeof(WebResources), Name = "Note")]
+        public String Note { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+        public Boolean? IsRemove { get; set; }
+
+        [ForeignKey("VehicleID")]
+        public virtual Vehicle Vehicle { get; set; }
+
+        [ForeignKey("DriverID")]
+        public virtual Vehicle Driver { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+        [NotMapped]
+        public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
+    }
+
+
+    [Table("OilPrices")]
+    public partial class OilPrice
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredOilPrice")]
+        [Display(ResourceType = typeof(WebResources), Name = "OilPrice")]
+        public Double Price { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredStartDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "StartDate")]
+        public DateTime StartDate { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredEndDate")]
+        [Display(ResourceType = typeof(WebResources), Name = "EndDate")]
+        public DateTime EndDate { get; set; }
+
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+        [NotMapped]
+        public string dataStringEnd { get; set; }
+    }
+
+
+    [Table("RepairCategorys")]
+    public partial class RepairCategory
+    {
+        [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredRepairCategory")]
+        [Display(ResourceType = typeof(WebResources), Name = "RepairCategory")]
+        public string Category { get; set; }
+
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        [Display(ResourceType = typeof(WebResources), Name = "ID")]
+        public int ID { get; set; }
+
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<DateTime> CreatedDate { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<DateTime> ModifiedDate { get; set; }
+        public Boolean IsRemove { get; set; }
+
+        [NotMapped]
+        public string dataString { get; set; }
+
+    }
+
     [Table("VehicleWeights")]
     public partial class VehicleWeight
     {
@@ -380,6 +889,7 @@ namespace WebModels
         [NotMapped]
         public string dataString { get; set; }
         [NotMapped]
+        [Display(ResourceType = typeof(WebResources), Name = "TripCount")]
         [RegularExpression(@"^([0-9]+([.][0-9]*)?|[.][0-9]+)$", ErrorMessage = "Yêu cầu nhập đúng định dạng")]
         public string TripCountViewModel { get; set; }
     }
@@ -431,6 +941,9 @@ namespace WebModels
         [Display(ResourceType = typeof(WebResources), Name = "TripBack")]
         public String TripBack { get; set; }
 
+        [Display(ResourceType = typeof(WebResources), Name = "Status")]
+        public Boolean? Status { get; set; }
+
         [Required(ErrorMessageResourceType = typeof(AccountResources), ErrorMessageResourceName = "RequiredSourcePartner")]
         [Display(ResourceType = typeof(WebResources), Name = "SourcePartnerID")]
         public Nullable<int> SourcePartnerID { get; set; }
@@ -456,8 +969,12 @@ namespace WebModels
 
         [NotMapped]
         public string dataString { get; set; }
+
         [NotMapped]
         public string dataStringDelete { get; set; }
+
+        [NotMapped]
+        public string dataStringDate { get; set; }
 
 
     }

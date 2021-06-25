@@ -203,9 +203,9 @@
                        .Filterable(false)
                        .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
                 columns.Bound(p => p.NumberPlate).Title(WebModels.AccountResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(175);
-                columns.Bound(p => p.CarOwerName).Title(WebModels.AccountResources.CarOwerName).Width(225);
+                columns.Bound(p => p.CarOwerName).Title(WebModels.AccountResources.CarOwerName).Width(270);
                 columns.Bound(p => p.VehicleWeight.WeightName).Title(WebModels.AccountResources.WeightName).HtmlAttributes(new { style = "text-align:center;" }).Width(150); ;
-                columns.Bound(p => p.Mobile).Title(WebModels.AccountResources.Mobile).HtmlAttributes(new { style = "text-align:center;" }).Width(150); ;
+                columns.Bound(p => p.Mobile).Title(WebModels.AccountResources.Mobile).HtmlAttributes(new { style = "text-align:center;" }).Width(180); ;
                 columns.Bound(p => p.Partner.PartnerName).Title(WebModels.AccountResources.CarPartnerName).Width(250);
 
             })

@@ -1,0 +1,175 @@
+﻿@model WebModels.ManageTicket
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "ManageDayTicket", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.TicketDate, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div class="controls">
+            @(Html.Kendo().DateTimePicker()
+                    .Name("date") // The name of the DatePicker is mandatory. It specifies the "id" attribute of the widget.
+                    .Min(new DateTime(1900, 1, 1)) // Sets the min date of the DatePicker.
+                    .Max(new DateTime(2099, 12, 31)) // Sets the max date of the DatePicker.
+                    .HtmlAttributes(new { type = "text" })
+                    .Culture("vi-VN")
+                    .Format("dd/MM/yyyy HH:mm:ss")
+                    .TimeFormat("HH:mm:ss")
+    )
+            <br />
+            @Html.ValidationMessageFor(m => m.TicketDate)
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Biển số xe", new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div class="controls">
+            @(Html.Kendo().ComboBox()
+          .Name("VehicleID")
+          .HtmlAttributes(new { style = "width:100%"})
+          .Placeholder("Chọn xe...")
+          .DataTextField("NumberPlate")
+          .DataValueField("ID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_Vehicles", "DrivePlan");
+
+              })
+               .ServerFiltering(false);
+          })
+    )
+            @Html.ValidationMessageFor(m => m.VehicleID)
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label("Lái xe", new { @class = "control-label" })
+        </div>
+        <div class="controls">
+            @(Html.Kendo().ComboBox()
+          .Name("DriverID")
+          .HtmlAttributes(new { style = "width:100%" })
+          .Placeholder("Chọn lái xe...")
+          .DataTextField("CarOwerName")
+          .DataValueField("ID")
+          .DataSource(source =>
+          {
+              source.Read(read =>
+              {
+                  read.Action("Get_Vehicles", "DrivePlan");
+
+              })
+               .ServerFiltering(false);
+          })
+    )
+            @Html.ValidationMessageFor(m => m.DriverID)
+
+        </div>
+    </div>
+
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Category, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div class="controls">
+            @Html.TextAreaFor(m => m.Category, new { @class = "input-block-level text-area" })
+            @Html.ValidationMessageFor(m => m.Category)
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.Label(WebModels.WebResources.PriceOfDriver, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Price, new { type = "text", name = "BKS", @class = "input-block-level", id = "price" })
+            @Html.ValidationMessageFor(m => m.Price)
+            @Html.ValidationSummary(true)
+
+            <p style="display: none;font-size: 12px !important;color: red;" id="err-price">Giá không tồn tại</p>
+        </div>
+    </div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Note, new { @class = "control-label" })
+        </div>
+        <div class="controls">
+            @Html.TextAreaFor(m => m.Note, new { @class = "input-block-level text-area" })
+            @Html.ValidationMessageFor(m => m.Note)
+        </div>
+    </div>
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+
+    top.winsetup("Thêm vé ngày", 630, 550, true);
+    if (screen.width < 576) {
+        top.winsetup("Thêm vé ngày", screen.width * 0.8, screen.height * 0.4, true);
+    }
+
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Thêm vé ngày', 'Thêm thành công.');
+    }
+
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+
+    function setRequiredAttr(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+
+    function setInputFilter(textbox, inputFilter) {
+        ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function (event) {
+            textbox.addEventListener(event, function () {
+                if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    this.value = "";
+                }
+            });
+        });
+    }
+
+    setInputFilter(document.getElementById("price"), function (value) {
+        return /^\d*$/.test(value);
+    });
+
+</script>

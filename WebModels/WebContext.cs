@@ -84,7 +84,21 @@ namespace WebModels
         public DbSet<UserInRole> UserInRoles { get; set; }
         public DbSet<TransportActual> TransportActuals { get; set; }
         public DbSet<EnumerationChangeLog> EnumerationChangeLogs { get; set; }
+        public DbSet<RepairVehicle> RepairVehicles { get; set; }
+        public DbSet<DriverPay> DriverPays { get; set; }
+        public DbSet<RepairCategory> RepairCategorys { get; set; }
+        public DbSet<OilPrice> OilPrices { get; set; }
+        public DbSet<ManageTicket> ManageTickets { get; set; }
+        public DbSet<ManageOil> ManageOils { get; set; }
+        public DbSet<ManageSalary> ManageSalarys { get; set; }
+        public DbSet<OtherCost> OtherCosts { get; set; }
+        public DbSet<ParkingCost> ParkingCosts { get; set; }
 
+    }
+    public enum TypeOfTicket
+    {
+        DayTicket = 1,
+        MonthTicket = 2
     }
 
     public enum CTypeCategories

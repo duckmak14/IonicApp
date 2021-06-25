@@ -237,11 +237,23 @@
   <data name="RequiredCarPartnerName" xml:space="preserve">
     <value>Vui lòng nhập đơn vị chủ quản</value>
   </data>
+  <data name="RequiredCategory" xml:space="preserve">
+    <value>Vui lòng điền danh mục</value>
+  </data>
   <data name="RequiredConfirmPassword" xml:space="preserve">
     <value>Vui lòng nhập xác nhận mật khẩu</value>
   </data>
+  <data name="RequiredDate" xml:space="preserve">
+    <value>Vui lòng chọn ngày</value>
+  </data>
   <data name="RequiredDestinationPartner" xml:space="preserve">
     <value>Vui lòng chọn đơn vị thuê</value>
+  </data>
+  <data name="RequiredDriver" xml:space="preserve">
+    <value>Vui lòng chọn lái xe</value>
+  </data>
+  <data name="RequiredEndDate" xml:space="preserve">
+    <value>Vui lòng chọn ngày kết thúc</value>
   </data>
   <data name="RequiredEndLocation" xml:space="preserve">
     <value>Vui lòng nhập nơi trả</value>
@@ -252,6 +264,9 @@
   <data name="RequiredFulllName" xml:space="preserve">
     <value>Vui lòng nhập tên đầy đủ</value>
   </data>
+  <data name="RequiredKm" xml:space="preserve">
+    <value>Vui lòng nhập số Km</value>
+  </data>
   <data name="RequiredLocationName" xml:space="preserve">
     <value>Vui lòng nhập tên địa điểm</value>
   </data>
@@ -261,17 +276,50 @@
   <data name="RequiredNumberPlate" xml:space="preserve">
     <value>Vui lòng nhập biển số xe</value>
   </data>
+  <data name="RequiredOilLevel" xml:space="preserve">
+    <value>Vui lòng nhập định mức</value>
+  </data>
+  <data name="RequiredOilPrice" xml:space="preserve">
+    <value>Vui lòng nhập giá dầu</value>
+  </data>
+  <data name="RequiredParkingPrice" xml:space="preserve">
+    <value>Vui lòng nhập phí gửi xe</value>
+  </data>
   <data name="RequiredPartnerName" xml:space="preserve">
     <value>Vui lòng nhập tên đối tác</value>
   </data>
   <data name="RequiredPassword" xml:space="preserve">
     <value>Vui lòng nhập mật khẩu</value>
   </data>
+  <data name="RequiredPayContent" xml:space="preserve">
+    <value>Vui lòng nhập nội dung chi</value>
+  </data>
+  <data name="RequiredPayDate" xml:space="preserve">
+    <value>Vui lòng nhập ngày chi</value>
+  </data>
+  <data name="RequiredPayPrice" xml:space="preserve">
+    <value>Vui lòng nhập số tiền chi</value>
+  </data>
   <data name="RequiredPlanDate" xml:space="preserve">
     <value>Vui lòng chọn ngày</value>
   </data>
+  <data name="RequiredPrice" xml:space="preserve">
+    <value>Vui lòng nhập giá</value>
+  </data>
   <data name="RequiredPriceCode" xml:space="preserve">
     <value>Vui lòng nhập giá</value>
+  </data>
+  <data name="RequiredRepairCategory" xml:space="preserve">
+    <value>Vui lòng nhập danh mục sửa chữa</value>
+  </data>
+  <data name="RequiredRepairContent" xml:space="preserve">
+    <value>Vui lòng nhập nội dung sửa chữa</value>
+  </data>
+  <data name="RequiredRepairDate" xml:space="preserve">
+    <value>Vui lòng nhập thời gian sửa chữa</value>
+  </data>
+  <data name="RequiredRepairPrice" xml:space="preserve">
+    <value>Vui lòng nhập số tiền sửa chữa</value>
   </data>
   <data name="RequiredRoleName" xml:space="preserve">
     <value>Vui lòng nhập tên nhóm hh</value>
@@ -282,11 +330,17 @@
   <data name="RequiredSourcePartner" xml:space="preserve">
     <value>Vui lòng chọn nhà thầu</value>
   </data>
+  <data name="RequiredStartDate" xml:space="preserve">
+    <value>Vui lòng chọn ngày bắt đầu</value>
+  </data>
   <data name="RequiredStartLocation" xml:space="preserve">
     <value>Vui lòng nhập nơi nhận</value>
   </data>
   <data name="RequiredStartTime" xml:space="preserve">
     <value>Vui lòng chọn giờ đến</value>
+  </data>
+  <data name="RequiredSuppliedOil" xml:space="preserve">
+    <value>Vui lòng nhập số lít đã cấp</value>
   </data>
   <data name="RequiredTripCount" xml:space="preserve">
     <value>Vui lòng chọn số lượng</value>

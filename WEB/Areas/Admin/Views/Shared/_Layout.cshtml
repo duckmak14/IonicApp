@@ -84,9 +84,10 @@
         <div id="navigation">
             <header class="header">
                 <img class="open-menu button-menu" src="~/Content/themes/admin/img/menu.png" alt="">
-                <img class="close-menu" src="~/Content/themes/admin/img/menu.png" alt="">                
+                <img class="close-menu" src="~/Content/themes/admin/img/menu.png" alt="">
+                <a href="/admin"><img class="logo" src="~/Content/themes/admin/img/logo-company.png" /></a>
                 <p class="text-center-header1 text-14-700">QUẢN TRỊ NỘI BỘ</p>
-                <p class="text-center-header">Web admin quản trị</p>
+                <p class="text-center-header">HỆ THỐNG QUẢN TRỊ NỘI BỘ CÔNG TY VẬN TẢI SỨC TRẺ</p>
                 @Html.Action("_Info", "Account")
 
             </header>
@@ -99,17 +100,18 @@
                 <!-- Start content left -->
                 <div class="col-lg-2 col-md-2 col-sm-2 col-2 space-between menu">
                     <div class="box-function">
+                        <div class="datetime" onload="startTime()">
+                            <p class="text-13-400 date" id="ngayVN"></p>
+                            <p class="text-13-400 time" id="gioVN"></p>
+                        </div>
                         <div class="function">
                             @Html.Action("_Info", "Account")
                             @*@Html.Action("_InfoMobile", "Account")*@
 
-                            <div class="datetime" onload="startTime()">
-                                <p class="text-13-400 date" id="ngayVN"></p>
-                                <p class="text-13-400 time" id="gioVN"></p>
-                            </div>
+
                             @Html.Action("_ContentLeft", "Home", new { areas = "admin" })
                         </div>
-                        <a href="/admin/account/logout" >
+                        <a href="/admin/account/logout">
                             <div class="logout">
                                 <div class="box-logout ">
                                     <div class="opacity-modify ">
@@ -173,7 +175,7 @@
             var top = (window.screen.availHeight / 2) - (h / 2);
             return window.open(url, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
         }
-       
+
     </script>
 
     <script type="text/javascript" defer="defer">
@@ -213,7 +215,17 @@
             $.pnotify.defaults.history = false;
             $.pnotify(opts);
         }
-    /*---------- End pnotify ----------*/
+        /*---------- End pnotify ----------*/
+    </script>
+    <script>
+        $(".function").scroll(function () {
+            sessionStorage.scrollTop = $(this).scrollTop();
+        });
+        $(document).ready(function () {
+            if (sessionStorage.scrollTop != "undefined") {
+                $(".function").scrollTop(sessionStorage.scrollTop);
+            }
+        });
     </script>
 </body>
 

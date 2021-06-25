@@ -112,18 +112,105 @@
     <script>
 
         $(document).ready(function () {
-            // Datetime check combobox
-            //var dataDateTime = [];
-            //var checkDateTime = 1;
-            //$('input[name="date"]').each(function () {
-            //    $(this).keyup(function () {
-            //        alert("key up");
-            //        alert($("#date").val());
-            //    });
-            //    $(this).on("change", function () {
-            //        alert("change");
-            //    });
-            //});
+            //Datetime check combobox
+            var checkDate = true;
+            var checkTime = true;
+            var checkDateTime = true;
+            $('input[name="date"]').each(function () {
+
+                $(this).on("change", function () {
+                    checkDate = moment($(this).val(), 'DD/MM/YYYY', true).isValid();
+                    checkTime = moment($(this).val(), 'DD/MM/YYYY HH:mm:ss', true).isValid();
+                   
+                    if (!checkDate && !checkTime) {
+                        checkDateTime = false;
+                    }
+                    else
+                    {
+                        checkDateTime = true;
+                    }
+
+                    if (!checkDateTime) {
+                        $(this).val("");
+                    }
+                });
+            });
+
+            //Datetime check combobox
+            var checkStartDate = true;
+            var checkStartTime = true;
+            var checkStartDateTime = true;
+            $('input[name="datestart"]').each(function () {
+
+                $(this).on("change", function () {
+                    checkStartDate = moment($(this).val(), 'DD/MM/YYYY', true).isValid();
+                    checkStartTime = moment($(this).val(), 'DD/MM/YYYY HH:mm:ss', true).isValid();
+
+                    if (!checkDate && !checkTime) {
+                        checkStartDateTime = false;
+                    }
+                    else {
+                        checkStartDateTime = true;
+                    }
+
+                    if (!checkStartDateTime) {
+                        $(this).val("");
+                    }
+                });
+            });
+
+            //Time check combobox
+            var checkTimeStart = true;
+
+            $('input[name="start"]').each(function () {
+
+                $(this).on("change", function () {
+
+                    checkTimeStart = moment($(this).val(), 'HH:mm', true).isValid();
+
+                    if (!checkTimeStart) {
+                        $(this).val("");
+                    }
+                });
+            });
+
+            //Time check combobox
+            var checkTimeEnd = true;
+
+            $('input[name="end"]').each(function () {
+
+                $(this).on("change", function () {
+
+                    checkTimeEnd = moment($(this).val(), 'HH:mm', true).isValid();
+
+                    if (!checkTimeEnd) {
+                        $(this).val("");
+                    }
+                });
+            });
+
+            // Category check combobox
+            var dataCategory = [];
+            var checkCategory = 1;
+            $('input[name="CategoryID_input"]').each(function () {
+                $(this).keyup(function () {
+                    if (checkCategory == 1) {
+                        dataCategory = $("#CategoryID").data("kendoComboBox").dataSource.data();
+                    }
+                    checkCategory = 0;
+                });
+                $(this).on("change", function () {
+                    var checkvalue = 0;
+                    for (var i = 0; i < dataCategory.length; i++) {
+                        if ($(this).val() === dataCategory[i].Category) {
+                            checkvalue = 1;
+                        }
+                    }
+                    if (checkvalue == 0) {
+                        $(this).val("");
+                    }
+                });
+            });
 
             // End Location check combobox
             var dataEndLocation = [];
@@ -241,6 +328,29 @@
                 });
             });
 
+            //  check combobox
+            var dataCarOwerName = [];
+            var checkCarOwerName = 1;
+            $('input[name="DriverID_input"]').each(function () {
+                $(this).keyup(function () {
+                    if (checkCarOwerName == 1) {
+                        dataCarOwerName = $("#DriverID").data("kendoComboBox").dataSource.data();
+                    }
+                    checkCarOwerName = 0;
+                });
+                $(this).on("change", function () {
+                    var checkvalue = 0;
+                    for (var i = 0; i < dataCarOwerName.length; i++) {
+                        if ($(this).val() === dataCarOwerName[i].CarOwerName) {
+                            checkvalue = 1;
+                        }
+                    }
+                    if (checkvalue == 0) {
+                        $(this).val("");
+                    }
+                });
+            });
+
             // NumberPlate check combobox
             var dataNumberPlate = [];
             var checkNumberPlate = 1;
@@ -308,6 +418,26 @@
                         $(this).val("");
                     }
                 });
+            });
+
+            function setInputFilter(textbox, inputFilter) {
+                ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function (event) {
+                    textbox.addEventListener(event, function () {
+                        if (inputFilter(this.value)) {
+                            this.oldValue = this.value;
+                            this.oldSelectionStart = this.selectionStart;
+                            this.oldSelectionEnd = this.selectionEnd;
+                        } else if (this.hasOwnProperty("oldValue")) {
+                            this.value = this.oldValue;
+                            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                        } else {
+                            this.value = "";
+                        }
+                    });
+                });
+            }
+            setInputFilter(document.getElementById("oilPrice"), function (value) {
+                return /^\d*$/.test(value);
             });
         });
     </script>

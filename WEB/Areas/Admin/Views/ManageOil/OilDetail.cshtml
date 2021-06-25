@@ -1,0 +1,504 @@
+﻿@model  ManageOil
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Thống kê chi tiết dầu";
+    WebContext db = new WebContext();
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModule.URL == "/admin/ManageOil");
+}
+<script type="text/javascript">
+    var rowselected = [];
+    var isCheckedAll = false;
+    var checkMerge = false;
+    var idSuccess = 0;
+
+    function binding_handler(e) {
+
+    }
+
+    $(document).ready(function () {
+
+        $("#btnadd").click(function () {
+            opendlg("/admin/ManageOil/add/");
+        });
+
+
+        $("#upload").click(function (e) {
+            opendlg("/admin/ManageOil/UploadExcel");
+        });
+
+        $("#back").click(function () {
+            window.location = "/admin/ManageOil/";
+        });
+        
+    });
+
+    function edit_handler(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        opendlg("/admin/ManageOil/edit/" + dataItem.ID);
+    }
+    function add_kendo_selected(id) {
+        var grid = top.$("#grid").data("kendoGrid");
+
+        grid.tbody.find("tr[role='row']").each(function () {
+            var model = grid.dataItem(this);
+            if (model.ID == id) {
+                $(this).addClass("k-state-selected");
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        $(".input-submit").click(function (e) {
+            e.preventDefault();
+            var dataSource = $("#grid").data("kendoGrid").dataSource.data();
+            var models = [];
+            if (rowselected.length > 0) {
+                for (var i = 0; i < rowselected.length; i++) {
+                    for (var j = 0; j < dataSource.length; j++) {
+                        var dataItem = dataSource[j];
+
+                        if (dataItem.ID == rowselected[i]) {
+                            var model = {};
+                            model.OilDate = dataItem.OilDate;
+                            model.NumberPlate = dataItem.NumberPlate;
+                            model.CarOwerName = dataItem.CarOwerName;
+                            model.Note = dataItem.Note;
+                            model.Distance = dataItem.Distance;
+                            model.OilLevel = dataItem.OilLevel;
+                            model.SuppliedFromLevel = dataItem.SuppliedFromLevel;
+                            model.OtherRun = dataItem.OtherRun;
+                            model.AmountOil = dataItem.AmountOil;
+                            model.SuppliedOil = dataItem.SuppliedOil;
+                            model.DifferenceOil = dataItem.DifferenceOil;
+                            model.Total = dataItem.Total;
+
+                            models.push(model);
+                        }
+                    }
+                }
+                var dataSubmit = JSON.stringify(models)
+                $("input[name='dataString']").val(dataSubmit);
+
+                setTimeout(function () {
+                    $("#general").submit();
+                }, 100);
+            }
+            else {
+                alert("Vui lòng chọn để xuất file!");
+            }
+        });
+
+        $(".input-submit-delete").click(function (e) {
+            e.preventDefault();
+            var dataSource = $("#grid").data("kendoGrid").dataSource.data();
+            var models = [];
+            if (rowselected.length > 0) {
+                $("div[class='loader-delete']").show();
+                $("#background-black").css("filter", "contrast(60%)");
+                for (var i = 0; i < rowselected.length; i++) {
+                    for (var j = 0; j < dataSource.length; j++) {
+                        var dataItem = dataSource[j];
+                        if (dataItem.ID == rowselected[i]) {
+                            var model = {};
+                            model.ID = dataItem.ID;
+                            model.OilDate = dataItem.OilDate;
+                            model.NumberPlate = dataItem.NumberPlate;
+                            model.CarOwerName = dataItem.CarOwerName;
+                            model.Note = dataItem.Note;
+                            model.Distance = dataItem.Distance;
+                            model.OilLevel = dataItem.OilLevel;
+                            model.SuppliedFromLevel = dataItem.SuppliedFromLevel;
+                            model.OtherRun = dataItem.OtherRun;
+                            model.AmountOil = dataItem.AmountOil;
+                            model.SuppliedOil = dataItem.SuppliedOil;
+                            model.DifferenceOil = dataItem.DifferenceOil;
+                            model.Total = dataItem.Total;
+                            models.push(model);
+                        }
+                    }
+                }
+                var date = $("#time").val();
+                var dataSubmit = JSON.stringify(models)
+                $("input[name='dataStringDelete']").val(dataSubmit);
+                $("input[name='dataStringDate']").val(date);
+                setTimeout(function () {
+                    $("#delete").submit();
+                }, 100);
+            }
+            else {
+                alert("Vui lòng chọn để xóa quản lý dầu!");
+            }
+        });
+
+        $("#FieldFilter").keyup(function () {
+
+            var value = $("#FieldFilter").val();
+
+
+            var int = parseInt(value);
+            var float = parseFloat(value);
+
+
+            $("#grid").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+
+                    {
+                        field: "NumberPlate",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "CarOwerName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Note",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Distance",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "OilLevel",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "SuppliedFromLevel",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "OtherRun",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "AmountOil",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "SuppliedOil",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "DifferenceOil",
+                        operator: "eq",
+                        value: float
+                    },
+                    {
+                        field: "Total",
+                        operator: "eq",
+                        value: float
+                    }
+                ]
+            });
+        });
+    });
+
+
+
+    function onDataBound(e) {
+        $('#grid .k-grid-content').height(screen.height * 0.45);
+
+        $('input[name="checkedNodes"]').each(function () {
+            if (rowselected.indexOf(this.value) != -1) {
+                $(this).attr('checked', 'checked');
+            } else {
+                $(this).removeAttr('checked');
+            }
+        });
+
+        if (this.dataSource.view().length == 0) {
+            //insert empty row
+            var colspan = this.thead.find("th").length;
+            var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
+            this.tbody.html(emptyRow);
+        }
+    };
+
+</script>
+<div class="loader-delete" style="display:none"></div>
+<div class="flex row-quanlyxe block-div">
+    <div class="flex">
+        <div class="manage-car-search row-plan-drive d-none">
+            <form action="">
+                <img src="~/Content/themes/admin/img/Vector-kehoach.png" alt="calendar" class="img-box-date-picker img-form-plan-drive img-calander-plan-drive">
+                <input type="text" name="daterange" class="box-date-picker" id="time" value="@ViewBag.Date">
+            </form>
+        </div>
+        <div class="manage-car-search row-plan-drive">
+            <form action="">
+                <img src="~/Content/themes/admin/img/Vector-search1.png" alt="search" class="img-box-search img-form-plan-drive">
+                <input id='FieldFilter' type="text" name="" placeholder="Tìm kiếm" class="box-search box-search-quanlyxe">
+            </form>
+        </div>
+    </div>
+    <div class="flex block-two-row">
+        @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+        {
+            using (Html.BeginForm("ExportExcel", "ManageOil", FormMethod.Post, new { @id = "general", enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+            {
+                @Html.HiddenFor(m => m.dataString)
+                <div class="btn-download btn-plan-drive input-submit">
+                    <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+                    <input id="exportData" type="submit" class="text-14-500 padding-text-plan-drive" value="Tải về">
+                </div>
+            }
+
+            using (Html.BeginForm("DeletesFromDetail", "ManageOil", FormMethod.Post, new { @id = "delete", enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+            {
+                @Html.HiddenFor(m => m.dataStringDelete)
+                @Html.HiddenFor(m => m.dataStringDate)
+
+                <div class="btn-download btn-plan-drive input-submit-delete">
+                    <img src="~/Images/icon-delete.png" alt="text-14-700">
+                    <input type="submit" class="text-14-500 padding-text-plan-drive" value="Xóa">
+                </div>
+            }
+
+            <div class="btn-download btn-plan-drive" id="upload">
+                <img src="~/Content/themes/admin/img/Vector-upload.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Upload</p>
+            </div>
+
+            <div class="btn-download btn-plan-drive" id="btnadd">
+                <img src="~/Content/themes/admin/img/Vector-add-white.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Thêm</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="container-fluid mb-3">
+    <div class="row box-year">
+        <div class="d-flex back-month" id="back">
+            <img class="back-img" src="https://img.icons8.com/android/12/000000/left.png" />
+            <p>Quay lại</p>
+        </div>
+        <div >
+            <div class="box-month-now">
+                <p>@ViewBag.DateNow</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="box">
+                <div class="box-content nopadding">
+                    @(Html.Kendo().Grid<ManageOilViewModel>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                columns.Command(command =>
+                {
+                    if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                    {
+                        command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" });
+                    }
+                }).HtmlAttributes(new { style = "text-align:center;" }).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>").Width(82);
+                columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
+                       .HtmlAttributes(new { style = "text-align:center;" })
+                       .Filterable(false)
+                       .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
+                columns.Bound(p => p.OilDate).Title(WebModels.WebResources.Date).Filterable(filterable =>filterable.UI(@<text>function (element) {
+                                                element.kendoDatePicker({
+                                                    culture: 'vi-VN'
+                                                });
+                                            }</text>)).HtmlAttributes(new { style = "text-align:center;" }).Format("{0:dd-MM-yyyy}").Width(150).Hidden();
+                columns.Bound(p => p.ID).Hidden();
+                columns.Bound(p => p.CarOwerName).Title(WebModels.WebResources.CarOwerName).Width(200);
+                columns.Bound(p => p.NumberPlate).Title(WebModels.WebResources.NumberPlate).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                columns.Bound(p => p.Distance).Title(WebModels.WebResources.Km).Format("{0:N2}").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N2}', sum)# ").Width(180);
+                columns.Bound(p => p.OilLevel).Title(WebModels.WebResources.OilLevel).Format("{0:N2}").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N2}', sum)# lít").Width(200);
+                columns.Bound(p => p.SuppliedFromLevel).Title(WebModels.WebResources.SuppliedFromLevel).Format("{0:N2}").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N2}', sum)# ").Width(250);
+                columns.Bound(p => p.OtherRun).Title(WebModels.WebResources.OtherRun).Format("{0:N2}").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N2}', sum)# ").Width(180);
+                columns.Bound(p => p.AmountOil).Title(WebModels.WebResources.AmountOil).Format("{0:N2}+ lít").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N2}', sum)# lít").Width(180);
+                columns.Bound(p => p.SuppliedOil).Title(WebModels.WebResources.SuppliedOil).Format("{0:N2}+ lít").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N2}', sum)# lít").Width(180);
+                columns.Bound(p => p.DifferenceOil).Title(WebModels.WebResources.DifferenceOil).Format("{0:N2}+ lít").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N0}', sum)# lít").Width(180);
+                columns.Bound(p => p.Total).Title(WebModels.WebResources.TotalMoney).Format("{0:N0}+ đ").HtmlAttributes(new { style = "text-align:right;" }).ClientFooterTemplate("#= kendo.format('{0:N0}', sum)# đ").Width(180);
+                columns.Bound(p => p.Note).Title(WebModels.WebResources.Note).Width(200);
+
+            })
+            .Scrollable()
+            .Pageable()
+            .Selectable(select => select.Mode(GridSelectionMode.Single))
+            .Sortable()
+            .Filterable()
+            .Reorderable(reorder => reorder.Columns(true))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(model => model.Id(p => p.ID))
+                .PageSize(20)
+                 .Aggregates(aggregates =>
+                 {
+                     aggregates.Add(p => p.Distance).Sum();
+                     aggregates.Add(p => p.OilLevel).Sum();
+                     aggregates.Add(p => p.SuppliedFromLevel).Sum();
+                     aggregates.Add(p => p.OtherRun).Sum();
+                     aggregates.Add(p => p.AmountOil).Sum();
+                     aggregates.Add(p => p.SuppliedOil).Sum();
+                     aggregates.Add(p => p.DifferenceOil).Sum();
+                     aggregates.Add(p => p.Total).Sum();
+                 })
+                .Read(read => read.Action("Oil_Read", "ManageOil").Data("getTime"))
+                     .ServerOperation(false)
+             )
+              .Events(events => events.DataBinding("binding_handler").DataBound("onDataBound")
+              ) )
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+}
+<script type="text/javascript" src="~/Content/themes/admin/js/tableHeadFixer.js"></script>
+
+<script>
+
+    // delete success 
+    function deletes_success() {
+        $("div[class='loader-delete']").hide();
+        $("#background-black").css("filter", "contrast(100%)");
+        window.parent.show_stack_bottom_right('success', 'Xóa kế hoạch', 'Xóa thành công.');
+    }
+
+    // delete unsuccess
+    function deletes_unsuccess() {
+        $("div[class='loader-delete']").hide();
+        alert("Đã xuất hiện lỗi trong quá trình xóa kế hoạch!");
+        $("#background-black").css("filter", "contrast(100%)");
+        window.parent.show_stack_bottom_right('error', 'Xóa kế hoạch', 'Xóa không thành công.');
+    }
+
+
+    // get data in kendo grid when filter
+    function getDataFilter() {
+        var dataSource = $("#grid").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var result = query.filter(filters).data;
+        return result;
+    }
+
+    // get check all check box
+    function getCheckAll() {
+        var dataFilterID = [];
+        var dataFilter = getDataFilter();
+        var check;
+        for (var i = 0; i < dataFilter.length; i++) {
+            dataFilterID.push(String(dataFilter[i].ID));
+        }
+        for (var i = 0; i < dataFilterID.length; i++) {
+            var index = rowselected.indexOf(dataFilterID[i]);
+            if (index != -1) {
+                check = true;
+            }
+            else {
+                check = false;
+                break;
+            }
+        }
+        return check;
+    }
+
+    // single checkbox
+    function childNodeClick(element) {
+        var dataID = getCheckAll();
+        var id = element.value;
+        if (rowselected.indexOf(id) !== -1) {
+            rowselected.splice(rowselected.indexOf(id), 1);
+        } else {
+            rowselected.push(id);
+        }
+        isCheckedAll = getCheckAll();
+        $('#chkAll').prop('checked', isCheckedAll);
+
+
+    }
+
+    // remove checked in check box if kendo grid is filter
+    $(function () {
+        $(".k-filter").click(function () {
+            setTimeout(function () {
+                $(".k-filter-menu .k-button").click(function () {
+                    setTimeout(function () {
+                        rowselected = [];
+                        isCheckedAll = getCheckAll();
+                        $('#chkAll').prop('checked', isCheckedAll);
+                        $('input[name="checkedNodes"]').each(function () {
+                            if (rowselected.indexOf(this.value) != -1) {
+                                $(this).attr('checked', 'checked');
+                            } else {
+                                $(this).removeAttr('checked');
+                            }
+                        });
+                    }, 10)
+                })
+            }, 100);
+        });
+    });
+
+    //Check all check box
+    function checkAll(e) {
+
+        var rowItems = getDataFilter();
+        isCheckedAll = $(e.target).prop('checked');
+        if (isCheckedAll) {
+            for (var i = 0; i < rowItems.length; i++) {
+                var index = rowselected.indexOf(String(rowItems[i].ID));
+                if (index == -1) {
+                    rowselected.push(String(rowItems[i].ID));
+                }
+            }
+        }
+        else if (!isCheckedAll) {
+            var dataFilterID = [];
+            var dataFilter = getDataFilter();
+            for (var i = 0; i < dataFilter.length; i++) {
+                dataFilterID.push(String(dataFilter[i].ID));
+            }
+            for (var i = 0; i < dataFilterID.length; i++) {
+                var index = rowselected.indexOf(dataFilterID[i]);
+                if (index != -1) {
+                    rowselected.splice(index, 1);
+                }
+            }
+        }
+
+        $('input[name="checkedNodes"]').each(function () {
+            $(this).prop('checked', isCheckedAll);
+        });
+    }
+
+    // get time in date range picker
+    function getTime(e) {
+        return {
+            datetime: $("#time").val()
+        };
+    }
+
+    // listen apply button in date range picker
+    $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+        $("#grid").data("kendoGrid").dataSource.read();
+    });
+</script>
+

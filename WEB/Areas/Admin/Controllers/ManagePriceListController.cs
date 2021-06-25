@@ -658,10 +658,18 @@ namespace WEB.Areas.Admin.Controllers
                 if (check == 1)
                 {
                     var result = new UploadPricingListFromExcel().UploadProducts(file, Session["UploadPriceProgress"]);
+
+                  
                     if (result == null)
                     {
                         ViewBag.check = "Upload giá thành công!";
                         ViewBag.StartupScript = "upload_success();";
+                        return View();
+                    }
+                    else if (result.Count() == 1)
+                    {
+                        ViewBag.check = "Đã xảy ra lỗi trong quá trình lưu! Vui lòng thử lại";
+                        ViewBag.StartupScript = "hideLoading();";
                         return View();
                     }
                     else

@@ -1,0 +1,79 @@
+﻿@model WebModels.RepairCategory
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Add", "ManageRepairCategory", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+<div>
+    <div class="flex">
+        <div class="width-text-modal">
+            @Html.LabelFor(m => m.Category, new { @class = "control-label" })
+            <span class="form-obligatory">*</span>
+        </div>
+        <div class="controls">
+            @Html.TextAreaFor(m => m.Category, new { @class = "input-block-level text-area" })
+            @Html.ValidationMessageFor(m => m.Category)
+        </div>
+    </div>
+
+    <div class="row top-rows">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+            <div class="exit-car-form">Hủy</div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+            <div>
+                <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+            </div>
+        </div>
+    </div>
+</div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    //if (screen.width > 1500) {
+    //    top.winsetup("Thêm xe", 1440 * 0.4, screen.height * 0.32, true);
+    //}
+    //else if (screen.width < 450) {
+    //    top.winsetup("Thêm xe", screen.width * 0.8, screen.height * 0.4, true);
+    //}
+    //else if (screen.width < 1025) {
+    //    top.winsetup("Thêm xe", screen.width * 0.6, screen.height * 0.325, true);
+    //}
+    //else {
+    //    top.winsetup("Thêm xe", screen.width * 0.4, screen.height * 0.47, true);
+    //}
+    //if (screen.width > 1500) {
+    //    top.winsetup("Thêm xe", 1440 * 0.4, screen.height * 0.32, true);
+    //}
+    //else if (screen.width < 450) {
+    //    top.winsetup("Thêm xe", screen.width * 0.8, screen.height * 0.425, true);
+    //}
+    //else if (screen.width < 1025) {
+    //    top.winsetup("Thêm xe", 600, 350, true);
+    //}
+    //else {
+    //    top.winsetup("Thêm xe", 600, 350, true);
+    //}
+    top.winsetup("Thêm danh mục", 600, 170, true);
+    if (screen.width < 576) {
+        top.winsetup("Thêm danh mục", screen.width * 0.8, screen.height * 0.4, true);
+    }
+    function create_success() {
+        top.winclose();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Thêm danh mục', 'Thêm thành công.');
+
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+    function setRequiredAttr(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+</script>

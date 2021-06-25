@@ -66,6 +66,12 @@ namespace WEB.Areas.ContentType.Controllers
                     var currentSheet = package.Workbook.Worksheets;
                     var workSheet = currentSheet.First();
                     var noOfRow = workSheet.Dimension.End.Row;
+                    var Locations = db.Location.ToList();
+                    var Routes = db.Route.ToList();
+                    var Partners = db.Partner.ToList();
+                    var PricingTables = db.PricingTable.ToList();
+
+                    var listPriceAddDB = new List<PricingTable>();
                     for (int rowIterator = 4; rowIterator <= noOfRow; rowIterator++)
                     {
                         if (IsRowEmpty(workSheet, rowIterator))
@@ -81,7 +87,7 @@ namespace WEB.Areas.ContentType.Controllers
                         if (routeCode.IsSuccess)
                         {
                             priceInfo.RouteID = 0;
-                            var RouteCodeIsExist = db.Route.Where(x => x.ID == db.Route.Where(y => y.RouteCode == routeCode.Value).Select(y => y.ID).FirstOrDefault()).FirstOrDefault();
+                            var RouteCodeIsExist = Routes.Where(y => y.RouteCode == routeCode.Value).FirstOrDefault();
                             if (RouteCodeIsExist != null)
                             {
                                 priceInfo.RouteID = RouteCodeIsExist.ID;
@@ -90,41 +96,45 @@ namespace WEB.Areas.ContentType.Controllers
                             {
                                 var startLocation = CastToProperty<string>(workSheet, rowIterator, 3, "Nơi nhận");
                                 var endLocation = CastToProperty<string>(workSheet, rowIterator, 4, "Nơi trả");
-                               if(startLocation.IsSuccess && endLocation.IsSuccess)
+                                if (startLocation.IsSuccess && endLocation.IsSuccess)
                                 {
-                                    var findStartLocation = db.Location.Where(x => x.LocationName.ToLower() == startLocation.Value.ToLower()).FirstOrDefault();
-                                    var findEndLocation = db.Location.Where(x => x.LocationName.ToLower() == endLocation.Value.ToLower()).FirstOrDefault();
+                                    var findStartLocation = Locations.Where(x => x.LocationName.ToLower() == startLocation.Value.ToLower()).FirstOrDefault();
+                                    var findEndLocation = Locations.Where(x => x.LocationName.ToLower() == endLocation.Value.ToLower()).FirstOrDefault();
                                     using (DbContextTransaction transaction = db.Database.BeginTransaction())
                                     {
+                                        var newStartLocation = new Location();
+                                        var newEndLocation = new Location();
+                                        var newRoute = new Route();
+
                                         try
                                         {
                                             var startLocationID = 0;
-                                           
+
                                             if (findStartLocation == null)
                                             {
-                                                var newStartLocation = new Location();
                                                 newStartLocation.LocationName = startLocation.Value;
                                                 newStartLocation.CreatedDate = DateTime.Now;
                                                 newStartLocation.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                                                 db.Set<Location>().Add(newStartLocation);
                                                 db.SaveChanges();
+                                                Locations.Add(newStartLocation);
                                                 startLocationID = newStartLocation.ID;
                                             }
                                             else
                                             {
                                                 startLocationID = findStartLocation.ID;
-                                            }    
+                                            }
 
                                             var endLocationID = 0;
-                                          
+
                                             if (findEndLocation == null)
                                             {
-                                                var newEndLocation = new Location();
                                                 newEndLocation.LocationName = endLocation.Value;
                                                 newEndLocation.CreatedDate = DateTime.Now;
                                                 newEndLocation.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                                                 db.Set<Location>().Add(newEndLocation);
                                                 db.SaveChanges();
+                                                Locations.Add(newEndLocation);
                                                 endLocationID = newEndLocation.ID;
                                             }
                                             else
@@ -133,14 +143,14 @@ namespace WEB.Areas.ContentType.Controllers
 
                                             }
 
-                                            if (endLocationID!=0 && endLocationID != 0)
+                                            if (endLocationID != 0 && startLocationID != 0)
                                             {
-                                                var newRoute = new Route();
                                                 newRoute.RouteCode = routeCode.Value;
                                                 newRoute.StartLocationID = startLocationID;
                                                 newRoute.EndLocationID = endLocationID;
                                                 db.Set<Route>().Add(newRoute);
                                                 db.SaveChanges();
+                                                Routes.Add(newRoute);
                                             }
                                             else
                                             {
@@ -153,24 +163,37 @@ namespace WEB.Areas.ContentType.Controllers
                                         catch (Exception e)
                                         {
                                             transaction.Rollback();
+                                            if (newStartLocation.ID != 0)
+                                            {
+                                                Locations.Remove(newStartLocation);
+                                            }
+                                            if (newEndLocation.ID != 0)
+                                            {
+                                                Locations.Remove(newEndLocation);
+                                            }
+                                            if (newRoute.ID != 0)
+                                            {
+                                                Routes.Remove(newRoute);
+                                            }
+
                                             AddErrorModels(rowIterator, 2, "Không thể thực hiện thêm địa điểm và lộ trình! Vui lòng thử lại");
                                             isValid = false;
                                         }
-                                    }    
+                                    }
                                 }
-                                priceInfo.RouteID = db.Route.Where(x => x.RouteCode == routeCode.Value).Select(x => x.ID).FirstOrDefault();
+                                priceInfo.RouteID = Routes.Where(x => x.RouteCode == routeCode.Value).Select(x => x.ID).FirstOrDefault();
                             }
-                            if(priceInfo.RouteID == 0)
+                            if (priceInfo.RouteID == 0)
                             {
                                 AddErrorModels(rowIterator, 2, "Không thể thực hiện thêm địa điểm và lộ trình! Vui lòng thử lại");
                                 isValid = false;
-                            }    
-                            var sourceKT_ST = db.Partner.Where(x => x.PartnerCode == "ST").Select(x => x.ID).FirstOrDefault();
+                            }
+                            var sourceKT_ST = Partners.Where(x => x.PartnerCode == "ST").Select(x => x.ID).FirstOrDefault();
 
-                            var sourceST_AT = db.Partner.Where(x => x.PartnerCode == "AT").Select(x => x.ID).FirstOrDefault();
+                            var sourceST_AT = Partners.Where(x => x.PartnerCode == "AT").Select(x => x.ID).FirstOrDefault();
                             var destinationST_AT = sourceKT_ST;
 
-                            var sourceAT_HPC = db.Partner.Where(x => x.PartnerCode == "HPC").Select(x => x.ID).FirstOrDefault();
+                            var sourceAT_HPC = Partners.Where(x => x.PartnerCode == "HPC").Select(x => x.ID).FirstOrDefault();
                             var destinationAT_HPC = destinationST_AT;
 
 
@@ -183,7 +206,7 @@ namespace WEB.Areas.ContentType.Controllers
                             else
                             {
                                 var price_1_25 = CastToProperty<string>(workSheet, rowIterator, 5, "1.25", false);
-                                var Weight_1_25_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 1 && x.SourcePartnerID == sourceKT_ST ).Any();
+                                var Weight_1_25_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 1 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_1_25.IsSuccess && !Weight_1_25_IsExist)
                                 {
                                     if (price_1_25.Value != null)
@@ -195,11 +218,11 @@ namespace WEB.Areas.ContentType.Controllers
                                         try
                                         {
                                             var priceCheck = Double.Parse(price_1_25.Value);
-                                            if(priceCheck != 0)
+                                            if (priceCheck != 0)
                                             {
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
-                                            }    
+                                            }
                                         }
                                         catch (Exception e)
                                         {
@@ -217,7 +240,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_2_5 = CastToProperty<string>(workSheet, rowIterator, 6, "2.5", false);
-                                var Weight_2_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 11 && x.SourcePartnerID == sourceKT_ST ).Any();
+                                var Weight_2_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 11 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_2_5.IsSuccess && !Weight_2_5_IsExist)
                                 {
                                     if (price_2_5.Value != null)
@@ -252,7 +275,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_3_5 = CastToProperty<string>(workSheet, rowIterator, 7, "3.5", false);
-                                var Weight_3_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 2 && x.SourcePartnerID == sourceKT_ST ).Any();
+                                var Weight_3_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 2 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_3_5.IsSuccess && !Weight_3_5_IsExist)
                                 {
                                     if (price_3_5.Value != null)
@@ -269,7 +292,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                           
+
                                         }
                                         catch (Exception e)
                                         {
@@ -286,7 +309,7 @@ namespace WEB.Areas.ContentType.Controllers
                                     }
                                 }
                                 var price_5 = CastToProperty<string>(workSheet, rowIterator, 8, "5", false);
-                                var Weight_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 3 && x.SourcePartnerID == sourceKT_ST).Any();
+                                var Weight_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 3 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_5.IsSuccess && !Weight_5_IsExist)
                                 {
                                     if (price_5.Value != null)
@@ -321,7 +344,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_10 = CastToProperty<string>(workSheet, rowIterator, 9, "10", false);
-                                var Weight_10_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 12 && x.SourcePartnerID == sourceKT_ST ).Any();
+                                var Weight_10_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 12 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_10.IsSuccess && !Weight_10_IsExist)
                                 {
                                     if (price_10.Value != null)
@@ -338,7 +361,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                            
+
                                         }
                                         catch (Exception e)
                                         {
@@ -357,7 +380,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_CA05 = CastToProperty<string>(workSheet, rowIterator, 10, "CA05", false);
-                                var Weight_CA05_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 8 && x.SourcePartnerID == sourceKT_ST ).Any();
+                                var Weight_CA05_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 8 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_CA05.IsSuccess && !Weight_CA05_IsExist)
                                 {
                                     if (price_CA05.Value != null)
@@ -394,7 +417,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_CA10 = CastToProperty<string>(workSheet, rowIterator, 11, "CA10", false);
-                                var Weight_CA10_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 9 && x.SourcePartnerID == sourceKT_ST).Any();
+                                var Weight_CA10_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 9 && x.SourcePartnerID == sourceKT_ST).Any();
                                 if (price_CA10.IsSuccess && !Weight_CA10_IsExist)
                                 {
                                     if (price_CA10.Value != null)
@@ -411,7 +434,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                            
+
                                         }
                                         catch (Exception e)
                                         {
@@ -454,7 +477,7 @@ namespace WEB.Areas.ContentType.Controllers
                             else
                             {
                                 var price_1_25 = CastToProperty<string>(workSheet, rowIterator, 17, "1.25", false);
-                                var Weight_1_25_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 1 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_1_25_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 1 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_1_25.IsSuccess && !Weight_1_25_IsExist)
                                 {
                                     if (price_1_25.Value != null)
@@ -472,7 +495,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                           
+
                                         }
                                         catch (Exception e)
                                         {
@@ -491,7 +514,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_2_5 = CastToProperty<string>(workSheet, rowIterator, 18, "2.5", false);
-                                var Weight_2_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 11 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_2_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 11 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_2_5.IsSuccess && !Weight_2_5_IsExist)
                                 {
                                     if (price_2_5.Value != null)
@@ -527,7 +550,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_3_5 = CastToProperty<string>(workSheet, rowIterator, 19, "3.5", false);
-                                var Weight_3_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 2 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_3_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 2 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_3_5.IsSuccess && !Weight_3_5_IsExist)
                                 {
                                     if (price_3_5.Value != null)
@@ -561,7 +584,7 @@ namespace WEB.Areas.ContentType.Controllers
                                     }
                                 }
                                 var price_5 = CastToProperty<string>(workSheet, rowIterator, 20, "5", false);
-                                var Weight_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 3 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 3 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_5.IsSuccess && !Weight_5_IsExist)
                                 {
                                     if (price_5.Value != null)
@@ -597,7 +620,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_10 = CastToProperty<string>(workSheet, rowIterator, 21, "10", false);
-                                var Weight_10_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 12 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_10_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 12 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_10.IsSuccess && !Weight_10_IsExist)
                                 {
                                     if (price_10.Value != null)
@@ -633,7 +656,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_CA05 = CastToProperty<string>(workSheet, rowIterator, 22, "CA05", false);
-                                var Weight_CA05_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 8 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_CA05_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 8 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_CA05.IsSuccess && !Weight_CA05_IsExist)
                                 {
                                     if (price_CA05.Value != null)
@@ -651,7 +674,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                           
+
                                         }
                                         catch (Exception e)
                                         {
@@ -672,7 +695,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_CA10 = CastToProperty<string>(workSheet, rowIterator, 23, "CA10", false);
-                                var Weight_CA10_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 9 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
+                                var Weight_CA10_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 9 && x.SourcePartnerID == sourceST_AT && x.DestinationPartnerID == destinationST_AT).Any();
                                 if (price_CA10.IsSuccess && !Weight_CA10_IsExist)
                                 {
                                     if (price_CA10.Value != null)
@@ -705,12 +728,8 @@ namespace WEB.Areas.ContentType.Controllers
                                         AddErrorModels(rowIterator, 23, "Đã tồn tại bản ghi");
                                         isValid = false;
                                     }
-
                                 }
-
                             }
-
-
 
                             // Import price for AT-HPC
                             if (sourceAT_HPC == 0)
@@ -734,7 +753,7 @@ namespace WEB.Areas.ContentType.Controllers
                             else
                             {
                                 var price_1_25 = CastToProperty<string>(workSheet, rowIterator, 29, "1.25", false);
-                                var Weight_1_25_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 1 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_1_25_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 1 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_1_25.IsSuccess && !Weight_1_25_IsExist)
                                 {
                                     if (price_1_25.Value != null)
@@ -752,7 +771,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                           
+
                                         }
                                         catch (Exception e)
                                         {
@@ -771,7 +790,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_2_5 = CastToProperty<string>(workSheet, rowIterator, 30, "2.5", false);
-                                var Weight_2_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 11 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_2_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 11 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_2_5.IsSuccess && !Weight_2_5_IsExist)
                                 {
                                     if (price_2_5.Value != null)
@@ -807,7 +826,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_3_5 = CastToProperty<string>(workSheet, rowIterator, 31, "3.5", false);
-                                var Weight_3_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 2 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_3_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 2 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_3_5.IsSuccess && !Weight_3_5_IsExist)
                                 {
                                     if (price_3_5.Value != null)
@@ -825,7 +844,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                           
+
                                         }
                                         catch (Exception e)
                                         {
@@ -842,7 +861,7 @@ namespace WEB.Areas.ContentType.Controllers
                                     }
                                 }
                                 var price_5 = CastToProperty<string>(workSheet, rowIterator, 32, "5", false);
-                                var Weight_5_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 3 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_5_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 3 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_5.IsSuccess && !Weight_5_IsExist)
                                 {
                                     if (price_5.Value != null)
@@ -878,7 +897,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_10 = CastToProperty<string>(workSheet, rowIterator, 33, "10", false);
-                                var Weight_10_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 12 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_10_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 12 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_10.IsSuccess && !Weight_10_IsExist)
                                 {
                                     if (price_10.Value != null)
@@ -914,7 +933,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_CA05 = CastToProperty<string>(workSheet, rowIterator, 34, "CA05", false);
-                                var Weight_CA05_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 8 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_CA05_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 8 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_CA05.IsSuccess && !Weight_CA05_IsExist)
                                 {
                                     if (price_CA05.Value != null)
@@ -932,7 +951,7 @@ namespace WEB.Areas.ContentType.Controllers
                                                 Price.Price = priceCheck;
                                                 pricingList.Add(Price);
                                             }
-                                          
+
                                         }
                                         catch (Exception e)
                                         {
@@ -953,7 +972,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 }
 
                                 var price_CA10 = CastToProperty<string>(workSheet, rowIterator, 35, "CA10", false);
-                                var Weight_CA10_IsExist = db.PricingTable.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 9 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
+                                var Weight_CA10_IsExist = PricingTables.Where(x => x.RouteID == priceInfo.RouteID && x.WeightID == 9 && x.SourcePartnerID == sourceAT_HPC && x.DestinationPartnerID == destinationAT_HPC).Any();
                                 if (price_CA10.IsSuccess && !Weight_CA10_IsExist)
                                 {
                                     if (price_CA10.Value != null)
@@ -986,7 +1005,6 @@ namespace WEB.Areas.ContentType.Controllers
                                         AddErrorModels(rowIterator, 35, "Đã tồn tại bản ghi");
                                         isValid = false;
                                     }
-
                                 }
 
                             }
@@ -1004,9 +1022,9 @@ namespace WEB.Areas.ContentType.Controllers
                                 {
                                     price.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                                     price.CreatedDate = DateTime.Now;
-                                    db.Set<PricingTable>().Add(price);
                                 }
-                                db.SaveChanges();
+                                PricingTables.AddRange(pricingList);
+                                listPriceAddDB.AddRange(pricingList);
                             }
                         }
                         catch (DbEntityValidationException ex)
@@ -1022,6 +1040,23 @@ namespace WEB.Areas.ContentType.Controllers
                             // Combine the original exception message with the new one.
                             var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
                         }
+                    }
+                    var checkSave = true;
+                    try
+                    {
+                        listPriceAddDB.Reverse();
+                        db.PricingTable.AddRange(listPriceAddDB);
+                        db.SaveChanges();
+                    }
+                    catch
+                    {
+                         checkSave = false;
+                    }
+
+                    if (!checkSave)
+                    {
+                        byte[] err = { 1 };
+                        return err;
                     }
 
                     if (!ErrorModels.Any())
@@ -1178,4 +1213,3 @@ namespace WEB.Areas.ContentType.Controllers
         public int ColumnNumber { get; set; }
     }
 }
-
