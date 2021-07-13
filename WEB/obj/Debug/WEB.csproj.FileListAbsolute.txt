@@ -249,7 +249,7 @@ C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\bin\ru\System.Spatial.resources.dll
 C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\bin\zh-Hans\System.Spatial.resources.dll
 C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\bin\zh-Hant\System.Spatial.resources.dll
 C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\obj\Debug\WEB.csproj.App.config
-C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\obj\Debug\WEB.csprojAssemblyReference.cache
+C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\obj\Debug\WEB.csproj.AssemblyReference.cache
 C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\obj\Debug\WEB.csproj.CoreCompileInputs.cache
 C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\obj\Debug\WEB.csproj.CopyComplete
 C:\Users\Nguyen\Documents\GitHub\VanTai\WEB\obj\Debug\WEB.dll

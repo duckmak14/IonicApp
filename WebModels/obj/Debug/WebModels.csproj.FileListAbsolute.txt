@@ -103,7 +103,7 @@ C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\bin\Debug\ru-RU\Kendo.Mvc.reso
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\bin\Debug\sv-SE\Kendo.Mvc.resources.dll
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\bin\Debug\uk-UA\Kendo.Mvc.resources.dll
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\bin\Debug\zh-CN\Kendo.Mvc.resources.dll
-C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\obj\Debug\WebModels.csprojAssemblyReference.cache
+C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\obj\Debug\WebModels.csproj.AssemblyReference.cache
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\obj\Debug\WebModels.WebResources.resources
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\obj\Debug\WebModels.AccountResources.en-US.resources
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebModels\obj\Debug\WebModels.AccountResources.vi-VN.resources

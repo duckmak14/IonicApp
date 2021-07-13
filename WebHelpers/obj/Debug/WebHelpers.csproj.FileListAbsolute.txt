@@ -43,7 +43,7 @@ C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\bin\Debug\System.Web.Razor.xm
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\bin\Debug\System.Web.WebPages.xml
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\bin\Debug\System.Web.WebPages.Deployment.xml
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\bin\Debug\System.Web.WebPages.Razor.xml
-C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\obj\Debug\WebHelpers.csprojAssemblyReference.cache
+C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\obj\Debug\WebHelpers.csproj.AssemblyReference.cache
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\obj\Debug\WebHelpers.csproj.CoreCompileInputs.cache
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\obj\Debug\WebHelpers.csproj.CopyComplete
 C:\Users\Nguyen\Documents\GitHub\VanTai\WebHelpers\obj\Debug\Web.Helpers.dll
