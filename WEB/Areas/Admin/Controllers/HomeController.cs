@@ -42,7 +42,7 @@ namespace WEB.Areas.Admin.Controllers
                          where uir.UserId == userId && ((awmr.Add.HasValue && awmr.Add.Value) || (awmr.Edit.HasValue && awmr.Edit.Value)
                          || (awmr.Delete.HasValue && awmr.Delete.Value) || (awmr.View.HasValue && awmr.View.Value))
                          select wm;
-            var test = result.ToList().OrderBy(x=>x.Order);
+            var test = result.Where(x => x.Status == 1).ToList().OrderBy(x=>x.Order);
             //var nav = db.AdminSites.Where(x => x.ParentID == null).OrderBy(x => x.Order).ToList();
             return PartialView(test);
         }

@@ -390,20 +390,20 @@ namespace WEB.Areas.Admin.Controllers
                         var PricingTable = db.PricingTable.ToList();
                         var Vehicle = db.Vehicle.ToList();
                         Double unitPrice = 0;
-                        if (model.ActualWeightID != null)
-                        {
-                            unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, model.SourcePartnerID, PricingTable);
-                        }
-                        else
-                        {
-                            var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                            unitPrice = CheckPrice(weightID, model.RouteID, model.SourcePartnerID, PricingTable);
-                        }
-                        if (unitPrice == 0)
-                        {
-                            ModelState.AddModelError("", "Không tồn tại giá, vui lòng kiểm tra lại!");
-                            return View(model);
-                        }
+                        //if (model.ActualWeightID != null)
+                        //{
+                        //    unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, model.SourcePartnerID, PricingTable);
+                        //}
+                        //else
+                        //{
+                        //    var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
+                        //    unitPrice = CheckPrice(weightID, model.RouteID, model.SourcePartnerID, PricingTable);
+                        //}
+                        //if (unitPrice == 0)
+                        //{
+                        //    ModelState.AddModelError("", "Không tồn tại giá, vui lòng kiểm tra lại!");
+                        //    return View(model);
+                        //}
                         //Create TransportActual for ST Partner Source
                         var transportActualST = new TransportActual();
                         transportActualST.ActualDate = model.PlanDate;
@@ -740,29 +740,29 @@ namespace WEB.Areas.Admin.Controllers
                                         findTranActualST.TripCount = 1;
                                     }
 
-                                    if (checkChangePrice)
-                                    {
-                                        if (model.ActualWeightID != null)
-                                        {
-                                            unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, model.SourcePartnerID, PricingTable);
-                                        }
-                                        else
-                                        {
-                                            var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                                            unitPrice = CheckPrice(weightID, model.RouteID, model.SourcePartnerID, PricingTable);
-                                        }
+                                    //if (checkChangePrice)
+                                    //{
+                                    //    if (model.ActualWeightID != null)
+                                    //    {
+                                    //        unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, model.SourcePartnerID, PricingTable);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
+                                    //        unitPrice = CheckPrice(weightID, model.RouteID, model.SourcePartnerID, PricingTable);
+                                    //    }
 
-                                        if (unitPrice == 0)
-                                        {
-                                            transaction.Rollback();
-                                            ModelState.AddModelError("", "Không tồn tại giá!");
-                                            return View(model);
-                                        }
-                                        else
-                                        {
-                                            findTranActualST.UnitPrice = unitPrice;
-                                        }
-                                    }
+                                    //    if (unitPrice == 0)
+                                    //    {
+                                    //        transaction.Rollback();
+                                    //        ModelState.AddModelError("", "Không tồn tại giá!");
+                                    //        return View(model);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        findTranActualST.UnitPrice = unitPrice;
+                                    //    }
+                                    //}
 
                                     //check price for AT Partner
                                     var ATId = Partner.Where(x => x.PartnerCode == "AT").Select(x => x.ID).FirstOrDefault();
