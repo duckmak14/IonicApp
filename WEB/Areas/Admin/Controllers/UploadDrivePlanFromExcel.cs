@@ -6,10 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using OfficeOpenXml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using WebMatrix.WebData;
 using WebModels;
-using WEB.Areas.Admin.Controllers;
 using WEB.Models;
 using System.Globalization;
 using System.Data.Entity;
@@ -56,8 +53,6 @@ namespace WEB.Areas.ContentType.Controllers
 
         public byte[] UploadProducts(HttpPostedFileBase file, object uploadProgressSession)
         {
-
-
             ExcelPackage.LicenseContext = LicenseContext.Commercial;
 
             if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
@@ -74,9 +69,11 @@ namespace WEB.Areas.ContentType.Controllers
                     var Partner = db.Partner.ToList();
                     var Location = db.Location.ToList();
                     var VehicleWeight = db.VehicleWeight.ToList();
-                    var TransportPlans = db.TransportPlans.ToList();
-                    var TransportActuals = db.TransportActuals.ToList();
+                    var TransportPlans = db.TransportPlans.Where(x => x.IsRemove != true).ToList();
+                    var TransportActuals = db.TransportActuals.Where(x=>x.IsRemove != true).ToList();
                     var PricingTable = db.PricingTable.ToList();
+                    var transportPlanList = new List<TransportPlan>();
+                    var transportActualList = new List<TransportActual>();
 
                     for (int rowIterator = 3; rowIterator <= noOfRow; rowIterator++)
                     {
@@ -94,10 +91,10 @@ namespace WEB.Areas.ContentType.Controllers
                         {
                             try
                             {
-                                int dateParse;
-                                if (Int32.TryParse(planDate.Value, out dateParse))
+                                Double dateParse;
+                                if (Double.TryParse(planDate.Value, out dateParse))
                                 {
-                                    dateBegin = DateTime.FromOADate(double.Parse(dateParse.ToString()));
+                                    dateBegin = DateTime.FromOADate(dateParse);
                                 }
                                 else
                                 {
@@ -105,7 +102,6 @@ namespace WEB.Areas.ContentType.Controllers
                                     dateBegin = DateTime.Parse(planDate.Value.ToString(), new CultureInfo("vi-VN", false));
                                 }
                                 planInfo.PlanDate = dateBegin;
-
                             }
                             catch (Exception ex)
                             {
@@ -320,7 +316,6 @@ namespace WEB.Areas.ContentType.Controllers
                             isValid = false;
                         }
 
-
                         var destinationPartner = CastToProperty<string>(workSheet, rowIterator, 4, "Đơn vị thuê");
                         if (destinationPartner.IsSuccess)
                         {
@@ -421,148 +416,67 @@ namespace WEB.Areas.ContentType.Controllers
                             isValid = false;
                             AddErrorModels(rowIterator, 1, "Không tồn tại giá !");
                         }
-
-
                         // Check Date > Date.Now(-3)
                         //var dateDayNow = DateTime.Now.AddDays(-3); ;
                         //if (planInfo.PlanDate.Date <= dateDayNow.Date && isValid)
                         //{
                         //    isValid = false;
                         //    AddErrorModels(rowIterator, 1, "Vui lòng nhập ngày lớn hơn!");
-
                         //}
 
                         //if conditions was success
                         if (isValid)
                         {
-                            // Check overlap datetime
-                            var checkPlan = TransportPlans.Where(x => x.PlanDate == planInfo.PlanDate && x.RouteID == planInfo.RouteID && x.VehicleID == planInfo.VehicleID
-                                 && x.SourcePartnerID == planInfo.SourcePartnerID && x.DestinationPartnerID == planInfo.DestinationPartnerID && x.ActualWeightID == planInfo.ActualWeightID && x.IsRemove != true).ToList();
+                            isValid = CheckOverLap(TransportPlans, planInfo, rowIterator, 1);
 
-                            Boolean checkTime = true;
-                            string err = "Thời gian trùng:   ";
-                            if (checkPlan.Count() > 0)
-                            {
-                                foreach (var item in checkPlan)
-                                {
-                                    if (item.StartTime != null && item.EndTime != null)
-                                    {
-                                        var startDateTime = new DateTime(item.StartTime.Value);
-                                        var endDateTime = new DateTime(item.EndTime.Value);
-                                        var PlanStartTime = new DateTime(planInfo.StartTime.Value);
-                                        var PlanEndTime = new DateTime(planInfo.EndTime.Value);
-
-                                        if (startDateTime.TimeOfDay == PlanStartTime.TimeOfDay && PlanEndTime.TimeOfDay == endDateTime.TimeOfDay)
-                                        {
-                                            checkTime = false;
-                                            err += startDateTime.TimeOfDay.ToString() + " - " + endDateTime.TimeOfDay.ToString();
-                                        }
-                                    }
-                                }
-                                if (!checkTime)
-                                {
-                                    isValid = false;
-                                    AddErrorModels(rowIterator, 1, err);
-
-                                }
-                            }
                             if (!isValid)
                             {
                                 continue;
                             }
-
-                            using (DbContextTransaction transaction = db.Database.BeginTransaction())
+                            //add value for TransportPlan
+                            string weightName;
+                            var routeCodeTracking = Route.Where(x => x.ID == planInfo.RouteID).Select(x => x.RouteCode).FirstOrDefault();
+                            if (planInfo.ActualWeightID != null)
                             {
-                                try
-                                {
-                                    string weightName;
-                                    var routeCodeTracking = db.Route.Where(x => x.ID == planInfo.RouteID).Select(x => x.RouteCode).FirstOrDefault();
-                                    if (planInfo.ActualWeightID != null)
-                                    {
-                                        weightName = db.VehicleWeight.Where(x => x.ID == planInfo.ActualWeightID).Select(x => x.WeightName).FirstOrDefault();
-                                    }
-                                    else
-                                    {
-                                        var vehicle = db.Vehicle.Where(x => x.ID == planInfo.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                                        weightName = db.VehicleWeight.Where(x => x.ID == vehicle).Select(x => x.WeightName).FirstOrDefault();
-                                    }
-                                    planInfo.TrackingCode = routeCodeTracking + "-" + weightName;
-
-                                    planInfo.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
-                                    planInfo.CreatedDate = DateTime.Now;
-                                    db.Set<TransportPlan>().Add(planInfo);
-                                    db.SaveChanges();
-
-                                    //check TransportActual is valid
-                                    var checkActualValid = TransportActuals.Where(x => x.ActualDate == planInfo.PlanDate &&
-                                    x.StartTime == planInfo.StartTime && x.EndTime == planInfo.EndTime && x.SourcePartnerID == planInfo.SourcePartnerID
-                                    && x.DestinationPartnerID == planInfo.DestinationPartnerID && x.RouteID == planInfo.RouteID &&
-                                    x.VehicleID == planInfo.VehicleID && x.ActualWeightID == planInfo.ActualWeightID && x.IsRemove != true).FirstOrDefault();
-                                    if (checkActualValid != null)
-                                    {
-                                        AddErrorModels(rowIterator, 1, "Đã xảy ra lỗi, không đồng bộ bảng kê và bảng kế hoạch! Vui lòng liên hệ quản trị viên");
-                                        transaction.Rollback();
-                                        continue;
-                                    }
-
-                                    //Create TransportActual for ST Partner Source
-                                    var transportActualST = new TransportActual();
-                                    transportActualST.ActualDate = planInfo.PlanDate;
-                                    transportActualST.StartTime = planInfo.StartTime;
-                                    transportActualST.EndTime = planInfo.EndTime;
-                                    transportActualST.TrackingCode = planInfo.TrackingCode;
-                                    transportActualST.RouteID = planInfo.RouteID;
-                                    transportActualST.VehicleID = planInfo.VehicleID;
-                                    transportActualST.SourcePartnerID = planInfo.SourcePartnerID;
-                                    transportActualST.DestinationPartnerID = planInfo.DestinationPartnerID;
-                                    transportActualST.ActualWeightID = planInfo.ActualWeightID;
-                                    transportActualST.UnitPrice = unitPrice;
-                                    transportActualST.CreatedBy = planInfo.CreatedBy;
-                                    transportActualST.CreatedDate = planInfo.CreatedDate;
-                                    transportActualST.TripCount = tripCount;
-                                    transportActualST.Status = false;
-
-                                    //Check price for AT Price Table
-                                    var ATId = Partner.Where(x => x.PartnerCode == "AT").Select(x => x.ID).FirstOrDefault();
-
-                                    if (planInfo.ActualWeightID != null)
-                                    {
-                                        unitPrice = CheckPrice(planInfo.ActualWeightID, planInfo.RouteID, ATId, PricingTable);
-                                    }
-                                    else
-                                    {
-                                        var weightID = Vehicle.Where(x => x.ID == planInfo.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                                        unitPrice = CheckPrice(weightID, planInfo.RouteID, ATId, PricingTable);
-                                    }
-                                    transportActualST.UnitPriceAT = unitPrice;
-
-                                    //Check price for HPC Price Table
-                                    var HPCId = Partner.Where(x => x.PartnerCode == "HPC").Select(x => x.ID).FirstOrDefault();
-                                    if (planInfo.ActualWeightID != null)
-                                    {
-                                        unitPrice = CheckPrice(planInfo.ActualWeightID, planInfo.RouteID, HPCId, PricingTable);
-                                    }
-                                    else
-                                    {
-                                        var weightID = Vehicle.Where(x => x.ID == planInfo.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                                        unitPrice = CheckPrice(weightID, planInfo.RouteID, HPCId, PricingTable);
-                                    }
-                                    transportActualST.UnitPriceHPC = unitPrice;
-
-                                    db.Set<TransportActual>().Add(transportActualST);
-                                    db.SaveChanges();
-
-                                    transaction.Commit();
-                                }
-                                catch (Exception e)
-                                {
-                                    AddErrorModels(rowIterator, 1, "Đã xảy ra lỗi, vui lòng liên hệ quản trị viên!");
-                                    transaction.Rollback();
-
-                                }
+                                weightName = VehicleWeight.Where(x => x.ID == planInfo.ActualWeightID).Select(x => x.WeightName).FirstOrDefault();
                             }
+                            else
+                            {
+                                var vehicle = Vehicle.Where(x => x.ID == planInfo.VehicleID).Select(x => x.WeightID).FirstOrDefault();
+                                weightName = VehicleWeight.Where(x => x.ID == vehicle).Select(x => x.WeightName).FirstOrDefault();
+                            }
+                            planInfo.TrackingCode = routeCodeTracking + "-" + weightName;
+
+                            planInfo.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
+                            planInfo.CreatedDate = DateTime.Now;
+
+                            //check TransportActual is valid
+                            var checkActualValid = TransportActuals.Where(x => x.ActualDate == planInfo.PlanDate &&
+                            x.StartTime == planInfo.StartTime && x.EndTime == planInfo.EndTime && x.SourcePartnerID == planInfo.SourcePartnerID
+                            && x.DestinationPartnerID == planInfo.DestinationPartnerID && x.RouteID == planInfo.RouteID &&
+                            x.VehicleID == planInfo.VehicleID && x.ActualWeightID == planInfo.ActualWeightID && x.IsRemove != true).FirstOrDefault();
+                            if (checkActualValid != null)
+                            {
+                                AddErrorModels(rowIterator, 1, "Đã xảy ra lỗi, không đồng bộ bảng kê và bảng kế hoạch! Vui lòng liên hệ quản trị viên");
+                                continue;
+                            }
+                            else
+                            {
+                                TransportPlans.Add(planInfo);
+                                transportPlanList.Add(planInfo);
+                            }
+
+                            //add value to TransportActual
+                            var transportActualST = new TransportActual();
+                            transportActualST = AddValueTransportActual(transportActualST, planInfo, unitPrice, tripCount, Partner, Vehicle, PricingTable);
+                            transportActualList.Add(transportActualST);
+                            TransportActuals.Add(transportActualST);
                         }
                     }
+
+                    //Save if info not have err
+                    int checkSave = SaveInfo(transportActualList, transportPlanList);
+
                     if (!ErrorModels.Any())
                     {
                         return null;
@@ -572,6 +486,123 @@ namespace WEB.Areas.ContentType.Controllers
             }
 
             return null;
+        }
+
+
+        private TransportActual AddValueTransportActual(TransportActual transportActualST, TransportPlan planInfo, Double unitPrice, Double tripCount, List<Partner> partners, List<Vehicle> vehicles, List<PricingTable> pricingTables)
+        {
+            //Create TransportActual for ST Partner Source
+            transportActualST.ActualDate = planInfo.PlanDate;
+            transportActualST.StartTime = planInfo.StartTime;
+            transportActualST.EndTime = planInfo.EndTime;
+            transportActualST.TrackingCode = planInfo.TrackingCode;
+            transportActualST.RouteID = planInfo.RouteID;
+            transportActualST.VehicleID = planInfo.VehicleID;
+            transportActualST.SourcePartnerID = planInfo.SourcePartnerID;
+            transportActualST.DestinationPartnerID = planInfo.DestinationPartnerID;
+            transportActualST.ActualWeightID = planInfo.ActualWeightID;
+            transportActualST.UnitPrice = unitPrice;
+            transportActualST.CreatedBy = planInfo.CreatedBy;
+            transportActualST.CreatedDate = planInfo.CreatedDate;
+            transportActualST.TripCount = tripCount;
+            transportActualST.Status = false;
+
+            //Check price for AT Price Table
+            var ATId = partners.Where(x => x.PartnerCode == "AT").Select(x => x.ID).FirstOrDefault();
+
+            if (planInfo.ActualWeightID != null)
+            {
+                unitPrice = CheckPrice(planInfo.ActualWeightID, planInfo.RouteID, ATId, pricingTables);
+            }
+            else
+            {
+                var weightID = vehicles.Where(x => x.ID == planInfo.VehicleID).Select(x => x.WeightID).FirstOrDefault();
+                unitPrice = CheckPrice(weightID, planInfo.RouteID, ATId, pricingTables);
+            }
+            transportActualST.UnitPriceAT = unitPrice;
+
+            //Check price for HPC Price Table
+            var HPCId = partners.Where(x => x.PartnerCode == "HPC").Select(x => x.ID).FirstOrDefault();
+            if (planInfo.ActualWeightID != null)
+            {
+                unitPrice = CheckPrice(planInfo.ActualWeightID, planInfo.RouteID, HPCId, pricingTables);
+            }
+            else
+            {
+                var weightID = vehicles.Where(x => x.ID == planInfo.VehicleID).Select(x => x.WeightID).FirstOrDefault();
+                unitPrice = CheckPrice(weightID, planInfo.RouteID, HPCId, pricingTables);
+            }
+            transportActualST.UnitPriceHPC = unitPrice;
+
+            return transportActualST;
+        }
+
+        private int SaveInfo(List<TransportActual> transportActuals, List<TransportPlan> transportPlans)
+        {
+            int i = 1;
+            var actualCount = transportActuals.Count;
+            var planCount = transportPlans.Count;
+            if (actualCount > 0 && planCount > 0 && actualCount == planCount)
+            {
+                using (DbContextTransaction transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        transportActuals.Reverse();
+                        db.TransportActuals.AddRange(transportActuals);
+                        db.SaveChanges();
+
+                        transportPlans.Reverse();
+                        db.TransportPlans.AddRange(transportPlans);
+                        db.SaveChanges();
+
+                        transaction.Commit();
+
+                    }
+                    catch (Exception e)
+                    {
+                        i = 0;
+                        transaction.Rollback();
+                    }
+                }
+            }
+            return i ;
+        }
+
+        private bool CheckOverLap(List<TransportPlan> transportPlans, TransportPlan planInfo, int row, int col)
+        {
+            bool check = true;
+            // Check overlap datetime
+            var checkPlan = transportPlans.Where(x => x.PlanDate == planInfo.PlanDate && x.RouteID == planInfo.RouteID && x.VehicleID == planInfo.VehicleID
+                 && x.SourcePartnerID == planInfo.SourcePartnerID && x.DestinationPartnerID == planInfo.DestinationPartnerID && x.ActualWeightID == planInfo.ActualWeightID && x.IsRemove != true).ToList();
+
+            Boolean checkTime = true;
+            string err = "Thời gian trùng:   ";
+            if (checkPlan.Count() > 0)
+            {
+                foreach (var item in checkPlan)
+                {
+                    if (item.StartTime != null && item.EndTime != null)
+                    {
+                        var startDateTime = new DateTime(item.StartTime.Value);
+                        var endDateTime = new DateTime(item.EndTime.Value);
+                        var PlanStartTime = new DateTime(planInfo.StartTime.Value);
+                        var PlanEndTime = new DateTime(planInfo.EndTime.Value);
+
+                        if (startDateTime.TimeOfDay == PlanStartTime.TimeOfDay && PlanEndTime.TimeOfDay == endDateTime.TimeOfDay)
+                        {
+                            checkTime = false;
+                            err += startDateTime.TimeOfDay.ToString() + " - " + endDateTime.TimeOfDay.ToString();
+                        }
+                    }
+                }
+                if (!checkTime)
+                {
+                    check = false;
+                    AddErrorModels(row, col, err);
+                }
+            }
+            return check;
         }
 
         private Double CheckPrice(int? weightID, int? routeID, int? sourcePartnerID, List<PricingTable> prices)
@@ -752,4 +783,3 @@ namespace WEB.Areas.ContentType.Controllers
         public int ColumnNumber { get; set; }
     }
 }
-

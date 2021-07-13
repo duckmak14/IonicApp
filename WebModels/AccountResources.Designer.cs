@@ -421,6 +421,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Category.
+        /// </summary>
+        public static string RequiredCategory {
+            get {
+                return ResourceManager.GetString("RequiredCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter the Confirm Password.
         /// </summary>
         public static string RequiredConfirmPassword {
@@ -430,11 +439,38 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Date.
+        /// </summary>
+        public static string RequiredDate {
+            get {
+                return ResourceManager.GetString("RequiredDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter the Destination Partner.
         /// </summary>
         public static string RequiredDestinationPartner {
             get {
                 return ResourceManager.GetString("RequiredDestinationPartner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Driver.
+        /// </summary>
+        public static string RequiredDriver {
+            get {
+                return ResourceManager.GetString("RequiredDriver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required End Date.
+        /// </summary>
+        public static string RequiredEndDate {
+            get {
+                return ResourceManager.GetString("RequiredEndDate", resourceCulture);
             }
         }
         
@@ -466,6 +502,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Km.
+        /// </summary>
+        public static string RequiredKm {
+            get {
+                return ResourceManager.GetString("RequiredKm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter  the LocationName.
         /// </summary>
         public static string RequiredLocationName {
@@ -493,6 +538,33 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Oil Level.
+        /// </summary>
+        public static string RequiredOilLevel {
+            get {
+                return ResourceManager.GetString("RequiredOilLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Oil Price.
+        /// </summary>
+        public static string RequiredOilPrice {
+            get {
+                return ResourceManager.GetString("RequiredOilPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Parking Price.
+        /// </summary>
+        public static string RequiredParkingPrice {
+            get {
+                return ResourceManager.GetString("RequiredParkingPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter  the PartnerName.
         /// </summary>
         public static string RequiredPartnerName {
@@ -511,6 +583,33 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Pay Content.
+        /// </summary>
+        public static string RequiredPayContent {
+            get {
+                return ResourceManager.GetString("RequiredPayContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Pay Date.
+        /// </summary>
+        public static string RequiredPayDate {
+            get {
+                return ResourceManager.GetString("RequiredPayDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Pay Price.
+        /// </summary>
+        public static string RequiredPayPrice {
+            get {
+                return ResourceManager.GetString("RequiredPayPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please choose date.
         /// </summary>
         public static string RequiredPlanDate {
@@ -520,11 +619,56 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Price.
+        /// </summary>
+        public static string RequiredPrice {
+            get {
+                return ResourceManager.GetString("RequiredPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter the Price Code.
         /// </summary>
         public static string RequiredPriceCode {
             get {
                 return ResourceManager.GetString("RequiredPriceCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Repair Category .
+        /// </summary>
+        public static string RequiredRepairCategory {
+            get {
+                return ResourceManager.GetString("RequiredRepairCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Repair Content.
+        /// </summary>
+        public static string RequiredRepairContent {
+            get {
+                return ResourceManager.GetString("RequiredRepairContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Repair Date.
+        /// </summary>
+        public static string RequiredRepairDate {
+            get {
+                return ResourceManager.GetString("RequiredRepairDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Repair Price.
+        /// </summary>
+        public static string RequiredRepairPrice {
+            get {
+                return ResourceManager.GetString("RequiredRepairPrice", resourceCulture);
             }
         }
         
@@ -556,6 +700,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required Start Date.
+        /// </summary>
+        public static string RequiredStartDate {
+            get {
+                return ResourceManager.GetString("RequiredStartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter  the StartLocation.
         /// </summary>
         public static string RequiredStartLocation {
@@ -570,6 +723,15 @@ namespace WebModels {
         public static string RequiredStartTime {
             get {
                 return ResourceManager.GetString("RequiredStartTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Supplied Oil.
+        /// </summary>
+        public static string RequiredSuppliedOil {
+            get {
+                return ResourceManager.GetString("RequiredSuppliedOil", resourceCulture);
             }
         }
         

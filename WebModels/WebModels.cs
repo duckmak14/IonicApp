@@ -11,8 +11,6 @@ using WebMatrix.WebData;
 
 namespace WebModels
 {
-
-
     public partial class WebModule : BaseWebContent
     {
         public WebModule()
@@ -85,6 +83,7 @@ namespace WebModels
         [Display(ResourceType = typeof(WebResources), Name = "SubQuerys")]
         public string SubQuerys { get; set; }
         public string ActiveArticle { get; set; }
+        public string Type { get; set; }
 
         public virtual ICollection<AccessWebModule> AccessWebModules { get; set; }
         public virtual ICollection<AccessWebModuleRole> AccessWebModuleRoles { get; set; }
@@ -204,6 +203,7 @@ namespace WebModels
                 return string.Empty;
             }
         }
+
         [Display(ResourceType = typeof(WebResources), Name = "Order")]
         public Nullable<int> Order { get; set; }
 

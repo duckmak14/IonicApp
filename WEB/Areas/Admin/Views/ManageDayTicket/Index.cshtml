@@ -1,0 +1,144 @@
+﻿@model ManageOil
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Quản lý vé ngày";
+    var listTotal = (List<MonthInYearTotal>)ViewBag.listTotal;
+    WebContext db = new WebContext();
+    var roles = Roles.GetRolesForUser();
+    var userRoleIds = db.WebRoles.Where(x => roles.Contains(x.RoleName)).Select(y => y.RoleId);
+    var roleWebModule = db.AccessWebModuleRoles.AsNoTracking().FirstOrDefault(x => userRoleIds.Contains(x.RoleId) && x.WebModule.URL == "/admin/ManageDayTicket");
+    var groupByYear = (from a in listTotal.OrderByDescending(x => x.Year)
+                       group a by new { a.Year });
+    var count = groupByYear.Count();
+
+}
+<script type="text/javascript">
+    var rowselected = [];
+    $(document).ready(function () {
+        $('.box-month').click(function () {
+            var id = $(this).attr('data-id');
+            if (rowselected.indexOf(id) !== -1) {
+                rowselected.splice(rowselected.indexOf(id), 1);
+                $(this).removeClass("choose-box-month");
+
+            } else {
+                rowselected.push(id);
+                $(this).addClass("choose-box-month");
+            }
+        });
+        $('.box-month').dblclick(function () {
+            var id = $(this).attr('data-id');
+            var myRedirectDetail = function (redirectUrl, arg, value) {
+                var form = $('<form action="' + redirectUrl + '" method="post">' +
+                    '<input type="hidden" name="' + arg + '" value="' + value + '"></input>' + '</form>');
+                $('body').append(form);
+                $(form).submit();
+            };
+
+            myRedirectDetail("/admin/ManageDayTicket/DayDetail/", "dataString", id);
+        });
+        //$("#detail").click(function () {
+        //    if (rowselected.length > 1) {
+        //        alert("Vui lòng không chọn nhiều tháng!");
+        //    }
+        //    else if (rowselected.length < 1) {
+        //        alert("Vui lòng chọn 1 tháng để xem chi tiết!");
+        //    }
+        //    else {
+
+        //        var myRedirectDetail = function (redirectUrl, arg, value) {
+        //            var form = $('<form action="' + redirectUrl + '" method="post">' +
+        //                '<input type="hidden" name="' + arg + '" value="' + value + '"></input>' + '</form>');
+        //            $('body').append(form);
+        //            $(form).submit();
+        //        };
+
+        //        myRedirectDetail("/admin/ManageDayTicket/DayDetail/", "dataString", rowselected);
+        //    }
+        //});
+
+        $("#download").click(function () {
+
+            var myRedirectDownload = function (redirectUrl, arg, value) {
+                var form = $('<form action="' + redirectUrl + '" method="post">' +
+                    '<input type="hidden" name="' + arg + '" value="' + value + '"></input>' + '</form>');
+                $('body').append(form);
+                $(form).submit();
+            };
+
+            myRedirectDownload("/admin/ManageDayTicket/ExportExcelFromIndex/", "data", rowselected);
+
+        });
+
+        $("#delete").click(function () {
+
+            var myRedirectDelete = function (redirectUrl, arg, value) {
+                var form = $('<form action="' + redirectUrl + '" method="post">' +
+                    '<input type="hidden" name="' + arg + '" value="' + value + '"></input>' + '</form>');
+                $('body').append(form);
+                $(form).submit();
+            };
+            myRedirectDelete("/admin/ManageDayTicket/Deletes/", "stringSubmit", rowselected);
+
+        });
+
+        $("#upload").click(function (e) {
+            opendlg("/admin/ManageDayTicket/UploadExcel");
+        });
+    });
+
+</script>
+
+<div class="flex block-div row-pull-right">
+    <div class="flex block-two-row">
+        @if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value)
+        {
+            <div class="btn-download btn-plan-drive" id="download">
+                <img src="~/Content/themes/admin/img/Vector-download.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Tải về</p>
+            </div>
+
+            <div class="btn-download btn-plan-drive" id="upload">
+                <img src="~/Content/themes/admin/img/Vector-upload.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Upload</p>
+            </div>
+
+            <div class="btn-download btn-plan-drive" id="delete">
+                <img src="~/Images/icon-delete.png" alt="text-14-700">
+                <p class="text-14-500 padding-text-plan-drive">Xóa</p>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="container-fluid my-5">
+    @{
+        int i = 0;
+        foreach (var listYear in groupByYear)
+        {
+            i++;
+            <div>
+                <p class="title-year">@listYear.First().Year</p>
+                <div class="row box-year">
+                    @foreach (var month in listYear.OrderBy(x => x.Month))
+                    {
+                        string date = "1-" + month.Month + "-" + month.Year;
+
+                        <div class="col-xl-3 col-md-4 col-6">
+                            <div class="d-flex box-month 2021-1-1" data-id="@date">
+                                <p class="title-month">Tháng @month.Month</p>
+                                <div class="box-month-line"></div>
+                                <p class="title-total">@String.Format("{0:n0}", month.Total)</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            if (i != count)
+            {
+                <div class=" box-year-line"></div>
+            }
+        }
+    }
+</div>
+

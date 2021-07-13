@@ -148,7 +148,7 @@
                                         {
                                             command.Custom(Resources.Common.Delete).Click("delete_handler").HtmlAttributes(new { title = "Xóa" }); ;
                                         }
-                                    }).Width(100).HtmlAttributes(new { style = "text-align:center; display: flex;" }).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
+                                    }).Width(210).HtmlAttributes(new { style = "text-align:center; display: flex;" }).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
                                     columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=UserId#' onclick='childNodeClick(this)'/>")
                                     .HtmlAttributes(new { style = "text-align:center;" })
                                     .Filterable(false)
@@ -160,6 +160,7 @@
                                     columns.Bound(p => p.Mobile).Title(WebModels.AccountResources.Mobile);
 
                                 })
+                                .Scrollable()
                                 .Pageable()
                                 .Sortable()
                                 .Filterable()

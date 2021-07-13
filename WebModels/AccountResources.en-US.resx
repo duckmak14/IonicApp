@@ -237,11 +237,23 @@
   <data name="RequiredCarPartnerName" xml:space="preserve">
     <value>Requirement enter  the CarPartnerName</value>
   </data>
+  <data name="RequiredCategory" xml:space="preserve">
+    <value>Required Category</value>
+  </data>
   <data name="RequiredConfirmPassword" xml:space="preserve">
     <value>Requirement enter the Confirm Password</value>
   </data>
+  <data name="RequiredDate" xml:space="preserve">
+    <value>Required Date</value>
+  </data>
   <data name="RequiredDestinationPartner" xml:space="preserve">
     <value>Requirement enter the Destination Partner</value>
+  </data>
+  <data name="RequiredDriver" xml:space="preserve">
+    <value>Required Driver</value>
+  </data>
+  <data name="RequiredEndDate" xml:space="preserve">
+    <value>Required End Date</value>
   </data>
   <data name="RequiredEndLocation" xml:space="preserve">
     <value>Requirement enter  the EndLocation</value>
@@ -252,6 +264,9 @@
   <data name="RequiredFulllName" xml:space="preserve">
     <value>RequiredFulllName</value>
   </data>
+  <data name="RequiredKm" xml:space="preserve">
+    <value>Required Km</value>
+  </data>
   <data name="RequiredLocationName" xml:space="preserve">
     <value>Requirement enter  the LocationName</value>
   </data>
@@ -261,17 +276,50 @@
   <data name="RequiredNumberPlate" xml:space="preserve">
     <value>Requirement enter  the NumberPlate</value>
   </data>
+  <data name="RequiredOilLevel" xml:space="preserve">
+    <value>Required Oil Level</value>
+  </data>
+  <data name="RequiredOilPrice" xml:space="preserve">
+    <value>Required Oil Price</value>
+  </data>
+  <data name="RequiredParkingPrice" xml:space="preserve">
+    <value>Required Parking Price</value>
+  </data>
   <data name="RequiredPartnerName" xml:space="preserve">
     <value>Requirement enter  the PartnerName</value>
   </data>
   <data name="RequiredPassword" xml:space="preserve">
     <value>Requirement enter the Password</value>
   </data>
+  <data name="RequiredPayContent" xml:space="preserve">
+    <value>Required Pay Content</value>
+  </data>
+  <data name="RequiredPayDate" xml:space="preserve">
+    <value>Required Pay Date</value>
+  </data>
+  <data name="RequiredPayPrice" xml:space="preserve">
+    <value>Required Pay Price</value>
+  </data>
   <data name="RequiredPlanDate" xml:space="preserve">
     <value>Please choose date</value>
   </data>
+  <data name="RequiredPrice" xml:space="preserve">
+    <value>Required Price</value>
+  </data>
   <data name="RequiredPriceCode" xml:space="preserve">
     <value>Requirement enter the Price Code</value>
+  </data>
+  <data name="RequiredRepairCategory" xml:space="preserve">
+    <value>Required Repair Category </value>
+  </data>
+  <data name="RequiredRepairContent" xml:space="preserve">
+    <value>Required Repair Content</value>
+  </data>
+  <data name="RequiredRepairDate" xml:space="preserve">
+    <value>Required Repair Date</value>
+  </data>
+  <data name="RequiredRepairPrice" xml:space="preserve">
+    <value>Required Repair Price</value>
   </data>
   <data name="RequiredRoleName" xml:space="preserve">
     <value>Requirement enter the Role Name</value>
@@ -282,11 +330,17 @@
   <data name="RequiredSourcePartner" xml:space="preserve">
     <value>Requirement enter the Source Partner</value>
   </data>
+  <data name="RequiredStartDate" xml:space="preserve">
+    <value>Required Start Date</value>
+  </data>
   <data name="RequiredStartLocation" xml:space="preserve">
     <value>Requirement enter  the StartLocation</value>
   </data>
   <data name="RequiredStartTime" xml:space="preserve">
     <value>Required Start Time</value>
+  </data>
+  <data name="RequiredSuppliedOil" xml:space="preserve">
+    <value>Required Supplied Oil</value>
   </data>
   <data name="RequiredTripCount" xml:space="preserve">
     <value>Please enter trip count</value>

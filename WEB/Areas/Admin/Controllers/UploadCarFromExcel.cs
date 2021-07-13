@@ -69,6 +69,10 @@ namespace WEB.Areas.ContentType.Controllers
                     var currentSheet = package.Workbook.Worksheets;
                     var workSheet = currentSheet.First();
                     var noOfRow = workSheet.Dimension.End.Row;
+                    var vehicles = db.Vehicle.ToList();
+                    var vehicleWeights = db.VehicleWeight.ToList();
+                    var partners = db.Partner.ToList();
+                    var carListAdd = new List<Vehicle>();
 
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
@@ -93,7 +97,7 @@ namespace WEB.Areas.ContentType.Controllers
                         var numberPlate = CastToProperty<string>(workSheet, rowIterator, 2, "Biển số xe");
                         if (numberPlate.IsSuccess)
                         {
-                            var numberPlateIsExist = db.Vehicle.Where(x => x.NumberPlate.ToUpper() == numberPlate.Value.ToUpper()).Any();
+                            var numberPlateIsExist = vehicles.Where(x => x.NumberPlate.ToUpper() == numberPlate.Value.ToUpper()).Any();
 
                             if (!numberPlateIsExist)
                             {
@@ -121,7 +125,7 @@ namespace WEB.Areas.ContentType.Controllers
                                 double weightValue;
                                 double weightValueExists;
 
-                                var weightIsExists = db.VehicleWeight.ToList();
+                                var weightIsExists = vehicleWeights;
                                 foreach (var item in weightIsExists)
                                 {
                                     var itemString = item.WeightName.Replace(".", ",");
@@ -138,7 +142,7 @@ namespace WEB.Areas.ContentType.Controllers
                                     }
                                     else
                                     {
-                                        weightIsExist = db.VehicleWeight.Where(x => x.WeightName == weight.Value).FirstOrDefault();
+                                        weightIsExist = vehicleWeights.Where(x => x.WeightName == weight.Value).FirstOrDefault();
                                     }
                                 }
 
@@ -148,19 +152,15 @@ namespace WEB.Areas.ContentType.Controllers
                                 //weightIsExist = db.VehicleWeight.Where(x => x.WeightName == weight.Value).FirstOrDefault();
                             }
 
-
-                            if (weightIsExist != null)
+                            if (weightIsExist.ID != 0)
                             {
-                                var id = weightIsExist;
-                                carInfo.WeightID = id.ID;
+                                carInfo.WeightID = weightIsExist.ID;
                             }
                             else
                             {
                                 isValid = false;
-                                AddErrorCarModels(rowIterator, 3, "Tải trọng không tồn tại");
-
+                                AddErrorCarModels(rowIterator, 3, "Tải trọng không tồn tại! Vui lòng kiểm tra lại tải trọng hoặc định dạng");
                             }
-
                         }
                         else
                         {
@@ -180,7 +180,7 @@ namespace WEB.Areas.ContentType.Controllers
                         var partner = CastToProperty<string>(workSheet, rowIterator, 5, "Đơn vị chủ quản", false);
                         if (partner.IsSuccess)
                         {
-                            var partnerIsExist = db.Partner.Where(x => x.PartnerName.ToUpper().Trim() == partner.Value.ToUpper().Trim()).FirstOrDefault();
+                            var partnerIsExist = partners.Where(x => x.PartnerName.ToUpper().Trim() == partner.Value.ToUpper().Trim()).FirstOrDefault();
                             if (partnerIsExist != null)
                             {
                                 carInfo.PartnerID = partnerIsExist.ID;
@@ -190,7 +190,6 @@ namespace WEB.Areas.ContentType.Controllers
                                 AddErrorCarModels(rowIterator, 5, "Đơn vị chủ quản không tồn tại");
                                 isValid = false;
                             }
-
                         }
                         else
                         {
@@ -201,10 +200,32 @@ namespace WEB.Areas.ContentType.Controllers
                         {
                             carInfo.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                             carInfo.CreatedDate = DateTime.Now;
-                            db.Set<Vehicle>().Add(carInfo);
-                            db.SaveChanges();
+                            carListAdd.Add(carInfo);
+                            vehicles.Add(carInfo);
                         }
                     }
+                    var checkSave = true;
+                    try
+                    {
+                        if (carListAdd.Count > 0)
+                        {
+                            carListAdd.Reverse();
+                            db.Vehicle.AddRange(carListAdd);
+                            db.SaveChanges();
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        checkSave = false;
+                    }
+
+                    if (!checkSave)
+                    {
+                        byte[] err = { 1 };
+                        return err;
+                    }
+
                     if (!ErrorCarModels.Any())
                     {
                         return null;
@@ -417,4 +438,3 @@ namespace WEB.Areas.ContentType.Controllers
         public int ColumnNumber { get; set; }
     }
 }
-

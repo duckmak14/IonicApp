@@ -64,6 +64,8 @@ namespace WEB.Areas.ContentType.Controllers
                     var currentSheet = package.Workbook.Worksheets;
                     var workSheet = currentSheet.First();
                     var noOfRow = workSheet.Dimension.End.Row;
+                    var partners = db.Partner.ToList();
+                    var partnerListAdd = new List<Partner>();
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
                         if (IsRowEmpty(workSheet, rowIterator))
@@ -77,7 +79,7 @@ namespace WEB.Areas.ContentType.Controllers
                         var partnerName = CastToProperty<string>(workSheet, rowIterator, 1, "Tên đối tác");
                         if (partnerName.IsSuccess)
                         {
-                            var partnerNameIsExist = db.Partner.Where(x => x.PartnerName == partnerName.Value).Any();
+                            var partnerNameIsExist = partners.Where(x => x.PartnerName == partnerName.Value).Any();
                             if (!partnerNameIsExist)
                             {
                                 partnerInfo.PartnerName = partnerName.Value;
@@ -123,7 +125,7 @@ namespace WEB.Areas.ContentType.Controllers
                             else
                             {
                                 partnerInfo.Email = emailPartner.Value;
-                            }    
+                            }
 
                         }
                         else
@@ -155,10 +157,33 @@ namespace WEB.Areas.ContentType.Controllers
                         {
                             partnerInfo.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                             partnerInfo.CreatedDate = DateTime.Now;
-                            db.Set<Partner>().Add(partnerInfo);
-                            db.SaveChanges();
+                            partnerListAdd.Add(partnerInfo);
+                            partners.Add(partnerInfo);
                         }
                     }
+                    var checkSave = true;
+                    try
+                    {
+                        partnerListAdd.Reverse();
+                        db.Partner.AddRange(partnerListAdd);
+                        db.SaveChanges();
+                    }
+                    catch
+                    {
+                         checkSave = false;
+                    }
+
+                    if (!checkSave)
+                    {
+                        byte[] err = { 1 };
+                        return err;
+                    }
+
+                    if (!ErrorModels.Any())
+                    {
+                        return null;
+                    }
+
                     return LogErrorsToFile(workSheet);
                 }
 
@@ -312,4 +337,3 @@ namespace WEB.Areas.ContentType.Controllers
         public int ColumnNumber { get; set; }
     }
 }
-

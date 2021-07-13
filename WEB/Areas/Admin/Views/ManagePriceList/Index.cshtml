@@ -13,6 +13,10 @@
 <script type="text/javascript">
     var rowselected = [];
     var isCheckedAll = false;
+    var rowselectedAT = [];
+    var isCheckedAllAT = false;
+    var rowselectedHPC = [];
+    var isCheckedAllHPC = false;
     //function change_handler(e) {
     //    rowselected = [];
     //    var len = this.select().length;
@@ -37,31 +41,83 @@
             e.preventDefault();
             var dataSource = $("#grid").data("kendoGrid").dataSource.data();
             var models = [];
-            if (rowselected.length > 0) {
-                for (var i = 0; i < rowselected.length; i++) {
-                    for (var j = 0; j < dataSource.length; j++) {
-                        var dataItem = dataSource[j];
+            var dataSourceAT = $("#gridAT").data("kendoGrid").dataSource.data();
+            var modelATs = [];
+            var dataSourceHPC = $("#gridHPC").data("kendoGrid").dataSource.data();
+            var modelHPCs = [];
 
-                        if (dataItem.ID == rowselected[i]) {
-                            var model = {};
+            if (rowselected.length > 0 || rowselectedAT.length > 0 || rowselectedAT.length > 0) {
 
+                if (rowselected.length > 0) {
+                    for (var i = 0; i < rowselected.length; i++) {
+                        for (var j = 0; j < dataSource.length; j++) {
+                            var dataItem = dataSource[j];
+                            if (dataItem.ID == rowselected[i]) {
+                                var model = {};
+                                model.RouteCode = dataItem.RouteCode;
+                                model.StartLocationName = dataItem.StartLocationName;
+                                model.EndLocationName = dataItem.EndLocationName;
+                                model.WeightName = dataItem.WeightName;
+                                model.Price = dataItem.Price;
+                                model.SourcePartnerName = dataItem.SourcePartnerName;
+                                model.DestinationPartnerName = dataItem.DestinationPartnerName;
+                                model.Note = dataItem.Note;
+                                model.WeightID = dataItem.WeightID;
+                                model.PartnerCode = dataItem.PartnerCode;
 
-                            model.RouteCode = dataItem.Route.RouteCode;
-                            model.StartLocationName = dataItem.Route.StartLocation.LocationName;
-                            model.EndLocationName = dataItem.Route.EndLocation.LocationName;
-                            model.WeightName = dataItem.Weight.WeightName;
-                            model.Price = dataItem.Price;
-                            model.SourcePartnerName = dataItem.SourcePartner.PartnerName;
-                            model.DestinationPartnerName = dataItem.DestinationPartner.PartnerName;
-                            model.Note = dataItem.Note;
-                            model.WeightID = dataItem.WeightID;
-
-                            model.PartnerCode = dataItem.SourcePartner.PartnerCode;
-                            models.push(model);
+                                models.push(model);
+                            }
                         }
                     }
-
                 }
+
+                if (rowselectedAT.length > 0) {
+                    for (var i = 0; i < rowselectedAT.length; i++) {
+                        for (var j = 0; j < dataSourceAT.length; j++) {
+                            var dataItemAT = dataSourceAT[j];
+                            if (dataItemAT.ID == rowselectedAT[i]) {
+                                var modelAT = {};
+                                modelAT.RouteCode = dataItemAT.RouteCode;
+                                modelAT.StartLocationName = dataItemAT.StartLocationName;
+                                modelAT.EndLocationName = dataItemAT.EndLocationName;
+                                modelAT.WeightName = dataItemAT.WeightName;
+                                modelAT.Price = dataItemAT.Price;
+                                modelAT.SourcePartnerName = dataItemAT.SourcePartnerName;
+                                modelAT.DestinationPartnerName = dataItemAT.DestinationPartnerName;
+                                modelAT.Note = dataItemAT.Note;
+                                modelAT.WeightID = dataItemAT.WeightID;
+                                modelAT.PartnerCode = dataItemAT.PartnerCode;
+
+                                models.push(modelAT);
+                            }
+                        }
+                    }
+                }
+
+                if (rowselectedHPC.length > 0) {
+                    for (var i = 0; i < rowselectedHPC.length; i++) {
+                        for (var j = 0; j < dataSourceHPC.length; j++) {
+                            var dataItemHPC = dataSourceHPC[j];
+                            if (dataItemHPC.ID == rowselectedHPC[i]) {
+                                var modelHPC = {};
+                                modelHPC.RouteCode = dataItemHPC.RouteCode;
+                                modelHPC.StartLocationName = dataItemHPC.StartLocationName;
+                                modelHPC.EndLocationName = dataItemHPC.EndLocationName;
+                                modelHPC.WeightName = dataItemHPC.WeightName;
+                                modelHPC.Price = dataItemHPC.Price;
+                                modelHPC.SourcePartnerName = dataItemHPC.SourcePartnerName;
+                                modelHPC.DestinationPartnerName = dataItemHPC.DestinationPartnerName;
+                                modelHPC.Note = dataItemHPC.Note;
+                                modelHPC.WeightID = dataItemHPC.WeightID;
+                                modelHPC.PartnerCode = dataItemHPC.PartnerCode;
+
+                                models.push(modelHPC);
+                            }
+                        }
+                    }
+                }
+
+                console.log(models);
                 var dataSubmit = JSON.stringify(models)
                 $("input[name='dataString']").val(dataSubmit);
 
@@ -101,31 +157,31 @@
                 logic: "or",
                 filters: [
                     {
-                        field: "Route.RouteCode",
+                        field: "RouteCode",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Route.StartLocation.LocationName",
+                        field: "StartLocationName",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Route.EndLocation.LocationName",
+                        field: "EndLocationName",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "Weight.WeightName",
+                        field: "WeightName",
                         operator: "contains",
                         value: value
                     },
                     {
-                        field: "SourcePartner.PartnerName",
+                        field: "SourcePartnerName",
                         operator: "contains",
                         value: value
                     }, {
-                        field: "DestinationPartner.PartnerName",
+                        field: "DestinationPartnerName",
                         operator: "contains",
                         value: value
                     },
@@ -140,6 +196,97 @@
                         value: float
                     }
 
+                ]
+            });
+
+            $("#gridAT").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "RouteCode",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "StartLocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "EndLocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "WeightName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "SourcePartnerName",
+                        operator: "contains",
+                        value: value
+                    }, {
+                        field: "DestinationPartnerName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Note",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Price",
+                        operator: "eq",
+                        value: float
+                    }
+
+                ]
+            });
+
+            $("#gridHPC").data("kendoGrid").dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "RouteCode",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "StartLocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "EndLocationName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "WeightName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "SourcePartnerName",
+                        operator: "contains",
+                        value: value
+                    }, {
+                        field: "DestinationPartnerName",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Note",
+                        operator: "contains",
+                        value: value
+                    },
+                    {
+                        field: "Price",
+                        operator: "eq",
+                        value: float
+                    }
                 ]
             });
         });
@@ -161,8 +308,44 @@
             var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
             this.tbody.html(emptyRow);
 
-            //workarounds for IE lt 9
-            this.table.width(1000);
+        }
+    };
+
+    function onDataBoundAT(e) {
+        $('#gridAT .k-grid-content').height(screen.height * 0.5);
+
+        $('input[name="checkedNodesAT"]').each(function () {
+            if (rowselectedAT.indexOf(this.value) != -1) {
+                $(this).attr('checked', 'checked');
+            } else {
+                $(this).removeAttr('checked');
+            }
+        });
+        if (this.dataSource.view().length == 0) {
+            //insert empty row
+            var colspan = this.thead.find("th").length;
+            var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
+            this.tbody.html(emptyRow);
+
+        }
+    };
+
+    function onDataBoundHPC(e) {
+        $('#gridHPC .k-grid-content').height(screen.height * 0.5);
+
+        $('input[name="checkedNodesHPC"]').each(function () {
+            if (rowselectedHPC.indexOf(this.value) != -1) {
+                $(this).attr('checked', 'checked');
+            } else {
+                $(this).removeAttr('checked');
+            }
+        });
+        if (this.dataSource.view().length == 0) {
+            //insert empty row
+            var colspan = this.thead.find("th").length;
+            var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
+            this.tbody.html(emptyRow);
+
         }
     };
 </script>
@@ -201,6 +384,7 @@
                 <p class="text-14-500 padding-text-plan-drive">Thêm</p>
             </div>
         }
+
     </div>
 </div>
 @if (roleWebModule != null && roleWebModule.View.HasValue && roleWebModule.View.Value)
@@ -209,42 +393,45 @@
         <div class="span12">
             <div class="box">
                 <div class="box-content nopadding">
-                    @(Html.Kendo().Grid<WebModels.PricingTable>()
+                    @(Html.Kendo().TabStrip()
+          .Name("tabstrip")
+          .Animation(animation =>
+              animation.Open(effect =>
+                  effect.Fade(FadeDirection.In)))
+          .Items(tabstrip =>
+          {
+              tabstrip.Add().Text("ST")
+                  .Selected(true)
+                  .Content(@<text>
+                    @(Html.Kendo().Grid<PricingTableViewModel>()
                 .Name("grid")
+                .HtmlAttributes(new { style = "padding-top:20px;" })
                 .Columns(columns =>
                 {
+
+                    columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
+                        .HtmlAttributes(new { style = "text-align:center;" })
+                        .Filterable(false)
+                        .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
                     columns.Command(command =>
                     {
                         if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
                         {
                             command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" }); ;
                         }
-                    }).HtmlAttributes(new { style = "text-align:center;" }).Width(82).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>");
-                    columns.Bound("").ClientTemplate("<input name='checkedNodes' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClick(this)'/>")
-                        .HtmlAttributes(new { style = "text-align:center;" })
-                        .Filterable(false)
-                        .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAll(event)' id='chkAll'/>").Width(70);
-                    //columns.Bound(p => p.ID).Title(Resources.Common.ID);
-                    columns.Bound(p => p.Route.RouteCode).Title(WebModels.AccountResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
-                    columns.Bound(p => p.Route.StartLocation.LocationName).Title(WebModels.AccountResources.StartLocation).Width(200);
-                    columns.Bound(p => p.Route.EndLocation.LocationName).Title(WebModels.AccountResources.EndLocation).Width(200);
-                    columns.Bound(p => p.Weight.WeightName).Title(WebModels.AccountResources.WeightName).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    }).Width(82).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>").HtmlAttributes(new { style = "text-align:center;" });
+                    columns.Bound(p => p.ID).Title(Resources.Common.ID);
+                    columns.Bound(p => p.RouteCode).Title(WebModels.AccountResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.StartLocationName).Title(WebModels.AccountResources.StartLocation).Width(200);
+                    columns.Bound(p => p.EndLocationName).Title(WebModels.AccountResources.EndLocation).Width(200);
+                    columns.Bound(p => p.WeightName).Title(WebModels.AccountResources.WeightName).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
                     columns.Bound(p => p.Price).Title(WebModels.AccountResources.Price).Format("{0:N0}+ đ").HtmlAttributes(new { style = "text-align:right;" }).Width(150);
-                    columns.Bound(p => p.SourcePartner.PartnerName).Title(WebModels.AccountResources.SourcePartner).Width(170);
-                    columns.Bound(p => p.DestinationPartner.PartnerName).Title(WebModels.AccountResources.DestinationPartner).Width(170);
+                    columns.Bound(p => p.SourcePartnerName).Title(WebModels.AccountResources.SourcePartner).Width(170);
+                    columns.Bound(p => p.DestinationPartnerName).Title(WebModels.AccountResources.DestinationPartner).Width(170);
                     columns.Bound(p => p.Note).Title(WebModels.AccountResources.Note).Width(200);
-                    columns.Bound(p => p.SourcePartner.PartnerCode).Hidden();
+                    columns.Bound(p => p.PartnerCode).Hidden();
                     columns.Bound(p => p.WeightID).Hidden();
 
-
-                })
-                .ToolBar(toolbar =>
-                {
-
-                toolbar.Template(@<text>
-                                            @*@if (roleWebModule != null && roleWebModule.Add.HasValue && roleWebModule.Add.Value) {*@
-
-                    </text>);
                 })
                 .Scrollable(s => s.Height(550))
                 .Pageable()
@@ -263,13 +450,115 @@
            )
 
                         )
+                  </text>);
+
+              tabstrip.Add().Text("AT")
+                  .Content(@<text>
+                      @(Html.Kendo().Grid<PricingTableViewModel>()
+                .Name("gridAT")
+                .HtmlAttributes(new { style = "padding-top:20px;" })
+                .Columns(columns =>
+                {
+                    columns.Bound("").ClientTemplate("<input name='checkedNodesAT' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClickAT(this)'/>")
+                       .HtmlAttributes(new { style = "text-align:center;" })
+                       .Filterable(false)
+                       .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAllAT(event)' id='chkAllAT'/>").Width(70);
+                    columns.Command(command =>
+                    {
+                        if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" }); ;
+                        }
+                    }).Width(82).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>").HtmlAttributes(new { style = "text-align:center;" });
+                    columns.Bound(p => p.ID).Title(Resources.Common.ID);
+                    columns.Bound(p => p.RouteCode).Title(WebModels.AccountResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.StartLocationName).Title(WebModels.AccountResources.StartLocation).Width(200);
+                    columns.Bound(p => p.EndLocationName).Title(WebModels.AccountResources.EndLocation).Width(200);
+                    columns.Bound(p => p.WeightName).Title(WebModels.AccountResources.WeightName).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.Price).Title(WebModels.AccountResources.Price).Format("{0:N0}+ đ").HtmlAttributes(new { style = "text-align:right;" }).Width(150);
+                    columns.Bound(p => p.SourcePartnerName).Title(WebModels.AccountResources.SourcePartner).Width(170);
+                    columns.Bound(p => p.DestinationPartnerName).Title(WebModels.AccountResources.DestinationPartner).Width(170);
+                    columns.Bound(p => p.Note).Title(WebModels.AccountResources.Note).Width(200);
+                    columns.Bound(p => p.PartnerCode).Hidden();
+                    columns.Bound(p => p.WeightID).Hidden();
+
+                })
+                .Scrollable(s => s.Height(550))
+                .Pageable()
+                .Sortable()
+                .Selectable(select => select.Mode(GridSelectionMode.Single))
+                .Filterable()
+                .Reorderable(reorder => reorder.Columns(true))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model => model.Id(p => p.ID))
+                    .PageSize(20)
+                 .Read(read => read.Action("PriceLists_Read_AT", "ManagePriceList"))
+                     .ServerOperation(false)
+                 )
+                     .Events(events => events.DataBinding("binding_handler").DataBound("onDataBoundAT")
+           )
+
+                        )
+                  </text>);
+
+
+              tabstrip.Add().Text("HPC")
+                  .Content(@<text>
+                      @(Html.Kendo().Grid<PricingTableViewModel>()
+                .Name("gridHPC")
+                .HtmlAttributes(new { style = "padding-top:20px;" })
+                .Columns(columns =>
+                {
+                    columns.Bound("").ClientTemplate("<input name='checkedNodesHPC' type='checkbox' class='k-checkbox' value='#=ID#' onclick='childNodeClickHPC(this)'/>")
+                        .HtmlAttributes(new { style = "text-align:center;" })
+                        .Filterable(false)
+                        .HeaderTemplate("<input type='checkbox' class='checked_all' onclick='checkAllHPC(event)' id='chkAllHPC'/>").Width(70);
+                    columns.Command(command =>
+                    {
+                        if (roleWebModule != null && roleWebModule.Edit.HasValue && roleWebModule.Edit.Value)
+                        {
+                            command.Custom(Resources.Common.Edit).Click("edit_handler").HtmlAttributes(new { title = "Sửa" }); ;
+                        }
+                    }).Width(82).HeaderTemplate("<image src='/Content/themes/admin/img/menu-edit.png'>").HtmlAttributes(new { style = "text-align:center;" });
+                    columns.Bound(p => p.ID).Title(Resources.Common.ID);
+                    columns.Bound(p => p.RouteCode).Title(WebModels.AccountResources.RouteCode).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.StartLocationName).Title(WebModels.AccountResources.StartLocation).Width(200);
+                    columns.Bound(p => p.EndLocationName).Title(WebModels.AccountResources.EndLocation).Width(200);
+                    columns.Bound(p => p.WeightName).Title(WebModels.AccountResources.WeightName).HtmlAttributes(new { style = "text-align:center;" }).Width(150);
+                    columns.Bound(p => p.Price).Title(WebModels.AccountResources.Price).Format("{0:N0}+ đ").HtmlAttributes(new { style = "text-align:right;" }).Width(150);
+                    columns.Bound(p => p.SourcePartnerName).Title(WebModels.AccountResources.SourcePartner).Width(170);
+                    columns.Bound(p => p.DestinationPartnerName).Title(WebModels.AccountResources.DestinationPartner).Width(170);
+                    columns.Bound(p => p.Note).Title(WebModels.AccountResources.Note).Width(200);
+                    columns.Bound(p => p.WeightID).Hidden();
+                })
+                .Scrollable(s => s.Height(550))
+                .Pageable()
+                .Sortable()
+                .Selectable(select => select.Mode(GridSelectionMode.Single))
+                .Filterable()
+                .Reorderable(reorder => reorder.Columns(true))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model => model.Id(p => p.ID))
+                    .PageSize(20)
+                 .Read(read => read.Action("PriceLists_Read_HPC", "ManagePriceList"))
+                     .ServerOperation(false)
+                 )
+                     .Events(events => events.DataBinding("binding_handler").DataBound("onDataBoundHPC")
+           )
+
+                        )
+                  </text>);
+          })
+    )
                 </div>
             </div>
         </div>
     </div>
 }
 <script>
-
+ //Check box for ST
     function getDataFilter() {
         var dataSource = $("#grid").data("kendoGrid").dataSource;
         var filters = dataSource.filter();
@@ -297,7 +586,6 @@
         }
         return check;
     }
-
     function childNodeClick(element) {
         var dataID = getCheckAll();
         var id = element.value;
@@ -329,9 +617,7 @@
             }, 100);
         });
     });
-
     function checkAll(e) {
-
         var rowItems = getDataFilter();
         isCheckedAll = $(e.target).prop('checked');
         if (isCheckedAll) {
@@ -357,6 +643,182 @@
         }
         $('input[name="checkedNodes"]').each(function () {
             $(this).prop('checked', isCheckedAll);
+        });
+    }
+
+    //Check box for AT
+    function getDataFilterAT() {
+        var dataSource = $("#gridAT").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var result = query.filter(filters).data;
+        return result;
+    }
+    function getCheckAllAT() {
+        var dataFilterID = [];
+        var dataFilter = getDataFilterAT();
+        var check;
+        for (var i = 0; i < dataFilter.length; i++) {
+            dataFilterID.push(String(dataFilter[i].ID));
+        }
+        for (var i = 0; i < dataFilterID.length; i++) {
+            var index = rowselectedAT.indexOf(dataFilterID[i]);
+            if (index != -1) {
+                check = true;
+            }
+            else {
+                check = false;
+                break;
+            }
+        }
+        return check;
+    }
+    function childNodeClickAT(element) {
+        var dataID = getCheckAllAT();
+        var id = element.value;
+        if (rowselectedAT.indexOf(id) !== -1) {
+            rowselectedAT.splice(rowselectedAT.indexOf(id), 1);
+        } else {
+            rowselectedAT.push(id);
+        }
+        isCheckedAllAT = getCheckAllAT();
+        $('#chkAllAT').prop('checked', isCheckedAllAT);
+    }
+    $(function () {
+        $(".k-filter").click(function () {
+            setTimeout(function () {
+                $(".k-filter-menu .k-button").click(function () {
+                    setTimeout(function () {
+                        rowselectedAT = [];
+                        isCheckedAllAT = getCheckAllAT();
+                        $('#chkAllAT').prop('checked', isCheckedAllAT);
+                        $('input[name="checkedNodesAT"]').each(function () {
+                            if (rowselectedAT.indexOf(this.value) != -1) {
+                                $(this).attr('checked', 'checked');
+                            } else {
+                                $(this).removeAttr('checked');
+                            }
+                        });
+                    }, 10)
+                })
+            }, 100);
+        });
+    });
+    function checkAllAT(e) {
+        var rowItems = getDataFilterAT();
+        isCheckedAllAT = $(e.target).prop('checked');
+        if (isCheckedAllAT) {
+            for (var i = 0; i < rowItems.length; i++) {
+                var index = rowselectedAT.indexOf(String(rowItems[i].ID));
+                if (index == -1) {
+                    rowselectedAT.push(String(rowItems[i].ID));
+                }
+            }
+        }
+        else if (!isCheckedAllAT) {
+            var dataFilterID = [];
+            var dataFilter = getDataFilterAT();
+            for (var i = 0; i < dataFilter.length; i++) {
+                dataFilterID.push(String(dataFilter[i].ID));
+            }
+            for (var i = 0; i < dataFilterID.length; i++) {
+                var index = rowselectedAT.indexOf(dataFilterID[i]);
+                if (index != -1) {
+                    rowselectedAT.splice(index, 1);
+                }
+            }
+        }
+        $('input[name="checkedNodesAT"]').each(function () {
+            $(this).prop('checked', isCheckedAllAT);
+        });
+    }
+
+    //Check box for HPC
+    function getDataFilterHPC() {
+        var dataSource = $("#gridHPC").data("kendoGrid").dataSource;
+        var filters = dataSource.filter();
+        var allData = dataSource.data();
+        var query = new kendo.data.Query(allData);
+        var result = query.filter(filters).data;
+        return result;
+    }
+    function getCheckAllHPC() {
+        var dataFilterID = [];
+        var dataFilter = getDataFilterHPC();
+        var check;
+        for (var i = 0; i < dataFilter.length; i++) {
+            dataFilterID.push(String(dataFilter[i].ID));
+        }
+        for (var i = 0; i < dataFilterID.length; i++) {
+            var index = rowselectedHPC.indexOf(dataFilterID[i]);
+            if (index != -1) {
+                check = true;
+            }
+            else {
+                check = false;
+                break;
+            }
+        }
+        return check;
+    }
+    function childNodeClickHPC(element) {
+        var dataID = getCheckAllHPC();
+        var id = element.value;
+        if (rowselectedHPC.indexOf(id) !== -1) {
+            rowselectedHPC.splice(rowselectedHPC.indexOf(id), 1);
+        } else {
+            rowselectedHPC.push(id);
+        }
+        isCheckedAllHPC = getCheckAllHPC();
+        $('#chkAllHPC').prop('checked', isCheckedAllHPC);
+    }
+    $(function () {
+        $(".k-filter").click(function () {
+            setTimeout(function () {
+                $(".k-filter-menu .k-button").click(function () {
+                    setTimeout(function () {
+                        rowselectedHPC = [];
+                        isCheckedAllHPC = getCheckAllHPC();
+                        $('#chkAllHPC').prop('checked', isCheckedAllHPC);
+                        $('input[name="checkedNodesHPC"]').each(function () {
+                            if (rowselectedHPC.indexOf(this.value) != -1) {
+                                $(this).attr('checked', 'checked');
+                            } else {
+                                $(this).removeAttr('checked');
+                            }
+                        });
+                    }, 10)
+                })
+            }, 100);
+        });
+    });
+    function checkAllHPC(e) {
+        var rowItems = getDataFilterHPC();
+        isCheckedAllHPC = $(e.target).prop('checked');
+        if (isCheckedAllHPC) {
+            for (var i = 0; i < rowItems.length; i++) {
+                var index = rowselectedHPC.indexOf(String(rowItems[i].ID));
+                if (index == -1) {
+                    rowselectedHPC.push(String(rowItems[i].ID));
+                }
+            }
+        }
+        else if (!isCheckedAllHPC) {
+            var dataFilterID = [];
+            var dataFilter = getDataFilterHPC();
+            for (var i = 0; i < dataFilter.length; i++) {
+                dataFilterID.push(String(dataFilter[i].ID));
+            }
+            for (var i = 0; i < dataFilterID.length; i++) {
+                var index = rowselectedHPC.indexOf(dataFilterID[i]);
+                if (index != -1) {
+                    rowselectedHPC.splice(index, 1);
+                }
+            }
+        }
+        $('input[name="checkedNodesHPC"]').each(function () {
+            $(this).prop('checked', isCheckedAllHPC);
         });
     }
 </script>

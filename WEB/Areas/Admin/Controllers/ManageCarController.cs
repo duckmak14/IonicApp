@@ -274,7 +274,17 @@ namespace WEB.Areas.Admin.Controllers
                     {
                         productWorksheet.Cells[i + 2, 1].Value = item.CarOwerName;
                         productWorksheet.Cells[i + 2, 2].Value = item.NumberPlate;
-                        productWorksheet.Cells[i + 2, 3].Value = item.WeightName;
+
+                        Double weightNumber;
+                        if (Double.TryParse(item.WeightName.Replace(".", ",").ToString(), out weightNumber))
+                        {
+                            productWorksheet.Cells[i + 2, 3].Value = weightNumber;
+                        }
+                        else
+                        {
+                            productWorksheet.Cells[i + 2, 3].Value = item.WeightName;
+                        }
+
                         productWorksheet.Cells[i + 2, 4].Value = item.Mobile;
                         productWorksheet.Cells[i + 2, 5].Value = item.PartnerName;
 
@@ -321,10 +331,18 @@ namespace WEB.Areas.Admin.Controllers
                 if (check == 1)
                 {
                     var result = new UploadCarFromExcel().UploadProducts(file, Session["UploadCarProgress"]);
+
+
                     if (result == null)
                     {
                         ViewBag.check = "Upload xe thành công!";
                         ViewBag.StartupScript = "upload_success();";
+                        return View();
+                    }
+                    else if (result.Count() == 1)
+                    {
+                        ViewBag.check = "Đã xảy ra lỗi trong quá trình lưu! Vui lòng thử lại";
+                        ViewBag.StartupScript = "hideLoading();";
                         return View();
                     }
                     else

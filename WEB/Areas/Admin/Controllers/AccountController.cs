@@ -39,7 +39,13 @@ namespace WEB.Areas.Admin.Controllers
         {
             ViewBag.Languages = this.Language;
             ViewBag.ReturnUrl = returnUrl;
-            return View();
+            LoginModel model = new LoginModel();
+            if (Request.Cookies["Login"] != null)
+            {
+                model.UserName = Request.Cookies["Login"].Values["UserName"];
+                model.Password = Request.Cookies["Login"].Values["Password"];
+            }
+            return View(model);
         }
 
         [HttpPost]
@@ -49,7 +55,19 @@ namespace WEB.Areas.Admin.Controllers
         {
             if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
-                
+                FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+                Session["UserName"] = model.UserName;
+                Session["Password"] = model.Password;
+
+                if (model.RememberMe)
+                {
+                    HttpCookie cookie = new HttpCookie("Login");
+                    cookie.Values.Add("UserName", model.UserName);
+                    cookie.Values.Add("Password", model.Password);
+                    cookie.Expires = DateTime.Now.AddDays(60);
+                    Response.Cookies.Add(cookie);
+                }
+
                 List<string> role = Roles.GetRolesForUser(model.UserName).ToList();
                 var user = db.UserProfiles.Where(x => x.UserName == model.UserName).FirstOrDefault();
                 UserInfoHelper.SetUserData(user);
@@ -62,7 +80,7 @@ namespace WEB.Areas.Admin.Controllers
                     return RedirectToLocal(returnUrl);
                 }
             }
-          
+
             ViewBag.Languages = this.Language;
             ModelState.AddModelError("", AccountResources.LoginIncorrect);
             return View(model);

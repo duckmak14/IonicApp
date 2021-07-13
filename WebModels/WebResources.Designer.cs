@@ -205,6 +205,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advance Costs.
+        /// </summary>
+        public static string AdvanceCosts {
+            get {
+                return ResourceManager.GetString("AdvanceCosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Airport code.
         /// </summary>
         public static string AirportCode {
@@ -228,6 +237,15 @@ namespace WebModels {
         public static string Amount {
             get {
                 return ResourceManager.GetString("Amount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount Oil.
+        /// </summary>
+        public static string AmountOil {
+            get {
+                return ResourceManager.GetString("AmountOil", resourceCulture);
             }
         }
         
@@ -286,6 +304,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bonus Costs.
+        /// </summary>
+        public static string BonusCosts {
+            get {
+                return ResourceManager.GetString("BonusCosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tên chủ xe.
         /// </summary>
         public static string CarOwerName {
@@ -300,6 +327,15 @@ namespace WebModels {
         public static string CarPartnerName {
             get {
                 return ResourceManager.GetString("CarPartnerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string Category {
+            get {
+                return ResourceManager.GetString("Category", resourceCulture);
             }
         }
         
@@ -394,6 +430,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string Date {
+            get {
+                return ResourceManager.GetString("Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string Delete {
@@ -439,6 +484,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DifferenceOil.
+        /// </summary>
+        public static string DifferenceOil {
+            get {
+                return ResourceManager.GetString("DifferenceOil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Distance.
         /// </summary>
         public static string Distance {
@@ -448,11 +502,38 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Distance Price.
+        /// </summary>
+        public static string DistancePrice {
+            get {
+                return ResourceManager.GetString("DistancePrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Distance Total.
+        /// </summary>
+        public static string DistanceTotal {
+            get {
+                return ResourceManager.GetString("DistanceTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DistrictName.
         /// </summary>
         public static string DistrictName {
             get {
                 return ResourceManager.GetString("DistrictName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driver.
+        /// </summary>
+        public static string DriverID {
+            get {
+                return ResourceManager.GetString("DriverID", resourceCulture);
             }
         }
         
@@ -480,6 +561,15 @@ namespace WebModels {
         public static string EmailNotValid {
             get {
                 return ResourceManager.GetString("EmailNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Date.
+        /// </summary>
+        public static string EndDate {
+            get {
+                return ResourceManager.GetString("EndDate", resourceCulture);
             }
         }
         
@@ -592,6 +682,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insurance Costs.
+        /// </summary>
+        public static string InsuranceCosts {
+            get {
+                return ResourceManager.GetString("InsuranceCosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ISO Code.
         /// </summary>
         public static string IsoCode {
@@ -606,6 +705,15 @@ namespace WebModels {
         public static string Key {
             get {
                 return ResourceManager.GetString("Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Km.
+        /// </summary>
+        public static string Km {
+            get {
+                return ResourceManager.GetString("Km", resourceCulture);
             }
         }
         
@@ -718,6 +826,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mortgage Costs.
+        /// </summary>
+        public static string MortgageCosts {
+            get {
+                return ResourceManager.GetString("MortgageCosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nationality.
         /// </summary>
         public static string Nationality {
@@ -754,6 +871,24 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Oil Level.
+        /// </summary>
+        public static string OilLevel {
+            get {
+                return ResourceManager.GetString("OilLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oil Price.
+        /// </summary>
+        public static string OilPrice {
+            get {
+                return ResourceManager.GetString("OilPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Order.
         /// </summary>
         public static string Order {
@@ -763,11 +898,29 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Other Costs.
+        /// </summary>
+        public static string OtherCosts {
+            get {
+                return ResourceManager.GetString("OtherCosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Other Name.
         /// </summary>
         public static string OtherName {
             get {
                 return ResourceManager.GetString("OtherName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other Run.
+        /// </summary>
+        public static string OtherRun {
+            get {
+                return ResourceManager.GetString("OtherRun", resourceCulture);
             }
         }
         
@@ -826,6 +979,15 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pay Content.
+        /// </summary>
+        public static string PayContent {
+            get {
+                return ResourceManager.GetString("PayContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permissions.
         /// </summary>
         public static string Permissions {
@@ -840,6 +1002,15 @@ namespace WebModels {
         public static string Phone {
             get {
                 return ResourceManager.GetString("Phone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone Costs.
+        /// </summary>
+        public static string PhoneCosts {
+            get {
+                return ResourceManager.GetString("PhoneCosts", resourceCulture);
             }
         }
         
@@ -876,6 +1047,24 @@ namespace WebModels {
         public static string PriceInfo {
             get {
                 return ResourceManager.GetString("PriceInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price Of Driver.
+        /// </summary>
+        public static string PriceOfDriver {
+            get {
+                return ResourceManager.GetString("PriceOfDriver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price Of Parking.
+        /// </summary>
+        public static string PriceOfParking {
+            get {
+                return ResourceManager.GetString("PriceOfParking", resourceCulture);
             }
         }
         
@@ -952,6 +1141,24 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repair Category .
+        /// </summary>
+        public static string RepairCategory {
+            get {
+                return ResourceManager.GetString("RepairCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repair Content .
+        /// </summary>
+        public static string RepairContent {
+            get {
+                return ResourceManager.GetString("RepairContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requirement enter the Title.
         /// </summary>
         public static string RequiredTitle {
@@ -975,6 +1182,15 @@ namespace WebModels {
         public static string RouteCode {
             get {
                 return ResourceManager.GetString("RouteCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Salary Total.
+        /// </summary>
+        public static string SalaryTotal {
+            get {
+                return ResourceManager.GetString("SalaryTotal", resourceCulture);
             }
         }
         
@@ -1011,6 +1227,15 @@ namespace WebModels {
         public static string SourcePartnerID {
             get {
                 return ResourceManager.GetString("SourcePartnerID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Date.
+        /// </summary>
+        public static string StartDate {
+            get {
+                return ResourceManager.GetString("StartDate", resourceCulture);
             }
         }
         
@@ -1078,6 +1303,33 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Supplied From Level.
+        /// </summary>
+        public static string SuppliedFromLevel {
+            get {
+                return ResourceManager.GetString("SuppliedFromLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SuppliedOil.
+        /// </summary>
+        public static string SuppliedOil {
+            get {
+                return ResourceManager.GetString("SuppliedOil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support Costs.
+        /// </summary>
+        public static string SupportCosts {
+            get {
+                return ResourceManager.GetString("SupportCosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target.
         /// </summary>
         public static string Target {
@@ -1096,11 +1348,83 @@ namespace WebModels {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total Date Ticket.
+        /// </summary>
+        public static string TotalDateTicket {
+            get {
+                return ResourceManager.GetString("TotalDateTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Driver Pay.
+        /// </summary>
+        public static string TotalDriverPay {
+            get {
+                return ResourceManager.GetString("TotalDriverPay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TotalMoney.
         /// </summary>
         public static string TotalMoney {
             get {
                 return ResourceManager.GetString("TotalMoney", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Month Ticket.
+        /// </summary>
+        public static string TotalMonthTicket {
+            get {
+                return ResourceManager.GetString("TotalMonthTicket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Oil.
+        /// </summary>
+        public static string TotalOil {
+            get {
+                return ResourceManager.GetString("TotalOil", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Parking.
+        /// </summary>
+        public static string TotalParking {
+            get {
+                return ResourceManager.GetString("TotalParking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Repair Vehicle.
+        /// </summary>
+        public static string TotalRepairVehicle {
+            get {
+                return ResourceManager.GetString("TotalRepairVehicle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Salary.
+        /// </summary>
+        public static string TotalSalary {
+            get {
+                return ResourceManager.GetString("TotalSalary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Transport Actual.
+        /// </summary>
+        public static string TotalTransportActual {
+            get {
+                return ResourceManager.GetString("TotalTransportActual", resourceCulture);
             }
         }
         
@@ -1299,6 +1623,33 @@ namespace WebModels {
         public static string WeightName {
             get {
                 return ResourceManager.GetString("WeightName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work Day.
+        /// </summary>
+        public static string WorkDay {
+            get {
+                return ResourceManager.GetString("WorkDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work Day Price.
+        /// </summary>
+        public static string WorkDayPrice {
+            get {
+                return ResourceManager.GetString("WorkDayPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work Day Total.
+        /// </summary>
+        public static string WorkDayTotal {
+            get {
+                return ResourceManager.GetString("WorkDayTotal", resourceCulture);
             }
         }
         

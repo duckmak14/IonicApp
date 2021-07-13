@@ -18,7 +18,7 @@
             @Html.LabelFor(m => m.LocationName, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div  class="controls">
             @Html.TextBoxFor(m => m.LocationName, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.LocationName)
             @Html.ValidationSummary(true)
@@ -28,7 +28,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.ParentID, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
 
             @(Html.Kendo().ComboBox()
           .Name("ParentID")
@@ -55,7 +55,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.AddressName, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.AddressName, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.AddressName)
         </div>
@@ -64,7 +64,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.Province.ProvinceName, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
 
             @(Html.Kendo().ComboBox()
                               .Name("ProvinceID")
@@ -90,7 +90,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.District.DistrictName, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
                                   .Name("DistrictID")
                                   .HtmlAttributes(new { style = "width:100%", data_value_primitive = "true" })
@@ -132,7 +132,7 @@
     </div>*@
 
 <script type="text/javascript">
-    top.winsetup("Sửa địa điểm", 600, 350, true);
+    top.winsetup("Sửa địa điểm", 600, 340, true);
     if (screen.width < 576) {
         top.winsetup("Sửa địa điểm", screen.width * 0.8, screen.height * 0.3, true);
     }

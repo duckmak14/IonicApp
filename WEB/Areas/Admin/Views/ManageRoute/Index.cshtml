@@ -114,7 +114,7 @@
     });
 
     function onDataBound(e) {
-        //$('#grid .k-grid-content').height(screen.height * 0.5);
+        $('#grid .k-grid-content').height(screen.height * 0.5);
         $('input[name="checkedNodes"]').each(function () {
             if (rowselected.indexOf(this.value) != -1) {
                 $(this).attr('checked', 'checked');
@@ -128,8 +128,6 @@
             var emptyRow = "<tr><td colspan='" + colspan + "'></td></tr>";
             this.tbody.html(emptyRow);
 
-            //workarounds for IE lt 9
-            this.table.width(1000);
         }
     };
 

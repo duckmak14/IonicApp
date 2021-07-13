@@ -11,7 +11,7 @@
             @Html.LabelFor(m => m.Percent, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Percent, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Percent)
             @Html.ValidationSummary(true)
@@ -47,6 +47,8 @@
     function change_success() {
         top.winclose();
         top.$("#grid").data("kendoGrid").dataSource.read();
+        top.$("#gridAT").data("kendoGrid").dataSource.read();
+        top.$("#gridHPC").data("kendoGrid").dataSource.read();
         window.parent.show_stack_bottom_right('success', 'Đổi giá', 'Đổi thành công.');
 
     }

@@ -1,0 +1,55 @@
+﻿@model WebModels.RepairCategory
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+@using (Html.BeginForm("Edit", "ManageRepairCategory", new { }, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-change-car" }))
+{
+    <div>
+        <div class="flex">
+            <div class="width-text-modal">
+                @Html.LabelFor(m => m.Category, new { @class = "control-label" })
+                <span class="form-obligatory">*</span>
+            </div>
+            <div class="controls">
+                @Html.TextAreaFor(m => m.Category, new { @class = "input-block-level text-area" })
+                @Html.ValidationMessageFor(m => m.Category)
+            </div>
+        </div>
+
+        <div class="row top-rows">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-4" onclick="exitWindow()">
+                <div class="exit-car-form">Hủy</div>
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+                <div>
+                    <input type="submit" class="btn text-14-700 save-change-car-form" value="Lưu">
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+}
+<script type="text/javascript">
+    //top.winsetup("Sửa xe", 600, 350, true);
+    top.winsetup("Sửa danh mục", 600, 200, true);
+    if (screen.width < 576) {
+        top.winsetup("Sửa danh mục", screen.width * 0.8, screen.height * 0.35, true);
+    }
+    function edit_success() {
+        top.$("#window").data("kendoWindow").close();
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        window.parent.show_stack_bottom_right('success', 'Sửa danh mục', 'Sửa thành công');
+
+    }
+    function exitWindow() {
+        top.$("#window").data("kendoWindow").close();
+    }
+    function setRequiredAttr(evt) {
+        if (evt.sender.dataSource.data().length < 1) {
+            evt.sender.element.removeAttr("required");
+        }
+        else {
+            evt.sender.element.attr("required", "required");
+        }
+    }
+</script>

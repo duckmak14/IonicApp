@@ -64,6 +64,9 @@ namespace WEB.Areas.ContentType.Controllers
                     var currentSheet = package.Workbook.Worksheets;
                     var workSheet = currentSheet.First();
                     var noOfRow = workSheet.Dimension.End.Row;
+                    var routes = db.Route.ToList();
+                    var locations = db.Location.ToList();
+                    var routeListAdd = new List<Route>();
 
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
@@ -78,7 +81,7 @@ namespace WEB.Areas.ContentType.Controllers
                         var routeCode = CastToProperty<string>(workSheet, rowIterator, 1, "Mã lộ trình");
                         if (routeCode.IsSuccess)
                         {
-                            var routeCodeIsExist = db.Route.Where(x => x.RouteCode == routeCode.Value).Any();
+                            var routeCodeIsExist = routes.Where(x => x.RouteCode == routeCode.Value).Any();
                             if (!routeCodeIsExist)
                             {
                                 routetInfo.RouteCode = routeCode.Value;
@@ -100,7 +103,7 @@ namespace WEB.Areas.ContentType.Controllers
 
                         if (startLocation.IsSuccess)
                         {
-                            var startLocationIsExist = db.Location.Where(x => x.LocationName == startLocation.Value).FirstOrDefault();
+                            var startLocationIsExist = locations.Where(x => x.LocationName == startLocation.Value).FirstOrDefault();
                             if (startLocationIsExist != null)
                             {
                                 routetInfo.StartLocationID = startLocationIsExist.ID;
@@ -117,9 +120,9 @@ namespace WEB.Areas.ContentType.Controllers
                         }
 
                         var endLocation = CastToProperty<string>(workSheet, rowIterator, 3, "Nơi trả");
-                        if (endLocation.IsSuccess  )
+                        if (endLocation.IsSuccess)
                         {
-                            var endLocationIsExist = db.Location.Where(x => x.LocationName == endLocation.Value).FirstOrDefault();
+                            var endLocationIsExist = locations.Where(x => x.LocationName == endLocation.Value).FirstOrDefault();
                             if (endLocationIsExist != null)
                             {
                                 routetInfo.EndLocationID = endLocationIsExist.ID;
@@ -129,7 +132,7 @@ namespace WEB.Areas.ContentType.Controllers
                             {
                                 AddErrorModels(rowIterator, 3, "Giá trị nơi trả không tồn tại");
                                 isValid = false;
-                            }    
+                            }
 
                         }
                         else
@@ -140,7 +143,18 @@ namespace WEB.Areas.ContentType.Controllers
                         var distance = CastToProperty<string>(workSheet, rowIterator, 4, "Khoảng cách", false);
                         if (distance.IsSuccess)
                         {
-                            routetInfo.Distance = distance.Value;
+                            try
+                            {
+                                var checkDpubleParse = Double.Parse(distance.Value);
+                                routetInfo.Distance = distance.Value;
+                            }
+                            catch
+                            {
+
+                                AddErrorModels(rowIterator, 4, "Vui lòng nhập đúng định dạng!");
+                                isValid = false;
+                            }
+                            
                         }
                         else
                         {
@@ -151,10 +165,31 @@ namespace WEB.Areas.ContentType.Controllers
                         {
                             routetInfo.CreatedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
                             routetInfo.CreatedDate = DateTime.Now;
-                            db.Set<Route>().Add(routetInfo);
-                            db.SaveChanges();
+                            routeListAdd.Add(routetInfo);
+                            routes.Add(routetInfo);
                         }
                     }
+                    var checkSave = true;
+                    try
+                    {
+                        if(routeListAdd.Count()>0)
+                        {
+                            routeListAdd.Reverse();
+                            db.Route.AddRange(routeListAdd);
+                            db.SaveChanges();
+                        }    
+                    }
+                    catch
+                    {
+                         checkSave = false;
+                    }
+
+                    if (!checkSave)
+                    {
+                        byte[] err = { 1 };
+                        return err;
+                    }
+
                     if (!ErrorModels.Any())
                     {
                         return null;
@@ -310,4 +345,3 @@ namespace WEB.Areas.ContentType.Controllers
         public int ColumnNumber { get; set; }
     }
 }
-

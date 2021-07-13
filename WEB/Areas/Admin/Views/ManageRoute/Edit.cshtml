@@ -11,7 +11,7 @@
             @Html.LabelFor(m => m.RouteCode, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.RouteCode, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.RouteCode)
             @Html.ValidationSummary(true)
@@ -22,7 +22,7 @@
             @Html.LabelFor(m => m.StartLocationID, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
 
             @(Html.Kendo().ComboBox()
           .Name("StartLocationID")
@@ -51,7 +51,7 @@
             @Html.LabelFor(m => m.EndLocationID, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("EndLocationID")
           .HtmlAttributes(new { style = "width:100%"})
@@ -78,7 +78,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.Distance, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Distance, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Distance)
         </div>

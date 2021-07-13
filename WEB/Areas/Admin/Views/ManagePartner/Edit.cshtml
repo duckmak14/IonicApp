@@ -10,7 +10,7 @@
             @Html.LabelFor(m => m.PartnerName, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.PartnerName, new { @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.PartnerName)
             @Html.ValidationSummary(true)
@@ -20,7 +20,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.Address, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Address, new { @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Address)
         </div>
@@ -29,7 +29,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.Email, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Email, new { @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Email)
         </div>
@@ -38,7 +38,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.Mobile, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Mobile, new { @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Mobile)
         </div>
@@ -48,7 +48,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.PartnerCode, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.PartnerCode, new { @class = "input-block-level", @readonly = true })
             @Html.ValidationMessageFor(m => m.PartnerCode)
         </div>

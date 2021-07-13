@@ -5,16 +5,11 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using System.Web.Security;
-using WEB.Areas.ContentType.Controllers;
 using WEB.Models;
-using WebMatrix.WebData;
 using WebModels;
 
 namespace WEB.Areas.Admin.Controllers
@@ -55,109 +50,76 @@ namespace WEB.Areas.Admin.Controllers
 
         public ActionResult TransportActualLists_Read([DataSourceRequest] DataSourceRequest request, string datetime, string status)
         {
-            List<TransportActualViewModel> TransportPlanList = new List<TransportActualViewModel>();
+            var enumarationList = new List<TransportActualViewModel>();
             DateTime date = DateTime.Now;
             string[] arrListStr = datetime.Split(new char[] { 't', 'o' });
             var firstDay = DateTime.Parse(arrListStr[0].Format("{0:dd-MM-yyyy}"));
             var lastDay = DateTime.Parse(arrListStr[2].Format("{0:dd-MM-yyyy}"));
-            
 
-            var planList = from a in db.TransportActuals.Where(x => firstDay <= x.ActualDate && x.ActualDate <= lastDay && x.SourcePartner.PartnerCode == "ST" && x.IsRemove != true)
-                           join b in db.Route on a.RouteID equals b.ID into group1
-                           from b in group1.DefaultIfEmpty()
-                           join c in db.VehicleWeight on a.ActualWeightID equals c.ID into group2
-                           from c in group2.DefaultIfEmpty()
-                           join d in db.Vehicle on a.VehicleID equals d.ID into group3
-                           from d in group3.DefaultIfEmpty()
-                           join e in db.Partner on a.SourcePartnerID equals e.ID into group4
-                           from e in group4.DefaultIfEmpty()
-                           join f in db.Partner on a.DestinationPartnerID equals f.ID into group5
-                           from f in group5.DefaultIfEmpty()
-                               //join d in db.VehicleWeight on a.ActualWeightID equals d.ID into group3
-                               //from d in group3.DefaultIfEmpty()
-                           select new
-                           {
-                               a.ID,
-                               a.ActualDate,
-                               a.Note,
-                               a.TripCount,
-                               a.Status,
-                               b.RouteCode,
-                               a.TrackingCode,
-                               a.CreatedDate,
-                               a.ModifiedDate,
-                               StartLocation = b.StartLocation.LocationName,
-                               EndLocation = b.EndLocation.LocationName,
-                               ActualWeight = c.WeightName,
-                               d.NumberPlate,
-                               Weight = d.VehicleWeight.WeightName,
-                               SourcePartnerName = e.PartnerName,
-                               DestinationPartnerName = f.PartnerName,
-                               SourcePartnerAddress = e.Address,
-                               SourcePartnerMobile = e.Mobile,
-                               DestinationPartnerAddress = f.Address,
-                               DestinationPartnerMobile = f.Mobile,
-                               a.UnitPrice
-                           };
+            enumarationList = (from a in db.TransportActuals.Where(x => firstDay <= x.ActualDate && x.ActualDate <= lastDay && x.SourcePartner.PartnerCode == "ST" && x.IsRemove != true)
+                               join b in db.Route on a.RouteID equals b.ID into group1
+                               from b in group1.DefaultIfEmpty()
+                               join c in db.VehicleWeight on a.ActualWeightID equals c.ID into group2
+                               from c in group2.DefaultIfEmpty()
+                               join d in db.Vehicle on a.VehicleID equals d.ID into group3
+                               from d in group3.DefaultIfEmpty()
+                               join e in db.Partner on a.SourcePartnerID equals e.ID into group4
+                               from e in group4.DefaultIfEmpty()
+                               join f in db.Partner on a.DestinationPartnerID equals f.ID into group5
+                               from f in group5.DefaultIfEmpty()
+                               select new
+                               {
+                                   a.ID,
+                                   a.ActualDate,
+                                   a.Note,
+                                   a.TripCount,
+                                   a.Status,
+                                   b.RouteCode,
+                                   a.TrackingCode,
+                                   a.CreatedDate,
+                                   a.ModifiedDate,
+                                   StartLocation = b.StartLocation.LocationName,
+                                   EndLocation = b.EndLocation.LocationName,
+                                   ActualWeight = c.WeightName,
+                                   d.NumberPlate,
+                                   Weight = d.VehicleWeight.WeightName,
+                                   SourcePartnerName = e.PartnerName,
+                                   DestinationPartnerName = f.PartnerName,
+                                   a.UnitPrice,
+                                   a.UnitPriceAT,
+                                   a.UnitPriceHPC
 
-            if (status == "false")
+                               }).AsEnumerable()
+                                        .Select(B => new TransportActualViewModel()
+                                        {
+                                            ID = B.ID,
+                                            ActualDate = B.ActualDate,
+                                            Note = B.Note,
+                                            TripCount = B.TripCount,
+                                            Status = B.Status,
+                                            RouteCode = B.RouteCode,
+                                            TrackingCode = B.TrackingCode,
+                                            CreatedDate = B.CreatedDate,
+                                            ModifiedDate = B.ModifiedDate,
+                                            StartLocationName = B.StartLocation,
+                                            EndLocationName = B.EndLocation,
+                                            ActualWeightName = B.ActualWeight,
+                                            NumberPlate = B.NumberPlate,
+                                            VehicleWeightName = B.Weight,
+                                            SourcePartnerName = B.SourcePartnerName,
+                                            DestinationPartnerName = B.DestinationPartnerName,
+                                            UnitPrice = B.UnitPrice,
+                                            UnitPriceAT = B.UnitPriceAT,
+                                            UnitPriceHPC = B.UnitPriceHPC
+
+                                        }).ToList();
+
+            if (status != "false")
             {
-                foreach (var item in planList)
-                {
-                    var plan = new TransportActualViewModel();
-                    plan.ID = item.ID;
-                    plan.Note = item.Note;
-                    plan.ActualDate = item.ActualDate;
-                    plan.TripCount = item.TripCount;
-                    plan.TrackingCode = item.TrackingCode;
-                    plan.UnitPrice = item.UnitPrice;
-                    plan.Status = item.Status;
-                    plan.CreatedDate = item.CreatedDate;
-                    plan.ModifiedDate = item.ModifiedDate;
-                    plan.Route = new Route()
-                    {
-                        RouteCode = item.RouteCode,
-                        StartLocation = new Location()
-                        {
-                            LocationName = item.StartLocation
-                        },
-                        EndLocation = new Location()
-                        {
-                            LocationName = item.EndLocation
-                        }
+                var listForMerge = new List<TransportActualViewModel>();
 
-                    };
-                    plan.Vehicle = new Vehicle()
-                    {
-                        NumberPlate = item.NumberPlate,
-                        VehicleWeight = new VehicleWeight()
-                        {
-                            WeightName = item.Weight
-                        }
-                    };
-                    plan.ActualWeight = new VehicleWeight()
-                    {
-                        WeightName = item.ActualWeight
-                    };
-                    plan.SourcePartner = new Partner()
-                    {
-                        PartnerName = item.SourcePartnerName,
-                        Address = item.SourcePartnerAddress,
-                        Mobile = item.SourcePartnerMobile
-                    };
-                    plan.DestinationPartner = new Partner()
-                    {
-                        PartnerName = item.DestinationPartnerName,
-                        Address = item.DestinationPartnerAddress,
-                        Mobile = item.DestinationPartnerMobile
-                    };
-                    TransportPlanList.Add(plan);
-                }
-            }
-            else
-            {
-                var queryPlan = from a in planList
-                                group a by new { a.NumberPlate, a.ActualDate, a.ActualWeight, a.RouteCode, a.SourcePartnerName,a.DestinationPartnerName};
+                var queryPlan = from a in enumarationList
+                                group a by new { a.NumberPlate, a.ActualDate, a.VehicleWeightName, a.ActualWeightName, a.RouteCode, a.SourcePartnerName, a.DestinationPartnerName };
 
                 foreach (var listPlan in queryPlan)
                 {
@@ -169,44 +131,18 @@ namespace WEB.Areas.Admin.Controllers
                     plan.ActualDate = listPlan.First().ActualDate;
                     plan.TrackingCode = listPlan.First().TrackingCode;
                     plan.UnitPrice = listPlan.First().UnitPrice;
+                    plan.UnitPriceAT = listPlan.First().UnitPriceAT;
+                    plan.UnitPriceHPC = listPlan.First().UnitPriceHPC;
                     plan.Status = listPlan.First().Status;
-                    plan.Route = new Route()
-                    {
-                        RouteCode = listPlan.First().RouteCode,
-                        StartLocation = new Location()
-                        {
-                            LocationName = listPlan.First().StartLocation
-                        },
-                        EndLocation = new Location()
-                        {
-                            LocationName = listPlan.First().EndLocation
-                        }
+                    plan.RouteCode = listPlan.First().RouteCode;
+                    plan.StartLocationName = listPlan.First().StartLocationName;
+                    plan.EndLocationName = listPlan.First().EndLocationName;
+                    plan.NumberPlate = listPlan.First().NumberPlate;
+                    plan.VehicleWeightName = listPlan.First().VehicleWeightName;
+                    plan.ActualWeightName = listPlan.First().ActualWeightName;
+                    plan.SourcePartnerName = listPlan.First().SourcePartnerName;
+                    plan.DestinationPartnerName = listPlan.First().DestinationPartnerName;
 
-                    };
-                    plan.Vehicle = new Vehicle()
-                    {
-                        NumberPlate = listPlan.First().NumberPlate,
-                        VehicleWeight = new VehicleWeight()
-                        {
-                            WeightName = listPlan.First().Weight
-                        }
-                    };
-                    plan.ActualWeight = new VehicleWeight()
-                    {
-                        WeightName = listPlan.First().ActualWeight
-                    };
-                    plan.SourcePartner = new Partner()
-                    {
-                        PartnerName = listPlan.First().SourcePartnerName,
-                        Address = listPlan.First().SourcePartnerAddress,
-                        Mobile = listPlan.First().SourcePartnerMobile
-                    };
-                    plan.DestinationPartner = new Partner()
-                    {
-                        PartnerName = listPlan.First().DestinationPartnerName,
-                        Address = listPlan.First().DestinationPartnerAddress,
-                        Mobile = listPlan.First().DestinationPartnerMobile
-                    };
                     Double? countforTrip = 0;
 
                     foreach (var item in listPlan)
@@ -214,14 +150,19 @@ namespace WEB.Areas.Admin.Controllers
                         countforTrip += item.TripCount;
                     }
                     plan.TripCount = countforTrip;
-                    TransportPlanList.Add(plan);
+                    listForMerge.Add(plan);
                 }
+
+                var jsonResultMerge = Json(listForMerge.OrderBy(x => x.ActualDate).ThenByDescending(x => x.CreatedDate).ToDataSourceResult(request));
+                jsonResultMerge.MaxJsonLength = int.MaxValue;
+                return jsonResultMerge;
             }
 
-            var jsonResult = Json(TransportPlanList.OrderBy(x => x.ActualDate).ThenByDescending(x => x.ModifiedDate).ThenByDescending(x => x.CreatedDate).ToDataSourceResult(request));
+            var jsonResult = Json(enumarationList.OrderBy(x => x.ActualDate).ThenByDescending(x => x.CreatedDate).ToDataSourceResult(request));
             jsonResult.MaxJsonLength = int.MaxValue;
             return jsonResult;
         }
+
         public ActionResult Add()
         {
             var model = new TransportActual();
@@ -238,7 +179,7 @@ namespace WEB.Areas.Admin.Controllers
             {
                 if (date == null)
                 {
-                    ModelState.AddModelError("", AccountResources.RequiredPlanDate);
+                    ModelState.AddModelError("CustomErrorDate", AccountResources.RequiredPlanDate);
                     return View(model);
                 }
                 if (model.TripCountViewModel == null)
@@ -367,7 +308,7 @@ namespace WEB.Areas.Admin.Controllers
 
                 if (date == null)
                 {
-                    ModelState.AddModelError("", AccountResources.RequiredPlanDate);
+                    ModelState.AddModelError("CustomErrorDate", AccountResources.RequiredPlanDate);
                     return View(model);
                 }
                 if (model.UnitPrice == null)
@@ -383,76 +324,7 @@ namespace WEB.Areas.Admin.Controllers
 
                 oldPlan.UnitPrice = model.UnitPrice;
 
-                //if(oldPlan.RouteID != model.RouteID || oldPlan.VehicleID != model.VehicleID ||
-                //        oldPlan.SourcePartnerID != model.SourcePartnerID || oldPlan.ActualWeightID != model.ActualWeightID)
-                //{
-                //    var Partner = db.Partner.ToList();
-                //    var PricingTable = db.PricingTable.ToList();
-                //    var Vehicle = db.Vehicle.ToList();
-                //    Double unitPrice = 0;
-                //    if (model.ActualWeightID != null)
-                //    {
-                //        unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, model.SourcePartnerID, PricingTable);
-                //    }
-                //    else
-                //    {
-                //        var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                //        unitPrice = CheckPrice(weightID, model.RouteID, model.SourcePartnerID, PricingTable);
-                //    }
 
-                //    if (unitPrice == 0)
-                //    {
-                //        ModelState.AddModelError("", "Không tồn tại giá!");
-                //        return View(model);
-                //    }
-                //    else
-                //    {
-                //        oldPlan.UnitPrice = unitPrice;
-                //        //check price for AT Partner
-                //        var ATId = Partner.Where(x => x.PartnerCode == "AT").Select(x => x.ID).FirstOrDefault();
-
-                //            if (model.ActualWeightID != null)
-                //            {
-                //                unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, ATId, PricingTable);
-                //            }
-                //            else
-                //            {
-                //                var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                //                unitPrice = CheckPrice(weightID, model.RouteID, ATId, PricingTable);
-                //            }
-                //        oldPlan.UnitPriceAT = unitPrice;
-
-                //        //check price for HPC Partner
-                //        var HPCId = Partner.Where(x => x.PartnerCode == "HPC").Select(x => x.ID).FirstOrDefault();
-
-                //            if (model.ActualWeightID != null)
-                //            {
-                //                unitPrice = CheckPrice(model.ActualWeightID, model.RouteID, HPCId, PricingTable);
-                //            }
-                //            else
-                //            {
-                //                var weightID = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                //                unitPrice = CheckPrice(weightID, model.RouteID, HPCId, PricingTable);
-                //            }
-                //        oldPlan.UnitPriceHPC = unitPrice;
-                //    }
-                //    if (oldPlan.RouteID != model.RouteID || oldPlan.VehicleID != model.VehicleID || oldPlan.ActualWeightID != model.ActualWeightID)
-                //    {
-                //        var routeCode = db.Route.Where(x => x.ID == model.RouteID).Select(x => x.RouteCode).FirstOrDefault();
-                //        string weightName;
-                //        if (model.ActualWeightID != null)
-                //        {
-                //            var vehicle = Vehicle.Where(x => x.ID == model.VehicleID).Select(x => x.WeightID).FirstOrDefault();
-                //            weightName = db.VehicleWeight.Where(x => x.ID == vehicle).Select(x => x.WeightName).FirstOrDefault();
-                //        }
-                //        else
-                //        {
-                //            weightName = db.VehicleWeight.Where(x => x.ID == model.ActualWeightID).Select(x => x.WeightName).FirstOrDefault();
-                //        }    
-                //        oldPlan.TrackingCode = routeCode + "-" + weightName;
-
-                //    }
-                //}
                 if (oldPlan.RouteID != model.RouteID || oldPlan.VehicleID != model.VehicleID || oldPlan.ActualWeightID != model.ActualWeightID)
                 {
                     var routeCode = db.Route.Where(x => x.ID == model.RouteID).Select(x => x.RouteCode).FirstOrDefault();
@@ -482,7 +354,83 @@ namespace WEB.Areas.Admin.Controllers
                 oldPlan.ActualDate = DateTime.Parse(date.ToString());
                 oldPlan.Note = model.Note;
                 db.SaveChanges();
-                ViewBag.StartupScript = "edit_success("+oldPlan.ID+");";
+                ViewBag.StartupScript = "edit_success(" + oldPlan.ID + ");";
+
+                return View(model);
+            }
+            else
+            {
+                return View(model);
+            }
+        }
+
+        public ActionResult EditPriceAT(int id)
+        {
+            var model = db.Set<TransportActual>().Find(id);
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+            model.TripCountViewModel = model.TripCount.ToString().Replace(',', '.');
+            return View( model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult EditPriceAT([Bind(Include = "")] TransportActual model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.UnitPriceAT == null)
+                {
+                    ModelState.AddModelError("", AccountResources.RequiredUnitPrice);
+                    return View(model);
+                }
+                
+                var oldPlan = db.TransportActuals.Where(x => x.ID == model.ID).FirstOrDefault();
+                oldPlan.UnitPriceAT = model.UnitPriceAT;
+
+                db.SaveChanges();
+                ViewBag.StartupScript = "edit_success(" + oldPlan.ID + ");";
+
+                return View(model);
+            }
+            else
+            {
+                return View(model);
+            }
+        }
+
+        public ActionResult EditPriceHPC(int id)
+        {
+            var model = db.Set<TransportActual>().Find(id);
+            if (model == null)
+            {
+                return HttpNotFound();
+            }
+            model.TripCountViewModel = model.TripCount.ToString().Replace(',', '.');
+            return View( model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult EditPriceHPC([Bind(Include = "")] TransportActual model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.UnitPriceHPC == null)
+                {
+                    ModelState.AddModelError("", AccountResources.RequiredUnitPrice);
+                    return View(model);
+                }
+
+                var oldPlan = db.TransportActuals.Where(x => x.ID == model.ID).FirstOrDefault();
+                oldPlan.UnitPriceHPC = model.UnitPriceHPC;
+
+                db.SaveChanges();
+                ViewBag.StartupScript = "edit_success(" + oldPlan.ID + ");";
 
                 return View(model);
             }
@@ -512,7 +460,7 @@ namespace WEB.Areas.Admin.Controllers
                 var dateDayNow = DateTime.Now;
                 if (date == null)
                 {
-                    ModelState.AddModelError("", AccountResources.RequiredPlanDate);
+                    ModelState.AddModelError("CustomErrorDate", AccountResources.RequiredPlanDate);
                     return View(model);
                 }
                 if (model.UnitPrice == null)
@@ -602,7 +550,7 @@ namespace WEB.Areas.Admin.Controllers
                 model.CreatedDate = DateTime.Now;
                 db.Set<TransportActual>().Add(model);
                 db.SaveChanges();
-                ViewBag.StartupScript = "create_success("+ model.ID+ ");";
+                ViewBag.StartupScript = "create_success(" + model.ID + ");";
                 return View(model);
             }
             else
@@ -638,8 +586,8 @@ namespace WEB.Areas.Admin.Controllers
             foreach (var item in temp)
             {
                 item.Status = true;
-                db.TransportActuals.Attach(item);
-                db.Entry(item).Property(a => a.Status).IsModified = true;
+                item.ModifiedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
+                item.ModifiedDate = DateTime.Now;
             }
             db.SaveChanges();
             return Json(new { ErrorMessage = string.Empty }, JsonRequestBehavior.AllowGet);
@@ -654,14 +602,14 @@ namespace WEB.Areas.Admin.Controllers
             foreach (var item in temp)
             {
                 item.Status = false;
-                db.TransportActuals.Attach(item);
-                db.Entry(item).Property(a => a.Status).IsModified = true;
+                item.ModifiedBy = WebHelpers.UserInfoHelper.GetUserData().UserId;
+                item.ModifiedDate = DateTime.Now;
             }
             db.SaveChanges();
             return Json(new { ErrorMessage = string.Empty }, JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
-        public ActionResult ExportExcel(string dataString)
+
+        public List<TransportActualExport> ConvertJson(string dataString)
         {
             List<TransportActualExport> listData = new List<TransportActualExport>();
             var dataListJson = dataString.Replace('?', '"');
@@ -684,34 +632,37 @@ namespace WEB.Areas.Admin.Controllers
                 dataObj.ActualDate = dataObj.ActualDate.ToLocalTime();
                 listData.Add(dataObj);
             }
-            var result = DownloadTransportActual(listData);
+            return listData;
+        } 
+
+        [HttpPost]
+        public ActionResult ExportExcel(string dataString, string dataStringAT, string dataStringHPC)
+        {
+            List<TransportActualExport> listDataST = new List<TransportActualExport>();
+            List<TransportActualExport> listDataAT = new List<TransportActualExport>();
+            List<TransportActualExport> listDataHPC = new List<TransportActualExport>();
+
+            if (dataString != null)
+            {
+                listDataST = ConvertJson(dataString);
+            }
+
+            if (dataStringAT != null)
+            {
+                listDataAT = ConvertJson(dataStringAT);
+            }
+
+            if (dataStringHPC != null)
+            {
+                listDataHPC = ConvertJson(dataStringHPC);
+            }
+
+            var result = DownloadTransportActual(listDataST, listDataAT, listDataHPC);
             var fileStream = new MemoryStream(result);
             return File(fileStream, "application/ms-excel", "QLBangKe.xlsx");
         }
-        public byte[] DownloadTransportActual(List<TransportActualExport> models)
+        public byte[] DownloadTransportActual(List<TransportActualExport> models, List<TransportActualExport> modelATs, List<TransportActualExport> modelHPCs)
         {
-            DateTime MaxDate = models.Max(x => x.ActualDate);
-            DateTime MinDate = models.Min(x => x.ActualDate);
-
-
-            //string sourcePartnerName = null;
-            //string sourcePartnerAddress = null;
-            //string sourcePartnerMobile = null;
-            //string destinationPartnerName = null;
-            //string destinationPartnerAddress = null;
-            //string destinationPartnerMobile = null;
-
-            //foreach (var price in models)
-            //{
-
-            //    sourcePartnerName = price.SourcePartnerName;
-            //    sourcePartnerAddress = price.SourcePartnerAddress;
-            //    sourcePartnerMobile = price.SourcePartnerMobile;
-            //    destinationPartnerName = price.DestinationPartnerName;
-            //    destinationPartnerAddress = price.DestinationPartnerAddress;
-            //    destinationPartnerMobile = price.DestinationPartnerMobile;
-            //    break;
-            //}
             ExcelPackage.LicenseContext = LicenseContext.Commercial;
             var fileinfo = new FileInfo(string.Format(@"{0}\QLBangKe.xlsx", HostingEnvironment.MapPath("/Uploads")));
 
@@ -719,135 +670,27 @@ namespace WEB.Areas.Admin.Controllers
             {
                 using (var p = new ExcelPackage(fileinfo))
                 {
-                    var productWorksheet = p.Workbook.Worksheets[0];
-                    productWorksheet.Select();
-                    //info sourcePartner
-                    //productWorksheet.Cells["A1:D1"].Merge = true;
-                    //productWorksheet.Cells[1, 1].Value = sourcePartnerName;
-                    //productWorksheet.Cells[1, 1].Style.Font.Bold = true;
-                    //productWorksheet.Cells["A2:D2"].Merge = true;
-                    //productWorksheet.Cells[2, 1].Value = sourcePartnerAddress;
-                    //productWorksheet.Cells[2, 1].Style.Font.Bold = true;
-                    //productWorksheet.Cells["A3:D3"].Merge = true;
-                    //productWorksheet.Cells[3, 1].Value = sourcePartnerMobile;
-                    //productWorksheet.Cells[3, 1].Style.Font.Bold = true;
-
-                    //time
-                    var dateNow = DateTime.Now;
-                    productWorksheet.Cells["J2:M2"].Merge = true;
-                    productWorksheet.Cells[2, 10].Value = "Hà Nội, ngày " + dateNow.Day.ToString() + " tháng " + dateNow.Month.ToString() + " năm " + dateNow.Year.ToString();
-
-                    //max and min time
-                    productWorksheet.Cells["A6:N6"].Merge = true;
-                    if (MaxDate == MinDate)
+                    if(models.Count()>0)
                     {
-                        productWorksheet.Cells[6, 1].Value = "Ngày " + MaxDate.Day + "/" + MaxDate.Month + "/" + MaxDate.Year;
-
+                        var productWorksheet = p.Workbook.Worksheets[0];
+                        productWorksheet.Select();
+                        AddContentExcel(productWorksheet,models,"ST");
                     }
-                    else
+
+                    if (modelATs.Count() > 0)
                     {
-                        productWorksheet.Cells[6, 1].Value = "Từ ngày " + MinDate.Day + "/" + MinDate.Month + "/" + MinDate.Year + " đến " + MaxDate.Day + "/" + MaxDate.Month + "/" + MaxDate.Year;
+                        var productWorksheet = p.Workbook.Worksheets[1];
+                        productWorksheet.Select();
+                        AddContentExcel(productWorksheet,modelATs,"AT");
                     }
-                    productWorksheet.Cells[6, 1].Style.Font.Bold = true;
-                    productWorksheet.Cells[6, 1].Style.Font.Italic = true;
-                    //productWorksheet.Cells[6, 1].Style.HorizontalAlignment = (OfficeOpenXml.Style.ExcelHorizontalAlignment)Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignCenter;
 
-                    ////info DestinationPartner
-                    //productWorksheet.Cells["B7:F7"].Merge = true;
-                    //productWorksheet.Cells[7, 2].Value = "Khách hàng: " + destinationPartnerName;
-                    //productWorksheet.Cells["B8:F8"].Merge = true;
-                    //productWorksheet.Cells[8, 2].Value = "Địa chỉ: " + destinationPartnerAddress;
-                    //productWorksheet.Cells["B9:F9"].Merge = true;
-                    //productWorksheet.Cells[9, 2].Value = "Số điện thoại: " + destinationPartnerMobile;
-
-                    int i = 14;
-                    int stt = 1;
-                    Double sumTotal = 0;
-                    foreach (var price in models)
+                    if (modelHPCs.Count() > 0)
                     {
-                        productWorksheet.Cells[i, 1].Value = stt;
-                        productWorksheet.Cells[i, 2].Value = price.ActualDate;
-                        productWorksheet.Cells[i, 3].Value = price.TrackingCode;
-                        productWorksheet.Cells[i, 4].Value = price.NumberPlate;
-                        productWorksheet.Cells[i, 5].Value = price.TripCount;
-                        productWorksheet.Cells[i, 6].Value = price.StartLocationName;
-                        productWorksheet.Cells[i, 7].Value = price.EndLocationName;
-                        productWorksheet.Cells[i, 8].Value = price.NumberPlate;
-
-                        Double weightNumber;
-                        if (price.ActualWeightName == null)
-                        {
-                            if(Double.TryParse(price.VehicleWeightName.Replace(".",",").ToString(), out weightNumber))
-                            {
-                                productWorksheet.Cells[i, 9].Value = weightNumber;
-                            }  
-                            else
-                            {
-                                productWorksheet.Cells[i, 9].Value = price.VehicleWeightName;
-                            }
-                        }
-                        else
-                        {
-                            if (Double.TryParse(price.ActualWeightName.Replace(".", ",").ToString(), out weightNumber))
-                            {
-                                productWorksheet.Cells[i, 9].Value = weightNumber;
-                            }
-                            else
-                            {
-                                productWorksheet.Cells[i, 9].Value = price.ActualWeightName;
-                            }
-
-                        }
-
-                        productWorksheet.Cells[i, 10].Value = " '' ";
-                        productWorksheet.Cells[i, 11].Value = price.TripCount;
-                        //productWorksheet.Cells[i, 11].Value = price.SourcePartnerName;
-                        //productWorksheet.Cells[i, 12].Value = price.DestinationPartnerName;
-                        productWorksheet.Cells[i, 12].Value = price.UnitPrice;
-                        productWorksheet.Cells[i, 12].Style.Numberformat.Format = "#,##0";
-                        productWorksheet.Cells[i, 13].Value = price.TotalMoney;
-                       
-                        productWorksheet.Cells[i, 13].Formula = " = ROUND((K" + (i).ToString() + "* L" + i.ToString()+"), -3)";
-                        productWorksheet.Cells[i, 13].Style.Numberformat.Format = "#,##0";
-                        productWorksheet.Cells[i, 14].Value = price.Note;
-                        i++;
-                        stt++;
-                        sumTotal = (double)(sumTotal + price.TotalMoney);
+                        var productWorksheet = p.Workbook.Worksheets[2];
+                        productWorksheet.Select();
+                        AddContentExcel(productWorksheet,modelHPCs,"HPC");
                     }
-                    ////sumtotal
-                    productWorksheet.Cells["A" + i + ":C" + i].Merge = true;
-                    productWorksheet.Cells[i, 1].Value = "Tổng cộng:";
-                    productWorksheet.Cells[i, 1].Style.Font.Bold = true;
-                    productWorksheet.Cells[i, 13].Formula = "= SUBTOTAL(9,M14:M" + (i - 1).ToString() + ")";
-                    productWorksheet.Cells[i, 13].Style.Numberformat.Format = "#,##0";
-                    productWorksheet.Cells[i, 13].Style.Font.Bold = true;
 
-                    productWorksheet.Cells["A" + (i + 1) + ":C" + (i + 1)].Merge = true;
-                    productWorksheet.Cells[(i + 1), 1].Value = "Thuế VAT 10%";
-                    productWorksheet.Cells[(i + 1), 1].Style.Font.Bold = true;
-                    productWorksheet.Cells[(i + 1), 13].Formula = " = ROUND((M" + (i).ToString() + "*0.1), 0)";
-                    productWorksheet.Cells[(i + 1), 13].Style.Numberformat.Format = "#,##0";
-                    productWorksheet.Cells[(i + 1), 13].Style.Font.Bold = true;
-
-
-                    productWorksheet.Cells["A" + (i + 2) + ":C" + (i + 2)].Merge = true;
-                    productWorksheet.Cells[(i + 2), 1].Value = "Tổng thanh toán:";
-                    productWorksheet.Cells[(i + 2), 1].Style.Font.Bold = true;
-                    productWorksheet.Cells[(i + 2), 13].Formula = "= M" + (i).ToString() + "+ M" + (i + 1).ToString();
-                    productWorksheet.Cells[(i + 2), 13].Style.Numberformat.Format = "#,##0";
-                    productWorksheet.Cells[(i + 2), 13].Style.Font.Bold = true;
-
-                    var test = "A13:M" + (i - 1).ToString();
-                    var range = productWorksheet.Cells[test.ToString()];
-                    range.AutoFilter = true;
-
-
-                    string test1 = "A14:N" + (i + 2).ToString();
-                    var modelTable = productWorksheet.Cells[test1];
-                    modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                    modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                    modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                    modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     return p.GetAsByteArray();
                 }
             }
@@ -856,6 +699,134 @@ namespace WEB.Areas.Admin.Controllers
                 return null;
             }
         }
+
+        public void AddContentExcel(ExcelWorksheet productWorksheet, List<TransportActualExport> models, string sourcePartner)
+        {
+            //time
+            var dateNow = DateTime.Now;
+            productWorksheet.Cells["J2:M2"].Merge = true;
+            productWorksheet.Cells[2, 10].Value = "Hà Nội, ngày " + dateNow.Day.ToString() + " tháng " + dateNow.Month.ToString() + " năm " + dateNow.Year.ToString();
+
+            DateTime MaxDate = models.Max(x => x.ActualDate);
+            DateTime MinDate = models.Min(x => x.ActualDate);
+            //max and min time
+            productWorksheet.Cells["A6:N6"].Merge = true;
+            if (MaxDate == MinDate)
+            {
+                productWorksheet.Cells[6, 1].Value = "Ngày " + MaxDate.Day + "/" + MaxDate.Month + "/" + MaxDate.Year;
+
+            }
+            else
+            {
+                productWorksheet.Cells[6, 1].Value = "Từ ngày " + MinDate.Day + "/" + MinDate.Month + "/" + MinDate.Year + " đến " + MaxDate.Day + "/" + MaxDate.Month + "/" + MaxDate.Year;
+            }
+            productWorksheet.Cells[6, 1].Style.Font.Bold = true;
+            productWorksheet.Cells[6, 1].Style.Font.Italic = true;
+
+
+            int i = 14;
+            int stt = 1;
+            Double sumTotal = 0;
+            foreach (var price in models)
+            {
+                productWorksheet.Cells[i, 1].Value = stt;
+                productWorksheet.Cells[i, 2].Value = price.ActualDate;
+                productWorksheet.Cells[i, 3].Value = price.TrackingCode;
+                productWorksheet.Cells[i, 4].Value = price.NumberPlate;
+                productWorksheet.Cells[i, 5].Value = price.TripCount;
+                productWorksheet.Cells[i, 6].Value = price.StartLocationName;
+                productWorksheet.Cells[i, 7].Value = price.EndLocationName;
+                productWorksheet.Cells[i, 8].Value = price.NumberPlate;
+
+                Double weightNumber;
+                if (price.ActualWeightName == null)
+                {
+                    if (Double.TryParse(price.VehicleWeightName.Replace(".", ",").ToString(), out weightNumber))
+                    {
+                        productWorksheet.Cells[i, 9].Value = weightNumber;
+                    }
+                    else
+                    {
+                        productWorksheet.Cells[i, 9].Value = price.VehicleWeightName;
+                    }
+                }
+                else
+                {
+                    if (Double.TryParse(price.ActualWeightName.Replace(".", ",").ToString(), out weightNumber))
+                    {
+                        productWorksheet.Cells[i, 9].Value = weightNumber;
+                    }
+                    else
+                    {
+                        productWorksheet.Cells[i, 9].Value = price.ActualWeightName;
+                    }
+
+                }
+
+                productWorksheet.Cells[i, 10].Value = " '' ";
+                productWorksheet.Cells[i, 11].Value = price.TripCount;
+                if(sourcePartner == "ST")
+                {
+                    productWorksheet.Cells[i, 12].Value = price.UnitPrice;
+                    productWorksheet.Cells[i, 12].Style.Numberformat.Format = "#,##0";
+                    productWorksheet.Cells[i, 13].Value = price.TotalMoney;
+                }
+                else if (sourcePartner == "AT")
+                {
+                    productWorksheet.Cells[i, 12].Value = price.UnitPriceAT;
+                    productWorksheet.Cells[i, 12].Style.Numberformat.Format = "#,##0";
+                    productWorksheet.Cells[i, 13].Value = price.TotalMoneyAT;
+                }
+                else
+                {
+                    productWorksheet.Cells[i, 12].Value = price.UnitPriceHPC;
+                    productWorksheet.Cells[i, 12].Style.Numberformat.Format = "#,##0";
+                    productWorksheet.Cells[i, 13].Value = price.TotalMoneyHPC;
+                }
+
+                productWorksheet.Cells[i, 13].Formula = " = ROUND((K" + (i).ToString() + "* L" + i.ToString() + "), -3)";
+                productWorksheet.Cells[i, 13].Style.Numberformat.Format = "#,##0";
+                productWorksheet.Cells[i, 14].Value = price.Note;
+                i++;
+                stt++;
+                sumTotal = (double)(sumTotal + price.TotalMoney);
+            }
+
+            ////sumtotal
+            productWorksheet.Cells["A" + i + ":C" + i].Merge = true;
+            productWorksheet.Cells[i, 1].Value = "Tổng cộng:";
+            productWorksheet.Cells[i, 1].Style.Font.Bold = true;
+            productWorksheet.Cells[i, 13].Formula = "= SUBTOTAL(9,M14:M" + (i - 1).ToString() + ")";
+            productWorksheet.Cells[i, 13].Style.Numberformat.Format = "#,##0";
+            productWorksheet.Cells[i, 13].Style.Font.Bold = true;
+
+            productWorksheet.Cells["A" + (i + 1) + ":C" + (i + 1)].Merge = true;
+            productWorksheet.Cells[(i + 1), 1].Value = "Thuế VAT 10%";
+            productWorksheet.Cells[(i + 1), 1].Style.Font.Bold = true;
+            productWorksheet.Cells[(i + 1), 13].Formula = " = ROUND((M" + (i).ToString() + "*0.1), 0)";
+            productWorksheet.Cells[(i + 1), 13].Style.Numberformat.Format = "#,##0";
+            productWorksheet.Cells[(i + 1), 13].Style.Font.Bold = true;
+
+
+            productWorksheet.Cells["A" + (i + 2) + ":C" + (i + 2)].Merge = true;
+            productWorksheet.Cells[(i + 2), 1].Value = "Tổng thanh toán:";
+            productWorksheet.Cells[(i + 2), 1].Style.Font.Bold = true;
+            productWorksheet.Cells[(i + 2), 13].Formula = "= M" + (i).ToString() + "+ M" + (i + 1).ToString();
+            productWorksheet.Cells[(i + 2), 13].Style.Numberformat.Format = "#,##0";
+            productWorksheet.Cells[(i + 2), 13].Style.Font.Bold = true;
+
+            var test = "A13:M" + (i + 2).ToString();
+            var range = productWorksheet.Cells[test.ToString()];
+            range.AutoFilter = true;
+
+            string test1 = "A14:N" + (i + 2).ToString();
+            var modelTable = productWorksheet.Cells[test1];
+            modelTable.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            modelTable.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            modelTable.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            modelTable.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public ActionResult CheckPartner(GetSelected model)

@@ -10,7 +10,7 @@
             @Html.LabelFor(m => m.PlanDate, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().DatePicker()
                     .Name("date") // The name of the DatePicker is mandatory. It specifies the "id" attribute of the widget.
                     .Min(new DateTime(1900, 1, 1)) // Sets the min date of the DatePicker.
@@ -20,7 +20,7 @@
     )
             <br />
             @Html.ValidationMessageFor(m => m.PlanDate)
-
+            @Html.ValidationMessage("CustomErrorDate", new { @class = "field-validation-timer" })
         </div>
     </div>
 
@@ -29,7 +29,7 @@
             @Html.LabelFor(m => m.StartTime, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().TimePicker()
           .Name("start")
           .Events(e => e.Change("startChange"))
@@ -48,7 +48,7 @@
             @Html.LabelFor(m => m.EndTime, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().TimePicker()
           .Name("end")
           //.Interval(15)
@@ -57,6 +57,7 @@
     )
             <br />
             @Html.ValidationMessage("CustomError", new { @class = "field-validation-timer" })
+
 
         </div>
     </div>
@@ -67,7 +68,7 @@
             @Html.LabelFor(m => m.StartLocationID, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
 
             @(Html.Kendo().ComboBox()
           .Name("StartLocationID")
@@ -90,7 +91,8 @@
           })
     )
             <br />
-            @Html.ValidationMessage("CustomErrorStart",new { @class = "field-validation-timer" })
+            @Html.ValidationMessage("CustomErrorStart", new { @class = "field-validation-timer" })
+            @Html.ValidationMessageFor(m => m.StartLocationID)
 
 
         </div>
@@ -101,7 +103,7 @@
             @Html.LabelFor(m => m.EndLocationID, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("EndLocationID")
           .HtmlAttributes(new { style = "width:100%"})
@@ -126,7 +128,8 @@
           .CascadeFrom("StartLocationID")
     )
             <br />
-            @Html.ValidationMessage("CustomErrorEnd",new { @class = "field-validation-timer" })
+            @Html.ValidationMessage("CustomErrorEnd", new { @class = "field-validation-timer custom-error" })
+            @Html.ValidationMessageFor(m => m.EndLocationID)
 
         </div>
     </div>
@@ -135,9 +138,11 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.RouteID, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             <input type="text" id="routeID" value="" class="input-block-level" readonly />
             @Html.ValidationMessage("CustomErrorRoute", new { @class = "field-validation-timer" })
+            @Html.ValidationMessageFor(m => m.RouteID)
+
         </div>
     </div>
 
@@ -145,13 +150,14 @@
         <div class="width-text-modal">
             @Html.Label(WebModels.WebResources.ActualWeight, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("ActualWeightID")
           .HtmlAttributes(new { style = "width:100%" })
           .Placeholder("Chọn tải trọng chạy...")
           .DataTextField("WeightName")
           .DataValueField("ID")
+          .Filter(FilterType.Contains)
           .DataSource(source =>
           {
               source.Read(read =>
@@ -173,7 +179,7 @@
             @Html.Label("Biển số xe", new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("VehicleID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -199,13 +205,14 @@
             @Html.Label("Nhà thầu", new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("SourcePartnerID")
           .HtmlAttributes(new { style = "width:100%" })
           .Placeholder("Chọn nhà thầu...")
           .DataTextField("PartnerName")
           .DataValueField("ID")
+          .Filter(FilterType.Contains)
           .DataSource(source =>
           {
               source.Read(read =>
@@ -227,7 +234,7 @@
             <span class="form-obligatory">*</span>
 
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("DestinationPartnerID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -257,7 +264,7 @@
         <div class="width-text-modal">
             @Html.Label(WebModels.WebResources.TripBack, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.TripBack, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessage("CustomErrorTripBack", new { @class = "field-validation-timer" })
         </div>
@@ -267,7 +274,7 @@
         <div class="width-text-modal">
             @Html.Label(WebModels.WebResources.DetailCode, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.DetailCode, new { type = "text", name = "BKS", @class = "input-block-level" })
 
         </div>
@@ -277,17 +284,17 @@
         <div class="width-text-modal">
             @Html.Label(WebModels.WebResources.Amount, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Amount, new { type = "text", name = "BKS", @class = "input-block-level" })
         </div>
     </div>
 
     <div class="flex">
         <div class="width-text-modal">
-            @Html.Label(WebModels.AccountResources.Note, new { @class = "control-label" })
+            @Html.Label(WebModels.AccountResources.Note, new { @class = "control-label " })
         </div>
-        <div>
-            @Html.TextBoxFor(m => m.Note, new { type = "text", name = "BKS", @class = "input-block-level" })
+        <div class="controls">
+            @Html.TextAreaFor(m => m.Note, new { type = "text", name = "BKS", @class = "input-block-level text-area" })
             @Html.ValidationMessageFor(m => m.Note)
             @Html.ValidationSummary(true)
         </div>

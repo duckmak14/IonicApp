@@ -1,0 +1,96 @@
+﻿@model RepairVehicle
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutEmpty.cshtml";
+}
+
+@using (Html.BeginForm("UploadExcel", "ManageMonthTicket", FormMethod.Post, new { enctype = "multipart/form-data", @id = "uploadExcel" }))
+{
+    <div>
+        <p class="red-text custom-warn-upload">- Việc thực hiện có thể mất thời gian vui lòng đợi trong giây lát!</p>
+    </div>
+    <div class="control-group lh-20">
+        Lựa chọn file để upload:
+        <input class="file-image" name="image" type="file" />
+    </div>
+    <p class="control-group red-text">@ViewBag.check</p>
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit" name="submit" value="Upload" onclick="showLoading()"><i class="icon-save"></i>Nhập</button>
+        <button class="btn btn-primary" type="submit" name="submit" value="Download"><i class="icon-download-alt"></i>Tải file mẫu</button>
+    </div>
+}
+
+<div class="loader" style="display:none"></div>
+
+@using (Html.BeginForm("DeleteFile", "ManageMonthTicket", FormMethod.Post, new { @id = "delete", enctype = "multipart/form-data", @class = "form-horizontal fix" }))
+{
+    @Html.HiddenFor(m => m.dataString)
+
+    <input id="deleteFile" type="submit" style="display: none; ">
+
+}
+
+<script>
+  function downLoadFile() {
+        $("div[class='loader']").hide();
+        $("#uploadExcel").css("filter", "contrast(100%)");
+        var url = top.window.location.href;
+        if (url.toLowerCase().includes("monthdetail")) {
+            top.$("#grid").data("kendoGrid").dataSource.read();
+        }
+
+        $("input[name='dataString']").val('@ViewBag.pathFileName');
+        $("#deleteFile").click();
+
+    };
+
+    $('.file-image').change(function (e) {
+        var files = this.files;
+        if (files.length > 0) {
+            var i = 0;
+            var reader = new FileReader();
+            reader.readAsDataURL(files[i]);
+            reader.onloadend = function (e) {
+                var result = e.target.result;
+                if (result != null) {
+                }
+            }
+        }
+    });
+
+
+    function showLoading() {
+        $("div[class='loader']").show();
+        $("#uploadExcel").css("filter", "contrast(60%)");
+    }
+
+    function hideLoading() {
+        top.$("#grid").data("kendoGrid").dataSource.read();
+        $("div[class='loader']").hide();
+        $("#uploadExcel").css("filter", "contrast(100%)");
+    }
+
+    function upload_success() {
+        $("div[class='loader']").hide();
+        top.$("#window").data("kendoWindow").close();
+        var url = top.window.location.href;
+        var subString = url.substring(url.length - 10, url.length - 1);
+        if (subString.toLowerCase() == "monthdetail") {
+            top.$("#grid").data("kendoGrid").dataSource.read();
+        }
+        else {
+            top.window.location.reload();
+        }
+        window.parent.show_stack_bottom_right('success', 'Upload file', 'Upload thành công.');
+
+    }
+
+    $(document).ready(function () {
+
+        top.winsetup("Upload file", 500, 160, true);
+        if (screen.width < 576) {
+            top.winsetup("Upload file", screen.width * 0.8, screen.height * 0.24, true);
+        }
+
+    });
+
+</script>    

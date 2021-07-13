@@ -537,4 +537,121 @@
   <data name="TripBack" xml:space="preserve">
     <value>Chiều về</value>
   </data>
+  <data name="Date" xml:space="preserve">
+    <value>Ngày tháng</value>
+  </data>
+  <data name="PriceOfDriver" xml:space="preserve">
+    <value>Số tiền </value>
+  </data>
+  <data name="RepairCategory" xml:space="preserve">
+    <value>Danh mục sửa chữa</value>
+  </data>
+  <data name="RepairContent" xml:space="preserve">
+    <value>Nội dung sửa chữa</value>
+  </data>
+  <data name="PayContent" xml:space="preserve">
+    <value>Nội dung chi</value>
+  </data>
+  <data name="EndDate" xml:space="preserve">
+    <value>Ngày kết thúc</value>
+  </data>
+  <data name="OilPrice" xml:space="preserve">
+    <value>Giá dầu</value>
+  </data>
+  <data name="StartDate" xml:space="preserve">
+    <value>Ngày bắt đầu</value>
+  </data>
+  <data name="DriverID" xml:space="preserve">
+    <value>Lái xe</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Danh mục</value>
+  </data>
+  <data name="AmountOil" xml:space="preserve">
+    <value>Số lít còn lại</value>
+  </data>
+  <data name="DifferenceOil" xml:space="preserve">
+    <value>Còn được thanh toán</value>
+  </data>
+  <data name="Km" xml:space="preserve">
+    <value>Km</value>
+  </data>
+  <data name="OilLevel" xml:space="preserve">
+    <value>Định mức dầu</value>
+  </data>
+  <data name="OtherRun" xml:space="preserve">
+    <value>Chạy thay</value>
+  </data>
+  <data name="SuppliedFromLevel" xml:space="preserve">
+    <value>Được cấp theo định mức</value>
+  </data>
+  <data name="SuppliedOil" xml:space="preserve">
+    <value>Đã cấp</value>
+  </data>
+  <data name="BonusCosts" xml:space="preserve">
+    <value>Thưởng</value>
+  </data>
+  <data name="DistancePrice" xml:space="preserve">
+    <value>Đơn giá Km</value>
+  </data>
+  <data name="DistanceTotal" xml:space="preserve">
+    <value>Thành tiền Km</value>
+  </data>
+  <data name="InsuranceCosts" xml:space="preserve">
+    <value>Trừ BHXH</value>
+  </data>
+  <data name="PhoneCosts" xml:space="preserve">
+    <value>Hỗ trợ cước ĐT</value>
+  </data>
+  <data name="SalaryTotal" xml:space="preserve">
+    <value>Tổng lương,thưởng</value>
+  </data>
+  <data name="SupportCosts" xml:space="preserve">
+    <value>Hỗ trợ</value>
+  </data>
+  <data name="WorkDay" xml:space="preserve">
+    <value>Ngày công</value>
+  </data>
+  <data name="WorkDayPrice" xml:space="preserve">
+    <value>Đơn giá ngày công</value>
+  </data>
+  <data name="WorkDayTotal" xml:space="preserve">
+    <value>Thành tiền ngày công</value>
+  </data>
+  <data name="AdvanceCosts" xml:space="preserve">
+    <value>Hoàn tạm ứng</value>
+  </data>
+  <data name="MortgageCosts" xml:space="preserve">
+    <value>Đóng thế chấp NQ</value>
+  </data>
+  <data name="OtherCosts" xml:space="preserve">
+    <value>Khác</value>
+  </data>
+  <data name="TotalDriverPay" xml:space="preserve">
+    <value>Lái xe chi</value>
+  </data>
+  <data name="TotalOil" xml:space="preserve">
+    <value>Dầu thừa</value>
+  </data>
+  <data name="TotalSalary" xml:space="preserve">
+    <value>Lương</value>
+  </data>
+  <data name="PriceOfParking" xml:space="preserve">
+    <value>Chi phí gửi xe</value>
+  </data>
+  <data name="TotalDateTicket" xml:space="preserve">
+    <value>Vé lượt</value>
+  </data>
+  <data name="TotalMonthTicket" xml:space="preserve">
+    <value>Vé tháng</value>
+  </data>
+  <data name="TotalParking" xml:space="preserve">
+    <value>Gửi xe</value>
+  </data>
+  <data name="TotalTransportActual" xml:space="preserve">
+    <value>Doanh thu</value>
+  </data>
+  <data name="TotalRepairVehicle" xml:space="preserve">
+    <value>Sửa chữa</value>
+  </data>
 </root>

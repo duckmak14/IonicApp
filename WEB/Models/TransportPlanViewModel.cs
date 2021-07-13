@@ -35,5 +35,27 @@ namespace WEB.Models
                 return date;
             }
         }
+
+        public string StatusString
+        {
+            get
+            {
+                string status = "Chưa chạy";
+                if (Status == true)
+                {
+                    status = "Hoàn thành";
+                }
+                return status;
+            }
+        }
+        public string RouteCode { get; set; }
+        public string VehicleWeightName { get; set; }
+        public string CarOwerName { get; set; }
+        public string NumberPlate { get; set; }
+        public string SourcePartnerName { get; set; }
+        public string DestinationPartnerName { get; set; }
+        public string ActualWeightName { get; set; }
+        public string StartLocationName { get; set; }
+        public string EndLocationName { get; set; }
     }
 }

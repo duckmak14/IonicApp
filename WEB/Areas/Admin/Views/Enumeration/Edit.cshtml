@@ -15,7 +15,7 @@
                 @Html.LabelFor(m => m.ActualDate, new { @class = "control-label" })
                 <span class="form-obligatory">*</span>
             </div>
-            <div>
+            <div class="controls">
                 @(Html.Kendo().DatePicker()
                     .Name("date") // The name of the DatePicker is mandatory. It specifies the "id" attribute of the widget.
                     .Min(new DateTime(1900, 1, 1)) // Sets the min date of the DatePicker.
@@ -27,6 +27,7 @@
     )
                 <br />
                 @Html.ValidationMessageFor(m => m.ActualDate)
+                @Html.ValidationMessage("CustomErrorDate", new { @class = "field-validation-timer" })
 
             </div>
         </div>
@@ -36,7 +37,7 @@
                 <span class="form-obligatory">*</span>
 
             </div>
-            <div>
+            <div class="controls">
                 @(Html.Kendo().ComboBox()
           .Name("RouteID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -62,7 +63,7 @@
             <div class="width-text-modal">
                 @Html.Label(WebModels.WebResources.ActualWeight, new { @class = "control-label" })
             </div>
-            <div>
+            <div class="controls">
                 @(Html.Kendo().ComboBox()
           .Name("ActualWeightID")
 
@@ -95,7 +96,7 @@
                 <span class="form-obligatory">*</span>
 
             </div>
-            <div>
+            <div class="controls">
                 @(Html.Kendo().ComboBox()
           .Name("VehicleID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -122,7 +123,7 @@
                 <span class="form-obligatory">*</span>
 
             </div>
-            <div>
+            <div class="controls">
                 @(Html.Kendo().ComboBox()
           .Name("SourcePartnerID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -150,7 +151,7 @@
                 <span class="form-obligatory">*</span>
 
             </div>
-            <div>
+            <div class="controls">
                 @(Html.Kendo().ComboBox()
           .Name("DestinationPartnerID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -180,7 +181,7 @@
                 @Html.Label(WebModels.WebResources.TripCount, new { @class = "control-label" })
                 <span class="form-obligatory">*</span>
             </div>
-            <div>
+            <div class="controls">
                 @Html.TextBoxFor(m => m.TripCountViewModel, new { name = "BKS", @class = "input-block-level", type = "text" })
                 @Html.ValidationMessageFor(m => m.TripCountViewModel)
             </div>
@@ -191,7 +192,7 @@
                 <span class="form-obligatory">*</span>
 
             </div>
-            <div>
+            <div class="controls">
                 @Html.TextBoxFor(m => m.UnitPrice, new { type = "text", name = "BKS", @class = "input-block-level", id = "price" })
                 @Html.ValidationMessageFor(m => m.UnitPrice)
                 <p style="display: none;font-size: 12px !important;color: red;" id="err-price">Giá không tồn tại</p>
@@ -202,8 +203,8 @@
             <div class="width-text-modal">
                 @Html.Label(WebModels.WebResources.Note, new { @class = "control-label" })
             </div>
-            <div>
-                @Html.TextBoxFor(m => m.Note, new { type = "text", name = "BKS", @class = "input-block-level" })
+            <div class="controls">
+                @Html.TextAreaFor(m => m.Note, new { type = "text", name = "BKS", @class = "input-block-level text-area" })
                 @Html.ValidationMessageFor(m => m.Note)
                 @Html.ValidationSummary(true)
 
@@ -234,13 +235,15 @@
         top.winsetup("Sửa", 600, 550, true);
         if (screen.width < 576) {
             top.winsetup("Sửa", screen.width * 0.8, screen.height * 0.52, true);
-        }
+    }
+
         function edit_success(id) {
             top.$("#window").data("kendoWindow").close();
             top.$("#grid").data("kendoGrid").dataSource.read();
             window.parent.show_stack_bottom_right('success', 'Cập nhật bảng kê', 'Cập nhật thành công.');
             window.parent.edit_addClass(id);
         }
+
         function exitWindow() {
             top.$("#window").data("kendoWindow").close();
         }

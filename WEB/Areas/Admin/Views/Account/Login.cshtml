@@ -23,7 +23,7 @@
                         </div>
                         <div class="div email">
                             <h5>Tên đăng nhập</h5>
-                            @Html.TextBoxFor(m => m.UserName, new { @class = "input" })
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "input", @value = Model.UserName})
                         </div>
                     </div>
                     <div class="input-div-login pass">
@@ -32,7 +32,7 @@
                         </div>
                         <div class="div pw">
                             <h5>Mật khẩu</h5>
-                            @Html.PasswordFor(m => m.Password, new { @class = "input" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "input", @value = Model.Password})
                         </div>
                     </div>
                     @Html.ValidationSummary(true)

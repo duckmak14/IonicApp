@@ -1,11 +1,28 @@
 ﻿@model IEnumerable<WebModels.WebModule>
+@{
+    var groupByType = (from a in Model
+                       group a by new { a.Type });
+    var count = groupByType.Count();
+}
 
-@foreach (var item in Model)
-{
-    <div class="overview flex box-task ">
-        <img src="@item.ImgActive" alt="" class="img-active">
-        <img src="@item.Img" alt="">
-        <a href="@item.URL" class="text-14-400 padding-text-box-task menu-item">@item.Title</a>
-    </div>
+@{
+    int i = 0;
+    foreach (var listItem in groupByType)
+    {
+        i++;
+    <p class="title-menu">@listItem.First().Type</p>
+        foreach (var item in listItem)
+        {
+            <div class="overview flex box-task ">
+                <img src="@item.ImgActive" alt="" class="img-active">
+                <img src="@item.Img" alt="">
+                <a href="@item.URL" class="text-14-400 padding-text-box-task menu-item">@item.Title</a>
+            </div>
+        }
+        if (i != count)
+        {
+            <div class="menu-line"></div>
+        }
+    }
 }
 

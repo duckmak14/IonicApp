@@ -11,7 +11,7 @@
             @Html.LabelFor(m => m.RouteID, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("RouteID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -38,7 +38,7 @@
             @Html.LabelFor(m => m.WeightID, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("WeightID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -65,7 +65,7 @@
             @Html.Label("Nhà thầu", new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("SourcePartnerID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -91,7 +91,7 @@
         <div class="width-text-modal">
             @Html.Label("Đơn vị thuê", new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @(Html.Kendo().ComboBox()
           .Name("DestinationPartnerID")
           .HtmlAttributes(new { style = "width:100%" })
@@ -122,7 +122,7 @@
             @Html.LabelFor(m => m.Price, new { @class = "control-label" })
             <span class="form-obligatory">*</span>
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Price, new { name = "BKS", @class = "input-block-level", id= "price" })
             @Html.ValidationMessageFor(m => m.Price)
         </div>
@@ -132,7 +132,7 @@
         <div class="width-text-modal">
             @Html.LabelFor(m => m.Note, new { @class = "control-label" })
         </div>
-        <div>
+        <div class="controls">
             @Html.TextBoxFor(m => m.Note, new { type = "text", name = "BKS", @class = "input-block-level" })
             @Html.ValidationMessageFor(m => m.Note)
             @Html.ValidationSummary(true)
@@ -160,6 +160,8 @@
     function edit_success() {
         top.$("#window").data("kendoWindow").close();
         top.$("#grid").data("kendoGrid").dataSource.read();
+        top.$("#gridAT").data("kendoGrid").dataSource.read();
+        top.$("#gridHPC").data("kendoGrid").dataSource.read();
         window.parent.show_stack_bottom_right('success', 'Sửa giá', 'Sửa thành công.');
 
     }

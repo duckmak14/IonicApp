@@ -90,9 +90,57 @@ namespace WEB.Areas.Admin.Controllers
         }
         public ActionResult PriceLists_Read([DataSourceRequest] DataSourceRequest request)
         {
-            List<PricingTable> PriceList = new List<PricingTable>();
+            var partnerList = db.Partner.ToList();
+            var idForAT = partnerList.Select(x => x.ID).FirstOrDefault();
+            var priceList = (from a in db.PricingTable
+                             join b in db.Route on a.RouteID equals b.ID into group1
+                             from b in group1.DefaultIfEmpty()
+                             join c in db.VehicleWeight on a.WeightID equals c.ID into group2
+                             from c in group2.DefaultIfEmpty()
+                             join d in db.Partner on a.SourcePartnerID equals d.ID into group3
+                             from d in group3.DefaultIfEmpty()
+                             join e in db.Partner on a.DestinationPartnerID equals e.ID into group4
+                             from e in group4.DefaultIfEmpty()
+                             select new
+                             {
+                                 a.ID,
+                                 a.Price,
+                                 a.Note,
+                                 b.RouteCode,
+                                 StartLocation = b.StartLocation.LocationName,
+                                 EndLocation = b.EndLocation.LocationName,
+                                 c.WeightName,
+                                 SourcePartnerName = d.PartnerName,
+                                 DestinationPartnerName = e.PartnerName,
+                                 d.PartnerCode,
+                                 a.WeightID
 
-            var routeList = from a in db.PricingTable
+                             }).ToList().Where(x => x.PartnerCode == "ST").AsEnumerable()
+                                        .Select(B => new PricingTableViewModel()
+                                        {
+                                            ID = B.ID,
+                                            Price = B.Price,
+                                            Note = B.Note,
+                                            RouteCode = B.RouteCode,
+                                            StartLocationName = B.StartLocation,
+                                            EndLocationName = B.EndLocation,
+                                            WeightName = B.WeightName,
+                                            SourcePartnerName = B.SourcePartnerName,
+                                            DestinationPartnerName = B.DestinationPartnerName,
+                                            WeightID = B.WeightID,
+                                            PartnerCode = B.PartnerCode
+                                        }).ToList();
+
+            var jsonResult = Json(priceList.OrderByDescending(x => x.ID).ToDataSourceResult(request));
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
+        public ActionResult PriceLists_Read_AT([DataSourceRequest] DataSourceRequest request)
+        {
+            var partnerList = db.Partner.ToList();
+            var idForAT = partnerList.Select(x => x.ID).FirstOrDefault();
+            var priceList = (from a in db.PricingTable
                             join b in db.Route on a.RouteID equals b.ID into group1
                             from b in group1.DefaultIfEmpty()
                             join c in db.VehicleWeight on a.WeightID equals c.ID into group2
@@ -101,7 +149,7 @@ namespace WEB.Areas.Admin.Controllers
                             from d in group3.DefaultIfEmpty()
                             join e in db.Partner on a.DestinationPartnerID equals e.ID into group4
                             from e in group4.DefaultIfEmpty()
-                                //join d in db.VehicleWeight on a.ActualWeightID equals d.ID into group3
+                                //join d in db.VehicleWeight on a.ActualWeightIDequals d.ID into group3
                                 //from d in group3.DefaultIfEmpty()
                             select new
                             {
@@ -117,56 +165,82 @@ namespace WEB.Areas.Admin.Controllers
                                 d.PartnerCode,
                                 a.WeightID
 
-                            };
+                            }).ToList().Where(x => x.PartnerCode == "AT").AsEnumerable()
+                                        .Select(B => new PricingTableViewModel()
+                                        {
+                                            ID = B.ID,
+                                            Price = B.Price,
+                                            Note = B.Note,
+                                            RouteCode = B.RouteCode,
+                                            StartLocationName = B.StartLocation,
+                                            EndLocationName = B.EndLocation,
+                                            WeightName = B.WeightName,
+                                            SourcePartnerName = B.SourcePartnerName,
+                                            DestinationPartnerName = B.DestinationPartnerName,
+                                            WeightID = B.WeightID,
+                                            PartnerCode = B.PartnerCode
+                                        }).ToList(); 
 
-            foreach (var item in routeList.Where(x => x.PartnerCode == "ST").ToList())
-            {
-                var price = new PricingTable();
-                price.ID = item.ID;
-                price.WeightID = item.WeightID;
-                price.Route = new Route()
-                {
-                    RouteCode = item.RouteCode,
-                    StartLocation = new Location()
-                    {
-                        LocationName = item.StartLocation
-                    },
-                    EndLocation = new Location()
-                    {
-                        LocationName = item.EndLocation
-                    }
-
-                };
-                price.Weight = new VehicleWeight()
-                {
-                    WeightName = item.WeightName
-                };
-                price.Price = item.Price;
-                price.Note = item.Note;
-                price.SourcePartner = new Partner()
-                {
-                    PartnerName = item.SourcePartnerName,
-                    PartnerCode = item.PartnerCode
-                    
-                };
-                price.DestinationPartner = new Partner()
-                {
-                    PartnerName = item.DestinationPartnerName
-                };
-                PriceList.Add(price);
-            }
-
-            var jsonResult = Json(PriceList.OrderByDescending(x => x.ID).ToDataSourceResult(request));
+            var jsonResult = Json(priceList.OrderByDescending(x => x.ID).ToDataSourceResult(request));
             jsonResult.MaxJsonLength = int.MaxValue;
             return jsonResult;
-
         }
+
+        public ActionResult PriceLists_Read_HPC([DataSourceRequest] DataSourceRequest request)
+        {
+            var partnerList = db.Partner.ToList();
+            var idForAT = partnerList.Select(x => x.ID).FirstOrDefault();
+            var priceList = (from a in db.PricingTable
+                             join b in db.Route on a.RouteID equals b.ID into group1
+                             from b in group1.DefaultIfEmpty()
+                             join c in db.VehicleWeight on a.WeightID equals c.ID into group2
+                             from c in group2.DefaultIfEmpty()
+                             join d in db.Partner on a.SourcePartnerID equals d.ID into group3
+                             from d in group3.DefaultIfEmpty()
+                             join e in db.Partner on a.DestinationPartnerID equals e.ID into group4
+                             from e in group4.DefaultIfEmpty()
+                                 //join d in db.VehicleWeight on a.ActualWeightIDequals d.ID into group3
+                                 //from d in group3.DefaultIfEmpty()
+                             select new
+                             {
+                                 a.ID,
+                                 a.Price,
+                                 a.Note,
+                                 b.RouteCode,
+                                 StartLocation = b.StartLocation.LocationName,
+                                 EndLocation = b.EndLocation.LocationName,
+                                 c.WeightName,
+                                 SourcePartnerName = d.PartnerName,
+                                 DestinationPartnerName = e.PartnerName,
+                                 d.PartnerCode,
+                                 a.WeightID
+
+                             }).ToList().Where(x => x.PartnerCode == "HPC").AsEnumerable()
+                                        .Select(B => new PricingTableViewModel()
+                                        {
+                                            ID = B.ID,
+                                            Price = B.Price,
+                                            Note = B.Note,
+                                            RouteCode = B.RouteCode,
+                                            StartLocationName = B.StartLocation,
+                                            EndLocationName = B.EndLocation,
+                                            WeightName = B.WeightName,
+                                            SourcePartnerName = B.SourcePartnerName,
+                                            DestinationPartnerName = B.DestinationPartnerName,
+                                            WeightID = B.WeightID,
+                                            PartnerCode = B.PartnerCode
+                                        }).ToList();
+
+            var jsonResult = Json(priceList.OrderByDescending(x => x.ID).ToDataSourceResult(request));
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
+        }
+
         public ActionResult Add()
         {
             var model = new PricingTable();
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -372,9 +446,7 @@ namespace WEB.Areas.Admin.Controllers
                 return View(model);
             }
         }
-
-        [HttpPost]
-        public ActionResult ExportExcel(string dataString)
+        public List<PricingTableExport> ConvertJson(string dataString)
         {
             List<PricingTableExport> listData = new List<PricingTableExport>();
             var dataListJson = dataString.Replace('?', '"');
@@ -396,6 +468,19 @@ namespace WEB.Areas.Admin.Controllers
                 dataObj = JsonConvert.DeserializeObject<PricingTableExport>(dataObjString);
                 listData.Add(dataObj);
             }
+            return listData;
+        }
+
+        [HttpPost]
+        public ActionResult ExportExcel(string dataString)
+        {
+            List<PricingTableExport> listData = new List<PricingTableExport>();
+
+            if (dataString != null)
+            {
+                listData = ConvertJson(dataString);
+            }
+
             var result = DownloadPrice(listData);
             var fileStream = new MemoryStream(result);
             return File(fileStream, "application/ms-excel", "QLBangGia.xlsx");
@@ -419,11 +504,8 @@ namespace WEB.Areas.Admin.Controllers
                     {
                         foreach(var subPrice in price)
                         {
-                            //var routeCode = db.Route.Where(m => m.ID == price.Key).FirstOrDefault();
                             productWorksheet.Cells[i + 2, 2].Value = subPrice.RouteCode;
-                            //var StartLocation = db.Location.Where(m => m.ID == routeCode.StartLocationID).Select(x => x.LocationName);
                             productWorksheet.Cells[i + 2, 3].Value = subPrice.StartLocationName;
-                            //var EndLocation = db.Location.Where(m => m.ID == routeCode.EndLocationID).Select(x => x.LocationName);
                             productWorksheet.Cells[i + 2, 4].Value = subPrice.EndLocationName;
 
                             //ST-AT
@@ -466,8 +548,6 @@ namespace WEB.Areas.Admin.Controllers
                             productWorksheet.Cells[i + 2, 22].Value = "";
                             productWorksheet.Cells[i + 2, 23].Value = "";
                         }
-                       
-
                      
                         // Export price KT-ST
                         foreach (var subPrice in price.Where(x => x.PartnerCode == "ST"))
@@ -513,90 +593,85 @@ namespace WEB.Areas.Admin.Controllers
 
                         // Export price ST-AT
                         foreach (var subPrice in price.Where(x => x.PartnerCode == "AT").ToList())
-
                         {
-                            
-                            //if (subPrice.WeightID == 1)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 17].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 17].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 11)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 18].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 18].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 2)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 19].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 19].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 3)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 20].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 20].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 12)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 21].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 21].Style.Numberformat.Format = "#,##0";
-                            //}
+                            if (subPrice.WeightID == 1)
+                            {
+                                productWorksheet.Cells[i + 2, 17].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 17].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 11)
+                            {
+                                productWorksheet.Cells[i + 2, 18].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 18].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 2)
+                            {
+                                productWorksheet.Cells[i + 2, 19].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 19].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 3)
+                            {
+                                productWorksheet.Cells[i + 2, 20].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 20].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 12)
+                            {
+                                productWorksheet.Cells[i + 2, 21].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 21].Style.Numberformat.Format = "#,##0";
+                            }
 
-                            //if (subPrice.WeightID == 8)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 22].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 22].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 9)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 23].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 23].Style.Numberformat.Format = "#,##0";
-                            //}
-
+                            if (subPrice.WeightID == 8)
+                            {
+                                productWorksheet.Cells[i + 2, 22].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 22].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 9)
+                            {
+                                productWorksheet.Cells[i + 2, 23].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 23].Style.Numberformat.Format = "#,##0";
+                            }
                         }
 
                         // Export price AT-HPC
                         foreach (var subPrice in price.Where(x => x.PartnerCode == "HPC").ToList())
-
                         {
-                            //if (subPrice.WeightID == 1)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 29].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 29].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 11)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 30].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 30].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 2)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 31].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 31].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 3)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 32].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 32].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 12)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 33].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 33].Style.Numberformat.Format = "#,##0";
-                            //}
+                            if (subPrice.WeightID == 1)
+                            {
+                                productWorksheet.Cells[i + 2, 29].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 29].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 11)
+                            {
+                                productWorksheet.Cells[i + 2, 30].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 30].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 2)
+                            {
+                                productWorksheet.Cells[i + 2, 31].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 31].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 3)
+                            {
+                                productWorksheet.Cells[i + 2, 32].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 32].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 12)
+                            {
+                                productWorksheet.Cells[i + 2, 33].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 33].Style.Numberformat.Format = "#,##0";
+                            }
 
-                            //if (subPrice.WeightID == 8)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 34].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 34].Style.Numberformat.Format = "#,##0";
-                            //}
-                            //if (subPrice.WeightID == 9)
-                            //{
-                            //    productWorksheet.Cells[i + 2, 35].Value = subPrice.Price;
-                            //    productWorksheet.Cells[i + 2, 35].Style.Numberformat.Format = "#,##0";
-                            //}
+                            if (subPrice.WeightID == 8)
+                            {
+                                productWorksheet.Cells[i + 2, 34].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 34].Style.Numberformat.Format = "#,##0";
+                            }
+                            if (subPrice.WeightID == 9)
+                            {
+                                productWorksheet.Cells[i + 2, 35].Value = subPrice.Price;
+                                productWorksheet.Cells[i + 2, 35].Style.Numberformat.Format = "#,##0";
+                            }
                         }
-
                         i++;
                     }
                     
@@ -658,10 +733,18 @@ namespace WEB.Areas.Admin.Controllers
                 if (check == 1)
                 {
                     var result = new UploadPricingListFromExcel().UploadProducts(file, Session["UploadPriceProgress"]);
+
+                  
                     if (result == null)
                     {
                         ViewBag.check = "Upload giá thành công!";
                         ViewBag.StartupScript = "upload_success();";
+                        return View();
+                    }
+                    else if (result.Count() == 1)
+                    {
+                        ViewBag.check = "Đã xảy ra lỗi trong quá trình lưu! Vui lòng thử lại";
+                        ViewBag.StartupScript = "hideLoading();";
                         return View();
                     }
                     else

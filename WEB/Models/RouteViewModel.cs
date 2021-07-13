@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WEB.Models
 {
@@ -19,7 +15,7 @@ namespace WEB.Models
         [Display(Name = "Mã lộ trình")]
         public string RouteCode { get; set; }
 
-        [RegularExpression(@"^(\d*\.?\d+|\d*(,\d*)*(\,\d+)?)$", ErrorMessage = "Yêu cầu nhập đúng định dạng")]
+        [RegularExpression(@"^[+]?([0-9]+([.][0-9]*)?|[.][0-9]+)$", ErrorMessage = "Yêu cầu nhập đúng định dạng")]
         [Display(Name = "Khoảng cách")]
         public string Distance { get; set; }
     }

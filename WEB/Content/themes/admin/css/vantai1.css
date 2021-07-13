@@ -283,7 +283,7 @@ a.k-button.k-button-icontext.k-grid-Thêmkhoảnmục {
     background-repeat: no-repeat;
     color: transparent;
     border-color: #FCFBFF;
-    background-size: 22%;
+    /*background-size: 22%;*/
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -297,7 +297,7 @@ a.k-button.k-button-icontext.k-grid-Thêmkhoảnmục:hover {
     background-repeat: no-repeat;
     color: transparent;
     border-color: #FCFBFF;
-    background-size: 22%;
+    /*background-size: 22%;*/
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -310,7 +310,7 @@ k-state-selected a.k-button.k-button-icontext.k-grid-Thêmkhoảnmục {
     background-repeat: no-repeat;
     color: transparent;
     border-color: #FCFBFF;
-    background-size: 22%;
+    /*background-size: 22%;*/
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -323,7 +323,7 @@ k-state-selected a.k-button.k-button-icontext.k-grid-Thêmkhoảnmục {
     background-repeat: no-repeat;
     color: transparent;
     border-color: #FCFBFF;
-    background-size: 22%;
+    /*background-size: 22%;*/
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
@@ -396,6 +396,70 @@ a.k-button.k-button-icontext.k-grid-Edit:active {
     padding: 6px;
 }
 
+a.k-button.k-button-icontext.k-grid-Show {
+    background-color: #FCFBFF;
+    background-image: url("/Content/themes/admin/img/show.png");
+    background-repeat: no-repeat;
+    color: transparent;
+    border-color: #FCFBFF;
+    background-size: 22%;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+    a.k-button.k-button-icontext.k-grid-Show:hover {
+        background-color: #FCFBFF;
+        background-image: url("/Content/themes/admin/img/show-Active.png");
+        background-repeat: no-repeat;
+        color: transparent;
+        border-color: #FCFBFF;
+        background-size: 22%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+k-state-selected a.k-button.k-button-icontext.k-grid-Show {
+    background-color: #FCFBFF;
+    background-image: url("/Content/themes/admin/img/show.png");
+    background-repeat: no-repeat;
+    color: transparent;
+    border-color: #FCFBFF;
+    background-size: 22%;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.k-state-selected a.k-button.k-button-icontext.k-grid-Show:hover {
+    background-color: #FCFBFF;
+    background-image: url("/Content/themes/admin/img/show-Active.png");
+    background-repeat: no-repeat;
+    color: transparent;
+    border-color: #FCFBFF;
+    background-size: 22%;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+a.k-button.k-button-icontext.k-grid-Show:active {
+    border-color: #FCFBFF;
+    background-color: #FCFBFF;
+}
+
+.k-state-selected a.k-button.k-button-icontext.k-grid-Show:active {
+    border-color: #FCFBFF;
+    background-color: #FCFBFF;
+}
+
+
 span.k-state-selected {
     border-color: #FCFBFF;
 }
@@ -437,10 +501,12 @@ span.k-state-selected {
     margin-left: 1.5vw;
 }
 
-    .btn-plan-drive img {
+.btn-plan-drive img {
     width: fit-content;
     height: fit-content;
     margin-right: 0.3vw;
+    margin-right: 0.4vw;
+    margin-top: 2px;
 }
 
 @media only screen and (max-width: 992px) and (min-width: 768px) {
